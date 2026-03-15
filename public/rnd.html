@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS LAB | Engineering the Future</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-deep: #050810;
+            --cyan: #00F5FF;
+            --violet: #7C3AED;
+            --white: #FFFFFF;
+            --glass: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(0, 245, 255, 0.15);
+            --font-head: 'Orbitron', sans-serif;
+            --font-body: 'IBM Plex Sans', sans-serif;
+            --transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none; /* Custom cursor */
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--white);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Noise & Scanline Overlay --- */
+        .overlay-fx {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.03;
+            background: 
+                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%;
+        }
+
+        /* --- Custom Cursor --- */
+        #cursor {
+            width: 20px; height: 20px;
+            border: 1px solid var(--cyan);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, background 0.3s ease;
+            box-shadow: 0 0 15px var(--cyan);
+        }
+
+        /* --- Typography & Gradients --- */
+        h1, h2, h3 { font-family: var(--font-head); text-transform: uppercase; letter-spacing: 2px; }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, var(--cyan), var(--violet));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-padding { padding: 120px 0; }
+        .container { max-width: 1300px; margin: 0 auto; padding: 0 40px; }
+
+        /* --- Buttons --- */
+        .btn {
+            padding: 16px 32px;
+            font-family: var(--font-head);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 2px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-cyan { background: var(--cyan); color: var(--bg-deep); }
+        .btn-ghost { border: 1px solid var(--white); color: var(--white); }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 0 25px var(--cyan); }
+
+        /* --- Hero Section --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #particle-canvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.6;
+        }
+
+        .hero-content {
+            z-index: 10;
+            text-align: center;
+            max-width: 900px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+
+        .hero h1 span {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #a0a0a0;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .live-counter-bar {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border: 1px solid var(--glass-border);
+            display: inline-flex;
+            gap: 40px;
+            margin-bottom: 40px;
+            font-family: var(--font-head);
+            font-size: 14px;
+        }
+
+        /* --- Research Domains --- */
+        .domain-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 50px;
+            transition: var(--transition);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .card:hover {
+            border-color: var(--cyan);
+            box-shadow: 0 0 30px rgba(0, 245, 255, 0.1);
+        }
+
+        .card-icon {
+            font-size: 40px;
+            margin-bottom: 25px;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover .card-icon { transform: translateZ(30px) rotateY(180deg); }
+
+        /* --- Stats Section --- */
+        .stats-section {
+            background: #070b16;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+            animation: move-blob 20s infinite alternate;
+        }
+
+        @keyframes move-blob {
+            from { transform: translate(-10%, -10%); }
+            to { transform: translate(110%, 110%); }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 50px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-item h2 { font-size: 3rem; margin-bottom: 10px; }
+        .stat-item p { color: var(--cyan); font-weight: 600; font-size: 14px; }
+
+        /* --- Projects Grid --- */
+        .project-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            grid-template-rows: repeat(2, 350px);
+            gap: 20px;
+        }
+
+        .project-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+        }
+
+        .project-card:first-child { grid-row: span 2; }
+
+        .project-img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 1s ease;
+            filter: brightness(0.6);
+        }
+
+        .project-content {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%;
+            padding: 40px;
+            background: linear-gradient(to top, rgba(5,8,16,1), transparent);
+            transform: translateY(20px);
+            transition: var(--transition);
+        }
+
+        .project-card:hover .project-img { transform: scale(1.1); }
+        .project-card:hover .project-content { transform: translateY(0); }
+
+        .badge {
+            padding: 4px 12px;
+            background: rgba(0, 245, 255, 0.1);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            font-size: 10px;
+            font-family: var(--font-head);
+            border-radius: 100px;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        /* --- Timeline --- */
+        .pipeline { position: relative; padding: 60px 0; }
+        .timeline-svg {
+            position: absolute;
+            top: 50%; left: 0;
+            width: 100%; height: 2px;
+            z-index: 0;
+        }
+
+        #timeline-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            stroke: var(--cyan);
+            stroke-width: 2;
+        }
+
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step {
+            text-align: center;
+            width: 180px;
+        }
+
+        .step-node {
+            width: 20px; height: 20px;
+            background: var(--bg-deep);
+            border: 2px solid var(--cyan);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            transition: var(--transition);
+        }
+
+        .step.active .step-node {
+            box-shadow: 0 0 20px var(--cyan);
+            background: var(--cyan);
+        }
+
+        /* --- Marquee --- */
+        .marquee {
+            overflow: hidden;
+            padding: 40px 0;
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            gap: 50px;
+        }
+
+        .marquee-content {
+            display: flex;
+            gap: 80px;
+            animation: marquee 30s linear infinite;
+            white-space: nowrap;
+        }
+
+        .marquee-content span {
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+
+        .marquee-content span:hover { opacity: 1; color: var(--cyan); }
+
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        /* --- CTA --- */
+        .cta-box {
+            background: radial-gradient(circle at top right, var(--violet), var(--bg-deep) 60%);
+            padding: 100px;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* --- Reveal Animations --- */
+        .reveal { opacity: 0; transform: translateY(40px); transition: var(--transition); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- Responsive --- */
+        @media (max-width: 768px) {
+            .container { padding: 0 20px; }
+            .project-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
+            .hero-content h1 { font-size: 2.5rem; }
+            .live-counter-bar { flex-direction: column; gap: 10px; }
+            .cta-box { padding: 40px; }
+            #cursor { display: none; }
+            * { cursor: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay-fx"></div>
+    <div id="cursor"></div>
+
+    <header style="position: fixed; top: 0; width: 100%; z-index: 100; padding: 30px 0;">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-family: var(--font-head); font-weight: 900; font-size: 22px; letter-spacing: 4px;">
+                NEXUS<span style="color: var(--cyan);">LAB</span>
+            </div>
+            <nav style="display: flex; gap: 30px; font-size: 12px; font-family: var(--font-head);">
+                <a href="#research" style="color: var(--white); text-decoration: none;">RESEARCH</a>
+                <a href="#projects" style="color: var(--white); text-decoration: none;">PROJECTS</a>
+                <a href="#pipeline" style="color: var(--white); text-decoration: none;">PIPELINE</a>
+                <a href="#" class="btn-cyan" style="padding: 8px 16px; border-radius: 2px; text-decoration: none;">JOIN US</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <canvas id="particle-canvas"></canvas>
+        <div class="hero-content">
+            <h1 id="hero-title">
+                <span>ENGINEERING</span> <span>THE</span> <span class="gradient-text">FUTURE.</span> <span>TODAY.</span>
+            </h1>
+            <p>Nexus Lab is a world-leading R&D hub developing hyper-advanced solutions in artificial intelligence, molecular engineering, and quantum systems.</p>
+            <div class="live-counter-bar">
+                <span><b class="count" data-target="128">0</b> PATENTS FILED</span>
+                <span><b class="count" data-target="47">0</b> ACTIVE PROJECTS</span>
+                <span><b class="count" data-target="19">0</b> COUNTRIES</span>
+            </div>
+            <div style="display: flex; justify-content: center; gap: 20px;">
+                <a href="#" class="btn btn-cyan magnetic">Explore Research</a>
+                <a href="#" class="btn btn-ghost magnetic">View Publications</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="research" class="section-padding">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 80px;">
+                <span class="badge">DEEP TECH DOMAINS</span>
+                <h2 class="reveal">Research Frontiers</h2>
+            </div>
+            <div class="domain-grid">
+                <div class="card reveal tilt-element">
+                    <span class="card-icon">🧠</span>
+                    <h3>AI & Neural Systems</h3>
+                    <p>Developing self-evolving architectures and cognitive modeling for AGI alignment.</p>
+                </div>
+                <div class="card reveal tilt-element" style="transition-delay: 0.1s;">
+                    <span class="card-icon">🧬</span>
+                    <h3>Bioengineering</h3>
+                    <p>Advanced CRISPR-Cas9 therapeutics and synthetic biological computational nodes.</p>
+                </div>
+                <div class="card reveal tilt-element" style="transition-delay: 0.2s;">
+                    <span class="card-icon">⚛️</span>
+                    <h3>Quantum Computing</h3>
+                    <p>Scaling topological qubits to achieve fault-tolerant commercial quantum advantage.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-section section-padding">
+        <div class="blob"></div>
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item reveal">
+                    <h2 class="count" data-target="2.4">$0.0B</h2>
+                    <p>INVESTMENT CAPITAL</p>
+                </div>
+                <div class="stat-item reveal">
+                    <h2 class="count" data-target="340">0</h2>
+                    <p>PHD SCIENTISTS</p>
+                </div>
+                <div class="stat-item reveal">
+                    <h2 class="count" data-target="92">0%</h2>
+                    <p>BREAKTHROUGH RATE</p>
+                </div>
+                <div class="stat-item reveal">
+                    <h2 class="count" data-target="60">0</h2>
+                    <p>INDUSTRY PARTNERS</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="section-padding">
+        <div class="container">
+            <h2 class="reveal" style="margin-bottom: 50px;">Featured Breakthroughs</h2>
+            <div class="project-grid">
+                <div class="project-card reveal tilt-element">
+                    <img src="https://images.unsplash.com/photo-1518152006812-edab29b069ac?auto=format&fit=crop&q=80&w=1000" class="project-img">
+                    <div class="project-content">
+                        <span class="badge">NEURO-TECH</span>
+                        <h3>Project Synapse</h3>
+                        <p>Direct brain-to-computer interface with 99.8% signal fidelity.</p>
+                    </div>
+                </div>
+                <div class="project-card reveal tilt-element">
+                    <img src="https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&q=80&w=600" class="project-img">
+                    <div class="project-content">
+                        <span class="badge">ENERGY</span>
+                        <h3>Helios Core</h3>
+                        <p>Stable fusion plasma containment for localized energy grids.</p>
+                    </div>
+                </div>
+                <div class="project-card reveal tilt-element">
+                    <img src="https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=600" class="project-img">
+                    <div class="project-content">
+                        <span class="badge">BIOTECH</span>
+                        <h3>Aura Synthetic</h3>
+                        <p>Self-repairing biocompatible materials for organ grafting.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pipeline" class="section-padding" style="background: #020408;">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 100px;">
+                <h2 class="reveal">Research Pipeline</h2>
+            </div>
+            <div class="pipeline">
+                <svg class="timeline-svg">
+                    <path id="timeline-path" d="M 0 1 H 1300" fill="transparent" />
+                </svg>
+                <div class="steps">
+                    <div class="step active">
+                        <div class="step-node"></div>
+                        <h4>Discovery</h4>
+                        <p style="font-size: 11px; opacity: 0.6;">Phase 01</p>
+                    </div>
+                    <div class="step active">
+                        <div class="step-node"></div>
+                        <h4>Hypothesis</h4>
+                        <p style="font-size: 11px; opacity: 0.6;">Phase 02</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-node"></div>
+                        <h4>Experiment</h4>
+                        <p style="font-size: 11px; opacity: 0.6;">Phase 03</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-node"></div>
+                        <h4>Validation</h4>
+                        <p style="font-size: 11px; opacity: 0.6;">Phase 04</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="marquee">
+        <div class="marquee-content">
+            <span>NEURAL NETWORKS</span> <span>CRISPR</span> <span>QUANTUM ALGORITHMS</span> 
+            <span>NANOTECH</span> <span>EDGE AI</span> <span>FUSION REACTORS</span>
+            <span>NEURAL NETWORKS</span> <span>CRISPR</span> <span>QUANTUM ALGORITHMS</span> 
+            <span>NANOTECH</span> <span>EDGE AI</span> <span>FUSION REACTORS</span>
+        </div>
+    </div>
+
+    <section class="section-padding">
+        <div class="container">
+            <div class="cta-box reveal">
+                <h2 style="font-size: 3rem; margin-bottom: 30px;">Shape Tomorrow <br>With Us</h2>
+                <div style="display: flex; justify-content: center; gap: 20px;">
+                    <a href="#" class="btn btn-cyan magnetic">Apply to Research</a>
+                    <a href="#" class="btn btn-ghost magnetic">Partner With Us</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="section-padding" style="border-top: 1px solid var(--glass-border);">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 50px;">
+                <div>
+                    <div style="font-family: var(--font-head); font-weight: 900; font-size: 20px; margin-bottom: 20px;">NEXUS LAB</div>
+                    <p style="font-size: 14px; opacity: 0.6;">Global Headquarters: <br>100 Quantum Way, <br>Silicon Valley, CA 94025</p>
+                </div>
+                <div style="font-size: 14px; opacity: 0.8;">
+                    <h4 style="font-family: var(--font-head); margin-bottom: 20px;">LINKS</h4>
+                    <p>Ethics Policy</p>
+                    <p>Safety Standards</p>
+                    <p>Open Science</p>
+                </div>
+                <div style="font-size: 14px; opacity: 0.8;">
+                    <h4 style="font-family: var(--font-head); margin-bottom: 20px;">SOCIAL</h4>
+                    <p>ResearchGate</p>
+                    <p>LinkedIn</p>
+                    <p>X (Twitter)</p>
+                </div>
+            </div>
+            <div style="margin-top: 80px; text-align: center; font-size: 12px; opacity: 0.4;">
+                © 2024 NEXUS LAB R&D DIVISION. ALL RIGHTS RESERVED.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Custom Cursor ---
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        document.querySelectorAll('a, .btn, .card').forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(4)';
+                cursor.style.background = 'rgba(0, 245, 255, 0.1)';
+            });
+            item.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1)';
+                cursor.style.background = 'transparent';
+            });
+        });
+
+        // --- Particle System ---
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                ctx.fillStyle = '#00F5FF';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            for (let i = 0; i < 100; i++) particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, index) => {
+                p.update();
+                p.draw();
+                
+                // Draw lines
+                for (let j = index; j < particles.length; j++) {
+                    const dx = p.x - particles[j].x;
+                    const dy = p.y - particles[j].y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < 150) {
+                        ctx.strokeStyle = `rgba(0, 245, 255, ${1 - dist/150})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        initParticles();
+        animateParticles();
+
+        // --- Hero Animation ---
+        const titleSpans = document.querySelectorAll('#hero-title span');
+        titleSpans.forEach((span, i) => {
+            setTimeout(() => {
+                span.style.opacity = '1';
+                span.style.transform = 'translateY(0)';
+                span.style.transition = 'all 0.8s cubic-bezier(0.2, 1, 0.3, 1)';
+            }, i * 150);
+        });
+
+        // --- Scroll Reveal ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    if (entry.target.querySelector('.count')) {
+                        startCount(entry.target);
+                    }
+                    if (entry.target.id === 'timeline-path') {
+                        entry.target.style.strokeDashoffset = '0';
+                    }
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        observer.observe(document.getElementById('timeline-path'));
+
+        // --- Counter Animation ---
+        function startCount(container) {
+            const counters = container.querySelectorAll('.count');
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const speed = 100;
+                const update = () => {
+                    const count = +counter.innerText.replace(/[^\d.]/g, '');
+                    const inc = target / speed;
+                    if (count < target) {
+                        const nextValue = count + inc;
+                        counter.innerText = target % 1 !== 0 
+                            ? '$' + nextValue.toFixed(1) + 'B' 
+                            : Math.ceil(nextValue) + (counter.innerText.includes('%') ? '%' : '');
+                        setTimeout(update, 20);
+                    } else {
+                        counter.innerText = target % 1 !== 0 
+                            ? '$' + target + 'B' 
+                            : target + (counter.innerText.includes('%') ? '%' : '');
+                    }
+                };
+                update();
+            });
+        }
+
+        // --- 3D Tilt Effect ---
+        document.querySelectorAll('.tilt-element').forEach(el => {
+            el.addEventListener('mousemove', (e) => {
+                const rect = el.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const xc = rect.width / 2;
+                const yc = rect.height / 2;
+                const dx = x - xc;
+                const dy = y - yc;
+                el.style.transform = `perspective(1000px) rotateX(${-dy/10}deg) rotateY(${dx/10}deg) translateZ(10px)`;
+            });
+            el.addEventListener('mouseleave', () => {
+                el.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+            });
+        });
+
+        // --- Magnetic Buttons ---
+        document.querySelectorAll('.magnetic').forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = `translate(0, 0)`;
+            });
+        });
+    </script>
+</body>
+</html>

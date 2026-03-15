@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xerova Social | Data-Driven Social Growth</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0a0d1a;
+            --card: #111827;
+            --cyan: #00f5d4;
+            --purple: #9b5de5;
+            --pink: #f72585;
+            --text: #e2e8f0;
+            --dim: #64748b;
+            --grad: linear-gradient(135deg, var(--cyan), var(--purple));
+            --glass: rgba(17, 24, 39, 0.7);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, .nav-logo, .section-tag, .pricing-name {
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* --- Background Particles (Social Graph) --- */
+        #graph-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            position: fixed;
+            top: 0; width: 100%; padding: 1.2rem 8%;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(10, 13, 26, 0.8);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 245, 212, 0.1);
+        }
+        .nav-logo { font-size: 1.4rem; font-weight: 900; color: #fff; text-decoration: none; }
+        .nav-logo span { color: var(--cyan); }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: var(--text); font-size: 0.85rem; transition: var(--transition); }
+        .nav-links a:hover { color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
+
+        /* --- Hero Section --- */
+        #hero {
+            height: 100vh; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; text-align: center; padding: 0 10%;
+        }
+        .hero-title { font-size: 3.8rem; line-height: 1.1; margin-bottom: 1.5rem; max-width: 900px; }
+        .grad-text { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-sub { font-size: 1.2rem; color: var(--dim); max-width: 650px; margin-bottom: 2.5rem; }
+        .hero-btns { display: flex; gap: 1.5rem; }
+
+        .btn {
+            padding: 1rem 2rem; border-radius: 4px; font-weight: 700; font-family: 'Orbitron';
+            font-size: 0.8rem; cursor: pointer; transition: var(--transition); text-decoration: none;
+            display: inline-block;
+        }
+        .btn-grad { background: var(--grad); color: #fff; border: none; box-shadow: 0 0 20px rgba(0, 245, 212, 0.3); }
+        .btn-grad:hover { transform: translateY(-3px); box-shadow: 0 0 30px rgba(155, 93, 229, 0.5); }
+        .btn-outline { border: 1px solid var(--cyan); color: var(--cyan); background: transparent; }
+        .btn-outline:hover { background: var(--cyan); color: var(--bg); }
+
+        .hero-stats { margin-top: 5rem; display: flex; gap: 4rem; }
+        .stat-item { text-align: center; }
+        .stat-num { font-size: 2.2rem; color: var(--cyan); font-weight: 900; display: block; font-family: 'Orbitron'; }
+        .stat-label { font-size: 0.75rem; color: var(--dim); text-transform: uppercase; }
+
+        /* --- Platforms --- */
+        #platforms { padding: 80px 8%; text-align: center; }
+        .platform-row { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-top: 3rem; }
+        .plat-badge {
+            background: var(--card); padding: 0.8rem 1.5rem; border-radius: 50px;
+            display: flex; align-items: center; gap: 10px; border: 1px solid rgba(255,255,255,0.05);
+            transition: var(--transition); cursor: default;
+        }
+        .plat-badge i { font-size: 1.2rem; }
+        .plat-badge:hover { transform: translateY(-5px); border-color: var(--cyan); box-shadow: 0 5px 20px rgba(0, 245, 212, 0.2); }
+        
+        /* Platform specific hover colors */
+        .plat-ig:hover { box-shadow: 0 0 20px #f72585; color: #f72585; }
+        .plat-tt:hover { box-shadow: 0 0 20px #00f5d4; color: #00f5d4; }
+        .plat-li:hover { box-shadow: 0 0 20px #0077b5; color: #0077b5; }
+
+        /* --- Services Grid --- */
+        section { padding: 100px 8%; }
+        .section-header { text-align: center; margin-bottom: 4rem; }
+        .section-tag { font-size: 0.8rem; color: var(--dim); letter-spacing: 5px; }
+        .section-title { font-size: 2.8rem; margin-top: 0.5rem; }
+
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .service-card {
+            background: var(--card); padding: 3rem 2rem; border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05); transition: var(--transition);
+        }
+        .service-card:hover { transform: translateY(-10px); border-color: var(--cyan); box-shadow: 0 10px 40px rgba(0, 245, 212, 0.1); }
+        .service-card i { font-size: 2.5rem; margin-bottom: 1.5rem; display: block; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .service-card h3 { margin-bottom: 1rem; }
+        .service-card p { color: var(--dim); font-size: 0.95rem; }
+
+        /* --- Orbital Framework --- */
+        .framework-container {
+            height: 600px; position: relative; display: flex; justify-content: center; align-items: center;
+            background: #111827; border-radius: 30px; margin-top: 4rem; overflow: hidden;
+        }
+        .center-node {
+            width: 120px; height: 120px; background: var(--bg); border: 2px solid var(--cyan);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            z-index: 10; box-shadow: 0 0 30px var(--cyan); font-weight: 900;
+        }
+        .orbit-ring {
+            position: absolute; width: 450px; height: 450px; border: 1px dashed rgba(0, 245, 212, 0.2);
+            border-radius: 50%; animation: rotate 40s linear infinite;
+        }
+        .orbit-node {
+            position: absolute; width: 100px; height: 40px; background: var(--card);
+            border: 1px solid var(--purple); border-radius: 20px; display: flex;
+            justify-content: center; align-items: center; font-size: 0.7rem; font-weight: 700;
+            box-shadow: 0 0 15px rgba(155, 93, 229, 0.3);
+        }
+        /* Position nodes around the circle */
+        .n1 { top: -20px; left: 50%; transform: translateX(-50%); }
+        .n2 { top: 50%; right: -50px; transform: translateY(-50%); }
+        .n3 { bottom: -20px; left: 50%; transform: translateX(-50%); }
+        .n4 { top: 50%; left: -50px; transform: translateY(-50%); }
+
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* --- Bento Case Studies --- */
+        .bento-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 250px; gap: 1.5rem;
+        }
+        .bento-item {
+            background: var(--card); border-radius: 20px; padding: 2.5rem;
+            position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05);
+            transition: var(--transition);
+        }
+        .bento-item:hover { border-color: var(--cyan); transform: scale(1.02); }
+        .bento-1 { grid-column: span 2; grid-row: span 2; background: linear-gradient(rgba(10,13,26,0.8), rgba(10,13,26,0.8)), url('https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800'); background-size: cover; }
+        .bento-2 { grid-column: span 2; }
+        .bento-tag { font-size: 0.7rem; color: var(--cyan); font-weight: 700; }
+        .bento-result { font-size: 2rem; font-weight: 900; margin: 1rem 0; color: #fff; }
+        .metric-pills { display: flex; gap: 10px; margin-top: 1rem; }
+        .pill { background: rgba(0, 245, 212, 0.1); color: var(--cyan); padding: 0.3rem 0.8rem; border-radius: 50px; font-size: 0.7rem; border: 1px solid rgba(0, 245, 212, 0.2); }
+
+        /* --- Pricing --- */
+        .pricing-toggle { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 3rem; }
+        .toggle-btn { width: 50px; height: 26px; background: var(--card); border-radius: 20px; position: relative; cursor: pointer; border: 1px solid var(--cyan); }
+        .toggle-dot { width: 18px; height: 18px; background: var(--cyan); border-radius: 50%; position: absolute; top: 3px; left: 4px; transition: 0.3s; }
+        .toggle-btn.active .toggle-dot { left: 26px; background: var(--purple); }
+
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem; align-items: center; }
+        .price-card {
+            background: var(--glass); padding: 3.5rem 2.5rem; border-radius: 25px;
+            border: 1px solid rgba(255,255,255,0.1); text-align: center; transition: var(--transition);
+        }
+        .price-card.featured { transform: scale(1.05); border: 2px solid var(--cyan); background: rgba(17,24,39,0.9); position: relative; }
+        .popular-badge { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--grad); padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.7rem; font-weight: 800; }
+        .price-val { font-size: 3.5rem; font-weight: 900; color: #fff; margin: 1.5rem 0; }
+        .price-list { list-style: none; text-align: left; margin-bottom: 2.5rem; color: var(--dim); }
+        .price-list li { margin-bottom: 0.8rem; font-size: 0.9rem; }
+        .price-list i { color: var(--cyan); margin-right: 10px; }
+
+        /* --- Analytics Dashboard Mockup --- */
+        .dashboard-container {
+            background: #0d1117; border: 1px solid #30363d; border-radius: 12px; padding: 2rem;
+            display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-top: 4rem;
+        }
+        .dash-widget { background: #161b22; border-radius: 8px; padding: 1.5rem; border: 1px solid #30363d; }
+        .chart-mock { height: 150px; width: 100%; border-bottom: 2px solid var(--cyan); margin-top: 1rem; position: relative; overflow: hidden; }
+        .chart-line { width: 100%; height: 100%; stroke: var(--cyan); stroke-width: 2; fill: none; }
+        
+        /* --- Contact Form --- */
+        .contact-wrap { display: grid; grid-template-columns: 1fr 1.5fr; gap: 5rem; background: var(--card); padding: 4rem; border-radius: 30px; }
+        .ticker-wrap { background: #0a0d1a; padding: 1rem; border-radius: 10px; margin-top: 2rem; overflow: hidden; white-space: nowrap; }
+        .ticker { display: inline-block; animation: ticker 20s linear infinite; color: var(--cyan); font-family: 'JetBrains Mono'; font-size: 0.8rem; }
+        @keyframes ticker { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; color: var(--cyan); font-size: 0.7rem; margin-bottom: 0.5rem; font-family: 'Orbitron'; }
+        input, select, textarea {
+            width: 100%; background: #0a0d1a; border: 1px solid rgba(255,255,255,0.1);
+            padding: 1rem; color: #fff; border-radius: 4px; outline: none; transition: 0.3s;
+        }
+        input:focus { border-color: var(--cyan); box-shadow: 0 0 15px rgba(0, 245, 212, 0.2); }
+
+        /* --- Footer --- */
+        .final-cta { text-align: center; padding: 120px 8%; position: relative; }
+        .pulse-glow {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 400px; height: 400px; background: radial-gradient(circle, rgba(0, 245, 212, 0.15) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; } 50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; } }
+
+        @media (max-width: 1024px) {
+            .contact-wrap, .dashboard-container, .bento-grid { grid-template-columns: 1fr; }
+            .hero-title { font-size: 2.5rem; }
+            .nav-links { display: none; }
+            .bento-1, .bento-2 { grid-column: span 1; grid-row: span 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="graph-canvas"></canvas>
+
+    <nav>
+        <a href="#" class="nav-logo">XEROVA<span> DIGITAL</span></a>
+        <div class="nav-links">
+            <a href="#services">SERVICES</a>
+            <a href="#framework">METHOD</a>
+            <a href="#results">RESULTS</a>
+            <a href="#pricing">PRICING</a>
+        </div>
+        <a href="#contact" class="btn btn-outline">GET A QUOTE</a>
+    </nav>
+
+    <section id="hero">
+        <h1 class="hero-title">Turn Followers Into <span class="grad-text">Loyal Customers.</span></h1>
+        <p class="hero-sub">Data-driven social media management and growth strategies that transform your brand's online presence into a revenue machine.</p>
+        
+        <div class="hero-btns">
+            <a href="#contact" class="btn btn-grad">START GROWING</a>
+            <a href="#results" class="btn btn-outline">VIEW CASE STUDIES</a>
+        </div>
+
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-num">10M+</span>
+                <span class="stat-label">Reach Generated</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num">300+</span>
+                <span class="stat-label">Brands Managed</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num">5X</span>
+                <span class="stat-label">Avg. Engagement</span>
+            </div>
+        </div>
+    </section>
+
+    <div id="platforms">
+        <p class="section-tag">WHERE WE WORK</p>
+        <div class="platform-row">
+            <div class="plat-badge plat-ig"><i class="fab fa-instagram"></i> Instagram</div>
+            <div class="plat-badge plat-tt"><i class="fab fa-tiktok"></i> TikTok</div>
+            <div class="plat-badge plat-li"><i class="fab fa-linkedin-in"></i> LinkedIn</div>
+            <div class="plat-badge"><i class="fab fa-youtube"></i> YouTube</div>
+            <div class="plat-badge"><i class="fab fa-twitter"></i> X (Twitter)</div>
+            <div class="plat-badge"><i class="fab fa-facebook-f"></i> Facebook</div>
+        </div>
+    </div>
+
+    <section id="services">
+        <div class="section-header">
+            <p class="section-tag">WHAT WE OFFER</p>
+            <h2 class="section-title">Our Services</h2>
+        </div>
+        <div class="services-grid">
+            <div class="service-card">
+                <i class="fas fa-calendar-alt"></i>
+                <h3>Content Strategy</h3>
+                <p>Custom-tailored roadmaps designed to align your brand with trending narratives.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-bullhorn"></i>
+                <h3>Paid Social Ads</h3>
+                <p>High-conversion ad campaigns across Meta, TikTok, and LinkedIn targeting your niche.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-users"></i>
+                <h3>Community Management</h3>
+                <p>Proactive engagement and moderation to turn your comments into conversations.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-chart-line"></i>
+                <h3>Analytics & Reporting</h3>
+                <p>Deep-dive data reports every month to track ROI, reach, and conversion trends.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-pen-nib"></i>
+                <h3>Content Creation</h3>
+                <p>Professional video editing, graphic design, and copywriting for every platform.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-handshake"></i>
+                <h3>Influencer Outreach</h3>
+                <p>Connecting your brand with creators who actually have influence in your sector.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="framework">
+        <div class="section-header">
+            <p class="section-tag">THE PROCESS</p>
+            <h2 class="section-title grad-text">Growth Framework</h2>
+        </div>
+        <div class="framework-container">
+            <div class="center-node">BRAND</div>
+            <div class="orbit-ring">
+                <div class="orbit-node n1">AUDIT</div>
+                <div class="orbit-node n2">STRATEGY</div>
+                <div class="orbit-node n3">CONTENT</div>
+                <div class="orbit-node n4">REPORT</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="results">
+        <div class="section-header">
+            <p class="section-tag">REAL DATA</p>
+            <h2 class="section-title">Case <span class="grad-text">Results</span></h2>
+        </div>
+        <div class="bento-grid">
+            <div class="bento-item bento-1">
+                <span class="bento-tag">E-COMMERCE</span>
+                <h3 class="bento-result">+340% Engagement</h3>
+                <p>Transforming a legacy retail brand into a TikTok powerhouse in 90 days.</p>
+                <div class="metric-pills">
+                    <span class="pill">20k+ New Followers</span>
+                    <span class="pill">1.2M Reach</span>
+                </div>
+            </div>
+            <div class="bento-item bento-2">
+                <span class="bento-tag">SaaS / TECH</span>
+                <h3 class="bento-result" style="font-size: 1.5rem;">5.2x Conversion Boost</h3>
+                <p>LinkedIn funnel optimization for B2B lead generation.</p>
+            </div>
+            <div class="bento-item">
+                <span class="bento-tag">FASHION</span>
+                <h3 class="bento-result" style="font-size: 1.2rem;">Viral Strategy</h3>
+                <p>Over 5M organic views on Reels.</p>
+            </div>
+            <div class="bento-item">
+                <span class="bento-tag">LIFESTYLE</span>
+                <h3 class="bento-result" style="font-size: 1.2rem;">$12k Ad Spend</h3>
+                <p>$85k Revenue Generated.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing">
+        <div class="section-header">
+            <p class="section-tag">PLANS</p>
+            <h2 class="section-title">Investment</h2>
+        </div>
+        <div class="pricing-toggle">
+            <span>Monthly</span>
+            <div class="toggle-btn" id="price-toggle"><div class="toggle-dot"></div></div>
+            <span>Annual <span style="color:var(--cyan); font-size:0.8rem;">(Save 15%)</span></span>
+        </div>
+        <div class="pricing-grid">
+            <div class="price-card">
+                <h3 class="pricing-name">Starter</h3>
+                <p class="mono" style="font-size:0.8rem;">For emerging brands</p>
+                <div class="price-val" id="price-starter">$1,200</div>
+                <ul class="price-list">
+                    <li><i class="fas fa-check"></i> 2 Platforms</li>
+                    <li><i class="fas fa-check"></i> 12 Posts / Month</li>
+                    <li><i class="fas fa-check"></i> Community Moderation</li>
+                    <li><i class="fas fa-check"></i> Monthly Analytics</li>
+                </ul>
+                <a href="#contact" class="btn btn-outline" style="width:100%;">GET STARTED</a>
+            </div>
+            <div class="price-card featured">
+                <div class="popular-badge">MOST POPULAR</div>
+                <h3 class="pricing-name">Growth</h3>
+                <p class="mono" style="font-size:0.8rem;">For scaling fast</p>
+                <div class="price-val" id="price-growth">$2,500</div>
+                <ul class="price-list">
+                    <li><i class="fas fa-check"></i> 4 Platforms</li>
+                    <li><i class="fas fa-check"></i> 24 Posts / Month</li>
+                    <li><i class="fas fa-check"></i> Short-form Video Editing</li>
+                    <li><i class="fas fa-check"></i> Ad Management</li>
+                    <li><i class="fas fa-check"></i> Weekly Reporting</li>
+                </ul>
+                <a href="#contact" class="btn btn-grad" style="width:100%;">GET STARTED</a>
+            </div>
+            <div class="price-card">
+                <h3 class="pricing-name">Dominance</h3>
+                <p class="mono" style="font-size:0.8rem;">Full-scale production</p>
+                <div class="price-val" id="price-dominance">$5,000</div>
+                <ul class="price-list">
+                    <li><i class="fas fa-check"></i> All Platforms</li>
+                    <li><i class="fas fa-check"></i> Daily Content</li>
+                    <li><i class="fas fa-check"></i> Influencer Campaigns</li>
+                    <li><i class="fas fa-check"></i> 24/7 Priority Support</li>
+                </ul>
+                <a href="#contact" class="btn btn-outline" style="width:100%;">GET STARTED</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="contact-wrap">
+            <div class="contact-info">
+                <h2 class="hero-title" style="font-size: 2.2rem;">Ready to Own Your Niche?</h2>
+                <p style="color:var(--dim);">Stop guessing and start growing with a strategy backed by millions of data points.</p>
+                <div class="ticker-wrap">
+                    <div class="ticker">
+                        @fashion_co just hit 500k reach • @tech_launch grew 3x in 60 days • @food_hub gained 1.2k followers today •
+                    </div>
+                </div>
+            </div>
+            <form class="contact-form">
+                <div class="form-group">
+                    <label>BRAND NAME</label>
+                    <input type="text" placeholder="e.g. Xerova Digital">
+                </div>
+                <div class="form-group">
+                    <label>PRIMARY GOAL</label>
+                    <select>
+                        <option>Brand Awareness</option>
+                        <option>Sales & Conversions</option>
+                        <option>Community Building</option>
+                        <option>Virality / Growth</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>BUDGET RANGE</label>
+                    <select>
+                        <option>$1k - $3k /mo</option>
+                        <option>$3k - $7k /mo</option>
+                        <option>$10k+ /mo</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-grad" style="width:100%; padding: 1.2rem;">LET'S GROW TOGETHER</button>
+            </form>
+        </div>
+    </section>
+
+    <div class="final-cta">
+        <div class="pulse-glow"></div>
+        <h2 class="hero-title" style="font-size: 2.5rem; position: relative; z-index: 1;">Your Audience Is Already Out There.</h2>
+        <p style="margin-bottom: 2rem; position: relative; z-index: 1;">Let's make sure they find you.</p>
+        <a href="#contact" class="btn btn-grad" style="padding: 1.5rem 3rem; position: relative; z-index: 1;">CLAIM YOUR STRATEGY CALL</a>
+    </div>
+
+    <script>
+        // --- Social Graph Animation ---
+        const canvas = document.getElementById('graph-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+                ctx.fillStyle = '#00f5d4';
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 60; i++) particles.push(new Particle());
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, i) => {
+                p.update();
+                p.draw();
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = p.x - particles[j].x;
+                    const dy = p.y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 150) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(0, 245, 212, ${1 - dist / 150})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // --- Pricing Toggle ---
+        const toggle = document.getElementById('price-toggle');
+        const prices = {
+            starter: document.getElementById('price-starter'),
+            growth: document.getElementById('price-growth'),
+            dominance: document.getElementById('price-dominance')
+        };
+
+        toggle.addEventListener('click', () => {
+            toggle.classList.toggle('active');
+            if (toggle.classList.contains('active')) {
+                prices.starter.innerText = "$1,020";
+                prices.growth.innerText = "$2,125";
+                prices.dominance.innerText = "$4,250";
+            } else {
+                prices.starter.innerText = "$1,200";
+                prices.growth.innerText = "$2,500";
+                prices.dominance.innerText = "$5,000";
+            }
+        });
+    </script>
+</body>
+</html>

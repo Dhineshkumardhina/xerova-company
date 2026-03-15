@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xerova Tech | Intelligent IT Solutions & Support</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-deep: #0a0d1a;
+            --card-bg: #111827;
+            --cyan: #00f5d4;
+            --purple: #9b5de5;
+            --green: #00e676;
+            --text-main: #e2e8f0;
+            --text-dim: #64748b;
+            --gradient: linear-gradient(135deg, var(--cyan), var(--purple));
+            --glass: rgba(17, 24, 39, 0.75);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, .nav-logo, .ui-label, .btn-text {
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* --- Background Decorations --- */
+        .pcb-grid {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(0, 245, 212, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 212, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+        }
+
+        .pcb-dots {
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(var(--cyan) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        /* --- Navbar --- */
+        nav {
+            position: fixed;
+            top: 0; width: 100%; padding: 1.2rem 8%;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(10, 13, 26, 0.8);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 245, 212, 0.1);
+        }
+        .nav-logo { font-size: 1.4rem; font-weight: 900; color: #fff; text-decoration: none; }
+        .nav-logo span { color: var(--cyan); }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: var(--text-main); font-size: 0.85rem; transition: var(--transition); }
+        .nav-links a:hover { color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
+
+        /* --- Buttons --- */
+        .btn-gradient {
+            padding: 0.9rem 2rem; background: var(--gradient); color: white;
+            text-decoration: none; border-radius: 4px; font-weight: 700; font-size: 0.8rem;
+            border: none; cursor: pointer; transition: var(--transition);
+            display: inline-block; box-shadow: 0 0 15px rgba(0, 245, 212, 0.2);
+        }
+        .btn-gradient:hover { transform: translateY(-2px); box-shadow: 0 0 25px rgba(155, 93, 229, 0.5); }
+        
+        .btn-outline {
+            padding: 0.9rem 2rem; border: 1px solid var(--cyan); color: var(--cyan);
+            text-decoration: none; border-radius: 4px; font-weight: 700; font-size: 0.8rem;
+            transition: var(--transition); background: transparent; display: inline-block;
+        }
+        .btn-outline:hover { background: var(--cyan); color: var(--bg-deep); box-shadow: 0 0 20px rgba(0, 245, 212, 0.4); }
+
+        /* --- Sections General --- */
+        section { padding: 100px 8%; position: relative; }
+        .section-header { text-align: center; margin-bottom: 4rem; }
+        .section-tag { font-family: 'Orbitron'; font-size: 0.8rem; letter-spacing: 5px; color: var(--text-dim); }
+        .section-title { font-size: 2.8rem; font-style: italic; font-weight: 700; margin-top: 0.5rem; }
+        .gradient-text { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* --- Hero --- */
+        #hero {
+            height: 100vh; display: flex; flex-direction: column; justify-content: center;
+            align-items: center; text-align: center; overflow: hidden;
+        }
+        .hero-title { font-size: 4rem; line-height: 1.1; margin-bottom: 1.5rem; max-width: 1000px; }
+        .hero-subtext { font-size: 1.2rem; color: var(--text-dim); max-width: 700px; margin-bottom: 2.5rem; }
+        .hero-btns { display: flex; gap: 1.5rem; }
+        
+        .hero-stats { margin-top: 5rem; display: flex; gap: 4rem; }
+        .stat-badge { text-align: center; }
+        .stat-number { font-size: 2rem; color: var(--cyan); font-weight: 900; display: block; }
+        .stat-label { font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; }
+
+        /* --- Services Grid --- */
+        .services-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;
+        }
+        .service-card {
+            background: var(--card-bg); padding: 2.5rem; border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05); transition: var(--transition);
+            position: relative; overflow: hidden;
+        }
+        .service-card:hover {
+            transform: translateY(-10px); border-color: var(--cyan);
+            box-shadow: 0 10px 40px rgba(0, 245, 212, 0.15);
+        }
+        .service-card i { font-size: 2.5rem; margin-bottom: 1.5rem; display: block; color: var(--cyan); }
+        .service-card h3 { font-size: 1.1rem; margin-bottom: 1rem; }
+        .service-card p { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 1.5rem; }
+        .learn-more { color: var(--cyan); text-decoration: none; font-weight: 700; font-size: 0.8rem; position: relative; }
+        .learn-more::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 1px; background: var(--cyan); transition: 0.3s; }
+        .service-card:hover .learn-more::after { width: 100%; }
+
+        /* --- Industry Tabs --- */
+        .tabs-container { margin-top: 2rem; }
+        .tab-list { display: flex; justify-content: center; gap: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 3rem; flex-wrap: wrap; }
+        .tab-btn {
+            background: none; border: none; color: var(--text-dim); padding: 1rem 1.5rem;
+            font-family: 'Orbitron'; cursor: pointer; transition: 0.3s; position: relative;
+        }
+        .tab-btn.active { color: var(--cyan); }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 2px; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+        
+        .tab-content { display: none; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; animation: fadeIn 0.5s ease; }
+        .tab-content.active { display: grid; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .iso-illustration {
+            height: 300px; background: rgba(0, 245, 212, 0.05); border: 1px solid rgba(0, 245, 212, 0.1);
+            border-radius: 20px; position: relative; display: flex; align-items: center; justify-content: center;
+        }
+        .iso-box { width: 100px; height: 100px; border: 2px solid var(--cyan); transform: rotateX(45deg) rotateZ(45deg); box-shadow: 20px 20px 40px rgba(0, 245, 212, 0.2); }
+
+        /* --- Pricing Toggle --- */
+        .pricing-toggle { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 3rem; }
+        .switch { width: 60px; height: 30px; background: var(--card-bg); border-radius: 20px; position: relative; cursor: pointer; border: 1px solid var(--cyan); }
+        .switch .dot { width: 22px; height: 22px; background: var(--cyan); border-radius: 50%; position: absolute; top: 3px; left: 4px; transition: 0.3s; }
+        .switch.annual .dot { left: 32px; background: var(--purple); }
+
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; align-items: center; }
+        .price-card {
+            background: var(--glass); padding: 3rem 2rem; border-radius: 20px; text-align: center;
+            border: 1px solid rgba(255,255,255,0.1); transition: 0.4s;
+        }
+        .price-card.featured { transform: scale(1.05); border: 2px solid var(--cyan); position: relative; box-shadow: 0 0 30px rgba(0, 245, 212, 0.1); }
+        .price-val { font-size: 3rem; font-weight: 900; margin: 1.5rem 0; color: #fff; font-family: 'Orbitron'; }
+
+        /* --- SLA Dashboard --- */
+        .dashboard-panel {
+            background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 2rem;
+            font-family: 'JetBrains Mono', monospace; position: relative; overflow: hidden;
+        }
+        .dashboard-panel::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%; pointer-events: none; z-index: 2;
+        }
+        .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+        .status-item { display: flex; align-items: center; gap: 10px; }
+        .dot-pulse { width: 10px; height: 10px; background: var(--green); border-radius: 50%; box-shadow: 0 0 10px var(--green); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        /* --- Marquee --- */
+        .marquee-container { background: #111827; padding: 3rem 0; border-y: 1px solid rgba(0,245,212,0.1); }
+        .marquee { display: flex; overflow: hidden; user-select: none; gap: 2rem; }
+        .marquee-group { flex-shrink: 0; display: flex; align-items: center; justify-content: space-around; gap: 2rem; min-width: 100%; animation: scroll 30s linear infinite; }
+        .marquee-rev .marquee-group { animation-direction: reverse; }
+        @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
+        .tech-pill { padding: 0.5rem 1.5rem; background: #1a202c; border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; font-size: 0.8rem; font-family: 'Orbitron'; display: flex; align-items: center; gap: 8px; }
+
+        /* --- Form --- */
+        .form-panel { background: var(--card-bg); padding: 3rem; border-radius: 20px; }
+        .input-group { margin-bottom: 1.5rem; }
+        .input-group label { display: block; font-family: 'Orbitron'; font-size: 0.7rem; color: var(--cyan); margin-bottom: 0.5rem; }
+        input, select, textarea {
+            width: 100%; background: #1a1f2e; border: 1px solid rgba(255,255,255,0.1); 
+            padding: 1rem; color: white; border-radius: 4px; outline: none; transition: 0.3s;
+        }
+        input:focus { border-color: var(--cyan); box-shadow: 0 0 15px rgba(0, 245, 212, 0.2); }
+        .urgency-wrap { display: flex; gap: 1rem; margin-top: 1rem; }
+        .urgency-item { flex: 1; text-align: center; }
+        .urgency-item input { display: none; }
+        .urgency-item label { 
+            display: block; padding: 0.8rem; border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 4px; cursor: pointer; transition: 0.3s; font-size: 0.8rem;
+        }
+        .urgency-item input:checked + label { background: var(--cyan); color: var(--bg-deep); border-color: var(--cyan); font-weight: 700; }
+
+        @media (max-width: 968px) {
+            .hero-title { font-size: 2.5rem; }
+            .tab-content { grid-template-columns: 1fr; }
+            .hero-stats { flex-direction: column; gap: 2rem; }
+            .nav-links { display: none; }
+        }
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem;
+                gap: 0.75rem;
+                align-items: flex-start;
+                flex-wrap: wrap;
+            }
+
+            .nav-logo { font-size: 1.05rem; }
+            nav .btn-outline {
+                width: 100%;
+                text-align: center;
+            }
+
+            section { padding: 72px 1rem; }
+            #hero {
+                min-height: 100vh;
+                height: auto;
+                padding: 7rem 1rem 4rem;
+            }
+
+            .hero-title { font-size: 2.2rem; }
+            .hero-subtext { font-size: 1rem; }
+            .hero-btns {
+                width: 100%;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero-btns a { width: 100%; }
+            .hero-stats {
+                width: 100%;
+                gap: 1rem;
+            }
+
+            .section-header { margin-bottom: 2.5rem; }
+            .services-grid,
+            .pricing-grid,
+            .status-grid { grid-template-columns: 1fr; }
+            .tab-list {
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+
+            .tab-btn {
+                width: 100%;
+                padding: 0.85rem 1rem;
+                border: 1px solid rgba(255,255,255,0.08);
+                border-radius: 10px;
+            }
+
+            .tab-btn.active::after { display: none; }
+            .dashboard-panel {
+                padding: 1.25rem 1rem;
+            }
+
+            .dashboard-panel > div:first-child {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 0.5rem;
+            }
+
+            .dashboard-panel > div:last-child {
+                grid-template-columns: 1fr !important;
+                gap: 1.25rem;
+            }
+
+            .price-card.featured { transform: none; }
+            .form-panel {
+                padding: 1.5rem 1rem;
+            }
+
+            .form-panel form > div:first-child { grid-template-columns: 1fr !important; }
+            .urgency-wrap { flex-direction: column; }
+            .final-cta {
+                padding-top: 88px;
+                padding-bottom: 88px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="nav-logo">XEROVA<span>.TECH</span></a>
+        <div class="nav-links">
+            <a href="#services">SOLUTIONS</a>
+            <a href="#industries">INDUSTRIES</a>
+            <a href="#pricing">PRICING</a>
+            <a href="#status">SLA</a>
+        </div>
+        <a href="#audit" class="btn-outline">FREE AUDIT</a>
+    </nav>
+
+    <section id="hero">
+        <div class="pcb-grid"></div>
+        <div class="pcb-dots"></div>
+        
+        <h1 class="hero-title">Powering Your Business With <span class="gradient-text">Intelligent IT Solutions.</span></h1>
+        <p class="hero-subtext">From infrastructure to cybersecurity — we architect, deploy, and maintain the technology backbone your business depends on.</p>
+        
+        <div class="hero-btns">
+            <a href="#services" class="btn-gradient">EXPLORE SOLUTIONS</a>
+            <a href="#audit" class="btn-outline">GET A FREE AUDIT</a>
+        </div>
+
+        <div class="hero-stats">
+            <div class="stat-badge">
+                <span class="stat-number" data-target="500">0</span>
+                <span class="stat-label">Systems Deployed</span>
+            </div>
+            <div class="stat-badge">
+                <span class="stat-number">99.9%</span>
+                <span class="stat-label">Uptime SLA</span>
+            </div>
+            <div class="stat-badge">
+                <span class="stat-number">24/7</span>
+                <span class="stat-label">Expert Support</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="services">
+        <div class="section-header">
+            <p class="section-tag">WHAT WE DO</p>
+            <h2 class="section-title gradient-text">Our Solutions</h2>
+        </div>
+        <div class="services-grid">
+            <div class="service-card">
+                <i class="fas fa-shield-halved"></i>
+                <h3>Cybersecurity</h3>
+                <p>Advanced threat detection, firewall management, and zero-trust architecture.</p>
+                <a href="#" class="learn-more">Learn More →</a>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-server"></i>
+                <h3>Cloud Infrastructure</h3>
+                <p>Seamless migration and management of AWS, Azure, and Hybrid Cloud environments.</p>
+                <a href="#" class="learn-more">Learn More →</a>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-network-wired"></i>
+                <h3>Network Setup</h3>
+                <p>Enterprise-grade SD-WAN, WiFi 6 deployment, and network optimization.</p>
+                <a href="#" class="learn-more">Learn More →</a>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-code"></i>
+                <h3>Custom Software</h3>
+                <p>Tailored internal tools and API integrations to streamline your workflow.</p>
+                <a href="#" class="learn-more">Learn More →</a>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-headset"></i>
+                <h3>IT Support</h3>
+                <p>Instant helpdesk response and proactive on-site technical maintenance.</p>
+                <a href="#" class="learn-more">Learn More →</a>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-database"></i>
+                <h3>Data Recovery</h3>
+                <p>Automated backup solutions and disaster recovery planning for business continuity.</p>
+                <a href="#" class="learn-more">Learn More →</a>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-microchip"></i>
+                <h3>DevOps</h3>
+                <p>CI/CD pipeline automation and container orchestration for modern teams.</p>
+                <a href="#" class="learn-more">Learn More →</a>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-lock"></i>
+                <h3>Compliance</h3>
+                <p>GDPR, HIPAA, and SOC2 compliance auditing and technical implementation.</p>
+                <a href="#" class="learn-more">Learn More →</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="industries">
+        <div class="section-header">
+            <p class="section-tag">SPECIALIZATIONS</p>
+            <h2 class="section-title gradient-text">Industry Solutions</h2>
+        </div>
+        <div class="tabs-container">
+            <div class="tab-list">
+                <button class="tab-btn active" onclick="openTab(event, 'finance')">FINANCE</button>
+                <button class="tab-btn" onclick="openTab(event, 'healthcare')">HEALTHCARE</button>
+                <button class="tab-btn" onclick="openTab(event, 'retail')">RETAIL</button>
+                <button class="tab-btn" onclick="openTab(event, 'manufacturing')">MANUFACTURING</button>
+            </div>
+
+            <div id="finance" class="tab-content active">
+                <div class="iso-illustration">
+                    <div class="iso-box"></div>
+                </div>
+                <div class="tab-text">
+                    <h3 style="color: var(--cyan); margin-bottom: 1rem;">FinTech & Banking Infrastructure</h3>
+                    <ul style="list-style: none; margin-bottom: 2rem;">
+                        <li style="margin-bottom: 1rem;"><i class="fas fa-check-circle" style="color: var(--cyan); margin-right: 10px;"></i> Ultra-secure transaction pipelines</li>
+                        <li style="margin-bottom: 1rem;"><i class="fas fa-check-circle" style="color: var(--cyan); margin-right: 10px;"></i> Regulatory compliance (FINRA/SEC)</li>
+                        <li style="margin-bottom: 1rem;"><i class="fas fa-check-circle" style="color: var(--cyan); margin-right: 10px;"></i> High-availability data storage</li>
+                    </ul>
+                    <a href="#audit" class="btn-gradient">Get Industry Solution →</a>
+                </div>
+            </div>
+            <!-- Other tab contents follow similar pattern... -->
+        </div>
+    </section>
+
+    <section id="status">
+        <div class="section-header">
+            <p class="section-tag">REAL-TIME MONITORING</p>
+            <h2 class="section-title gradient-text">System Status & SLA</h2>
+        </div>
+        <div class="dashboard-panel">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 2rem; border-bottom: 1px solid #30363d; padding-bottom: 1rem;">
+                <span style="color: var(--green);">[SYSTEM_STATUS: OPERATIONAL]</span>
+                <span class="mono">LAST_REFRESH: <span id="clock">14:02:55</span></span>
+            </div>
+            <div class="status-grid">
+                <div class="status-item"><div class="dot-pulse"></div> Cloud Services</div>
+                <div class="status-item"><div class="dot-pulse"></div> Security Nodes</div>
+                <div class="status-item"><div class="dot-pulse"></div> Network Backbone</div>
+                <div class="status-item"><div class="dot-pulse"></div> Helpdesk API</div>
+            </div>
+            <div style="margin-top: 3rem; display: grid; grid-template-columns: repeat(3, 1fr); text-align: center;">
+                <div>
+                    <p style="font-size: 0.7rem; color: var(--text-dim);">RESPONSE TIME</p>
+                    <h2 class="gradient-text">&lt; 2 HRS</h2>
+                </div>
+                <div>
+                    <p style="font-size: 0.7rem; color: var(--text-dim);">UPTIME</p>
+                    <h2 class="gradient-text">99.98%</h2>
+                </div>
+                <div>
+                    <p style="font-size: 0.7rem; color: var(--text-dim);">RESOLVED TODAY</p>
+                    <h2 class="gradient-text">142</h2>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing">
+        <div class="section-header">
+            <p class="section-tag">SERVICE PLANS</p>
+            <h2 class="section-title gradient-text">Flexible Support</h2>
+        </div>
+        
+        <div class="pricing-toggle">
+            <span>Monthly</span>
+            <div class="switch" id="priceSwitch"><div class="dot"></div></div>
+            <span>Annual <span style="color: var(--purple); font-size: 0.7rem;">(SAVE 20%)</span></span>
+        </div>
+
+        <div class="pricing-grid">
+            <div class="price-card">
+                <h3 class="ui-label">Basic</h3>
+                <p style="color: var(--text-dim); font-size: 0.8rem;">For Small Teams</p>
+                <div class="price-val" id="price-1">$499</div>
+                <ul style="list-style: none; text-align: left; margin-bottom: 2rem; color: var(--text-dim);">
+                    <li><i class="fas fa-check" style="color: var(--cyan);"></i> Business Hours Support</li>
+                    <li><i class="fas fa-check" style="color: var(--cyan);"></i> Max 5 Devices</li>
+                    <li><i class="fas fa-check" style="color: var(--cyan);"></i> Cloud Backups</li>
+                </ul>
+                <button class="btn-outline" style="width: 100%;">SELECT PLAN</button>
+            </div>
+            <div class="price-card featured">
+                <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--purple); padding: 5px 15px; border-radius: 20px; font-size: 0.7rem; font-weight: 900;">MOST POPULAR</div>
+                <h3 class="ui-label">Business</h3>
+                <p style="color: var(--text-dim); font-size: 0.8rem;">The Industry Standard</p>
+                <div class="price-val" id="price-2">$1,299</div>
+                <ul style="list-style: none; text-align: left; margin-bottom: 2rem;">
+                    <li><i class="fas fa-check" style="color: var(--cyan);"></i> 24/7 Support</li>
+                    <li><i class="fas fa-check" style="color: var(--cyan);"></i> Unlimited Devices</li>
+                    <li><i class="fas fa-check" style="color: var(--cyan);"></i> Advanced Cybersecurity</li>
+                    <li><i class="fas fa-check" style="color: var(--cyan);"></i> Proactive Monitoring</li>
+                </ul>
+                <button class="btn-gradient" style="width: 100%;">SELECT PLAN</button>
+            </div>
+            <div class="price-card">
+                <h3 class="ui-label">Enterprise</h3>
+                <p style="color: var(--text-dim); font-size: 0.8rem;">Custom Infrastructure</p>
+                <div class="price-val">Custom</div>
+                <ul style="list-style: none; text-align: left; margin-bottom: 2rem; color: var(--text-dim);">
+                    <li><i class="fas fa-check" style="color: var(--cyan);"></i> Dedicated Engineer</li>
+                    <li><i class="fas fa-check" style="color: var(--cyan);"></i> Multi-Site Support</li>
+                    <li><i class="fas fa-check" style="color: var(--cyan);"></i> DevOps Automation</li>
+                </ul>
+                <button class="btn-outline" style="width: 100%;">CONTACT SALES</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="audit">
+        <div class="section-header">
+            <p class="section-tag">GET STARTED</p>
+            <h2 class="section-title gradient-text">Request Free IT Audit</h2>
+        </div>
+        <div class="form-panel">
+            <form>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="input-group">
+                        <label>FULL NAME</label>
+                        <input type="text" placeholder="John Carter">
+                    </div>
+                    <div class="input-group">
+                        <label>COMPANY NAME</label>
+                        <input type="text" placeholder="TechCorp Intl">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>EMAIL ADDRESS</label>
+                    <input type="email" placeholder="john@techcorp.com">
+                </div>
+                <div class="input-group">
+                    <label>SERVICE REQUIRED</label>
+                    <select>
+                        <option>General IT Audit</option>
+                        <option>Cybersecurity Assessment</option>
+                        <option>Cloud Migration Inquiry</option>
+                        <option>Ongoing Managed Support</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>PRIORITY LEVEL</label>
+                    <div class="urgency-wrap">
+                        <div class="urgency-item">
+                            <input type="radio" name="urgency" id="low" checked>
+                            <label for="low">LOW</label>
+                        </div>
+                        <div class="urgency-item">
+                            <input type="radio" name="urgency" id="med">
+                            <label for="med">MEDIUM</label>
+                        </div>
+                        <div class="urgency-item">
+                            <input type="radio" name="urgency" id="crit">
+                            <label for="crit">CRITICAL</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>MESSAGE</label>
+                    <textarea rows="4" placeholder="Briefly describe your current IT challenges..."></textarea>
+                </div>
+                <button type="submit" class="btn-gradient" style="width: 100%; padding: 1.2rem; font-size: 1rem;">REQUEST FREE AUDIT</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="final-cta" style="text-align: center; background: radial-gradient(circle at center, rgba(155, 93, 229, 0.1), transparent);">
+        <h2 class="hero-title" style="font-size: 2.5rem; margin-bottom: 1rem;">Your Infrastructure. Our Expertise.</h2>
+        <p style="color: var(--text-dim); margin-bottom: 3rem;">Let's build something bulletproof together.</p>
+        <a href="#audit" class="btn-gradient" style="padding: 1.5rem 3.5rem;">SCHEDULE A CONSULTATION</a>
+    </section>
+
+    <script>
+        // Tab Logic
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        // Pricing Toggle Logic
+        const pSwitch = document.getElementById('priceSwitch');
+        const p1 = document.getElementById('price-1');
+        const p2 = document.getElementById('price-2');
+
+        pSwitch.addEventListener('click', () => {
+            pSwitch.classList.toggle('annual');
+            if(pSwitch.classList.contains('annual')) {
+                p1.innerText = "$399";
+                p2.innerText = "$999";
+            } else {
+                p1.innerText = "$499";
+                p2.innerText = "$1,299";
+            }
+        });
+
+        // Clock for Dashboard
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toTimeString().split(' ')[0];
+        }, 1000);
+
+        // Counter Animation
+        const stats = document.querySelectorAll('.stat-number');
+        stats.forEach(stat => {
+            const target = +stat.getAttribute('data-target');
+            if(target) {
+                let count = 0;
+                const updateCount = () => {
+                    const inc = target / 100;
+                    if(count < target) {
+                        count += inc;
+                        stat.innerText = Math.ceil(count) + "+";
+                        setTimeout(updateCount, 20);
+                    } else {
+                        stat.innerText = target + "+";
+                    }
+                };
+                updateCount();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xerova Media | Premium Production & Content Creation</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-deep: #0a0d1a;
+            --card-bg: #111827;
+            --cyan: #00f5d4;
+            --purple: #9b5de5;
+            --text-main: #e2e8f0;
+            --text-dim: #94a3b8;
+            --gradient: linear-gradient(135deg, var(--cyan), var(--purple));
+            --glass: rgba(17, 24, 39, 0.7);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, .nav-logo, .stat-number, .btn-text {
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Background Decorations */
+        .particle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(var(--cyan) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.08;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.2rem 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 13, 26, 0.85);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 245, 212, 0.1);
+        }
+
+        .nav-logo { font-size: 1.4rem; font-weight: 900; color: #fff; text-decoration: none; }
+        .nav-logo span { color: var(--cyan); }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: var(--text-main); font-weight: 500; font-size: 0.85rem; transition: var(--transition); }
+        .nav-links a:hover { color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
+
+        /* Buttons */
+        .btn-gradient {
+            padding: 0.8rem 1.8rem;
+            background: var(--gradient);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 0 15px rgba(0, 245, 212, 0.2);
+            display: inline-block;
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(155, 93, 229, 0.5);
+        }
+
+        .btn-outline {
+            padding: 0.8rem 1.8rem;
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            background: transparent;
+        }
+
+        .btn-outline:hover {
+            background: var(--cyan);
+            color: var(--bg-deep);
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.4);
+        }
+
+        /* Hero Section */
+        #hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 10%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Film Grain & Light Leaks */
+        #hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url('https://www.transparenttextures.com/patterns/film-grain.png');
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .light-leak {
+            position: absolute;
+            width: 40vw;
+            height: 40vw;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            z-index: -1;
+            animation: float 15s infinite alternate;
+        }
+        .leak-cyan { background: var(--cyan); top: -10%; left: -10%; }
+        .leak-purple { background: var(--purple); bottom: -10%; right: -10%; animation-delay: -5s; }
+
+        @keyframes float {
+            0% { transform: translate(0,0) scale(1); }
+            100% { transform: translate(100px, 50px) scale(1.2); }
+        }
+
+        .hero-title { font-size: 3.5rem; line-height: 1.1; margin-bottom: 1.5rem; max-width: 900px; }
+        .gradient-text { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-subtext { font-size: 1.2rem; color: var(--text-dim); max-width: 650px; margin-bottom: 2.5rem; }
+        .hero-btns { display: flex; gap: 1.5rem; }
+
+        .quick-stats { margin-top: 5rem; display: flex; gap: 4rem; }
+        .stat-badge { display: flex; flex-direction: column; align-items: center; }
+        .stat-number { font-size: 1.8rem; color: var(--cyan); text-shadow: 0 0 10px rgba(0,245,212,0.3); }
+        .stat-label { font-size: 0.75rem; color: var(--text-dim); }
+
+        /* Sections Styling */
+        section { padding: 100px 8%; }
+        .section-header { text-align: center; margin-bottom: 4rem; }
+        .section-tag { font-family: 'Orbitron'; font-size: 0.8rem; letter-spacing: 5px; color: var(--text-dim); }
+        .section-title { font-size: 3rem; font-style: italic; font-weight: 700; margin-top: 0.5rem; }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--cyan);
+            box-shadow: 0 10px 40px rgba(0, 245, 212, 0.1);
+        }
+
+        .service-card i {
+            font-size: 2.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .service-card h3 { margin-bottom: 1rem; font-size: 1.2rem; }
+        .service-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1.5rem; }
+        .explore-link { color: var(--cyan); text-decoration: none; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 5px; }
+        .explore-link::after { content: '→'; transition: transform 0.3s; }
+        .explore-link:hover::after { transform: translateX(5px); }
+
+        /* Process Flow */
+        .process-container {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-top: 4rem;
+        }
+
+        .process-container::before {
+            content: "";
+            position: absolute;
+            top: 30px;
+            left: 5%;
+            width: 90%;
+            height: 2px;
+            border-top: 2px dashed rgba(0, 245, 212, 0.2);
+            z-index: 0;
+        }
+
+        .process-step {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            z-index: 1;
+            padding: 0 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: 1s;
+        }
+
+        .process-step.visible { opacity: 1; transform: translateY(0); }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--bg-deep);
+            border: 2px solid var(--cyan);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Orbitron';
+            color: var(--cyan);
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 15px rgba(0,245,212,0.3);
+        }
+
+        /* Pricing */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .price-card {
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 3.5rem 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .price-card.featured {
+            border: 2px solid var(--cyan);
+            transform: scale(1.05);
+            background: rgba(17, 24, 39, 0.9);
+            position: relative;
+        }
+
+        .popular-tag {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gradient);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 800;
+        }
+
+        .price-card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .price-tagline { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 2rem; }
+        .price-value { font-size: 3rem; font-weight: 900; margin-bottom: 2rem; color: #fff; }
+        .price-list { list-style: none; text-align: left; margin-bottom: 2.5rem; }
+        .price-list li { margin-bottom: 1rem; color: var(--text-dim); font-size: 0.9rem; }
+        .price-list li i { color: var(--cyan); margin-right: 12px; }
+
+        /* Bento Portfolio */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 250px;
+            gap: 1.5rem;
+        }
+
+        .bento-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            background: var(--card-bg);
+        }
+
+        .bento-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s; filter: grayscale(30%); }
+        .bento-item:hover img { transform: scale(1.1); filter: grayscale(0%); }
+
+        .bento-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(transparent, rgba(10, 13, 26, 0.9));
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 2rem;
+            opacity: 0;
+            transition: 0.4s;
+        }
+
+        .bento-item:hover .bento-overlay { opacity: 1; }
+        .wide { grid-column: span 2; }
+        .tall { grid-row: span 2; }
+
+        /* Marquee */
+        .marquee-section { background: rgba(255,255,255,0.02); padding: 3rem 0; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .marquee-track { display: flex; overflow: hidden; width: 100%; }
+        .marquee-content { display: flex; gap: 4rem; animation: scroll 30s linear infinite; }
+        .eq-badge { display: flex; align-items: center; gap: 10px; color: var(--text-dim); font-family: 'Orbitron'; font-size: 0.9rem; white-space: nowrap; }
+        .eq-badge i { color: var(--cyan); font-size: 1.2rem; }
+
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* Inquiry Form */
+        .inquiry-split { display: grid; grid-template-columns: 1fr 1.5fr; gap: 5rem; background: var(--card-bg); border-radius: 30px; padding: 4rem; overflow: hidden; position: relative; }
+        .form-group { margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .form-group label { color: var(--cyan); font-size: 0.8rem; font-weight: 700; font-family: 'Orbitron'; }
+        input, select, textarea {
+            background: #1a1f2e;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 1rem;
+            color: white;
+            border-radius: 8px;
+            outline: none;
+            font-family: 'Rajdhani';
+        }
+        input:focus, textarea:focus { border-color: var(--purple); }
+
+        /* CTA Banner */
+        .final-cta {
+            position: relative;
+            text-align: center;
+            padding: 8rem 0;
+            background: var(--bg-deep);
+            overflow: hidden;
+        }
+        .gradient-mesh {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(0, 245, 212, 0.1) 0%, rgba(155, 93, 229, 0.1) 50%, transparent 100%);
+            z-index: 0;
+        }
+
+        @media (max-width: 1024px) {
+            .inquiry-split { grid-template-columns: 1fr; }
+            .bento-grid { grid-template-columns: repeat(2, 1fr); }
+            .hero-title { font-size: 2.5rem; }
+            .process-container { flex-direction: column; gap: 3rem; }
+            .process-container::before { display: none; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="particle-bg"></div>
+
+    <nav>
+        <a href="#" class="nav-logo">XEROVA<span> MEDIA.</span></a>
+        <div class="nav-links">
+            <a href="#services">SERVICES</a>
+            <a href="#process">PROCESS</a>
+            <a href="#pricing">PACKAGES</a>
+            <a href="#work">PORTFOLIO</a>
+        </div>
+        <a href="#book" class="btn-outline">GET A QUOTE</a>
+    </nav>
+
+    <section id="hero">
+        <div class="light-leak leak-cyan"></div>
+        <div class="light-leak leak-purple"></div>
+        
+        <h1 class="hero-title">We Don't Just Capture Moments — <span class="gradient-text">We Create Them.</span></h1>
+        <p class="hero-subtext">Premium video production, photography, and high-impact content creation for brands that demand cinematic excellence.</p>
+        
+        <div class="hero-btns">
+            <a href="#work" class="btn-gradient">VIEW OUR WORK</a>
+            <a href="#book" class="btn-outline">GET A QUOTE</a>
+        </div>
+
+        <div class="quick-stats">
+            <div class="stat-badge">
+                <span class="stat-number">500+</span>
+                <span class="stat-label">Projects</span>
+            </div>
+            <div class="stat-badge">
+                <span class="stat-number">4K & 8K</span>
+                <span class="stat-label">Production</span>
+            </div>
+            <div class="stat-badge">
+                <span class="stat-number">48hr</span>
+                <span class="stat-label">Turnaround</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="services">
+        <div class="section-header">
+            <p class="section-tag">OUR SERVICES</p>
+            <h2 class="section-title gradient-text">What We Offer</h2>
+        </div>
+        <div class="services-grid">
+            <div class="service-card">
+                <i class="fas fa-video"></i>
+                <h3>Video Production</h3>
+                <p>High-end brand films, commercials, and corporate videos tailored for impact.</p>
+                <a href="#" class="explore-link">Explore</a>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-camera"></i>
+                <h3>Photography</h3>
+                <p>Professional product, lifestyle, and editorial photography for digital platforms.</p>
+                <a href="#" class="explore-link">Explore</a>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-hashtag"></i>
+                <h3>Content Creation</h3>
+                <p>Social-first short-form content (Reels/TikTok) optimized for engagement.</p>
+                <a href="#" class="explore-link">Explore</a>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-helicopter"></i>
+                <h3>Aerial / Drone</h3>
+                <p>Stunning 4K FPV and cinematic aerial shots captured by licensed pilots.</p>
+                <a href="#" class="explore-link">Explore</a>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-cut"></i>
+                <h3>Post-Production</h3>
+                <p>Advanced color grading, sound design, and motion graphics editing.</p>
+                <a href="#" class="explore-link">Explore</a>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-bullhorn"></i>
+                <h3>Brand Storytelling</h3>
+                <p>Developing narrative strategies that connect your brand with its audience.</p>
+                <a href="#" class="explore-link">Explore</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="marquee-section">
+        <div class="marquee-track">
+            <div class="marquee-content">
+                <div class="eq-badge"><i class="fas fa-bolt"></i> SONY FX6</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> DJI RONIN</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> RED CAMERA</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> NIKON Z9</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> MAVIC 3 PRO</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> DAVINCI RESOLVE</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> ADOBE SUITE</div>
+                <!-- Duplicate for infinite effect -->
+                <div class="eq-badge"><i class="fas fa-bolt"></i> SONY FX6</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> DJI RONIN</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> RED CAMERA</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> NIKON Z9</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> MAVIC 3 PRO</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> DAVINCI RESOLVE</div>
+            </div>
+        </div>
+    </div>
+
+    <section id="process">
+        <div class="section-header">
+            <p class="section-tag">THE WORKFLOW</p>
+            <h2 class="section-title gradient-text">How We Work</h2>
+        </div>
+        <div class="process-container">
+            <div class="process-step">
+                <div class="step-number">01</div>
+                <h3>Brief & Vision</h3>
+                <p>Initial discovery to align on goals and creative direction.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">02</div>
+                <h3>Pre-Production</h3>
+                <p>Scripting, storyboarding, and scouting the perfect locations.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">03</div>
+                <h3>Shoot Day</h3>
+                <p>Capturing the magic with high-end equipment and crew.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">04</div>
+                <h3>Delivery</h3>
+                <p>Precision editing and final files delivered in 48 hours.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing">
+        <div class="section-header">
+            <p class="section-tag">PACKAGES</p>
+            <h2 class="section-title gradient-text">Select a Tier</h2>
+        </div>
+        <div class="pricing-grid">
+            <div class="price-card">
+                <h3>Starter</h3>
+                <p class="price-tagline">Perfect for small businesses</p>
+                <div class="price-value">$999</div>
+                <ul class="price-list">
+                    <li><i class="fas fa-check"></i> 1 High-res Brand Video</li>
+                    <li><i class="fas fa-check"></i> 10 Profession Photos</li>
+                    <li><i class="fas fa-check"></i> 2 Revision Rounds</li>
+                    <li><i class="fas fa-check"></i> 5-Day Delivery</li>
+                </ul>
+                <button class="btn-outline" style="width: 100%;">BOOK NOW</button>
+            </div>
+            <div class="price-card featured">
+                <div class="popular-tag">MOST POPULAR</div>
+                <h3>Studio</h3>
+                <p class="price-tagline">The ultimate content package</p>
+                <div class="price-value">$2,499</div>
+                <ul class="price-list">
+                    <li><i class="fas fa-check"></i> 3 Commercial Ads</li>
+                    <li><i class="fas fa-check"></i> 25 Lifestyle Photos</li>
+                    <li><i class="fas fa-check"></i> Aerial Drone Shots</li>
+                    <li><i class="fas fa-check"></i> 48hr Priority Delivery</li>
+                </ul>
+                <button class="btn-gradient" style="width: 100%;">BOOK NOW</button>
+            </div>
+            <div class="price-card">
+                <h3>Enterprise</h3>
+                <p class="price-tagline">Custom full-scale production</p>
+                <div class="price-value">Custom</div>
+                <ul class="price-list">
+                    <li><i class="fas fa-check"></i> Unlimited Deliverables</li>
+                    <li><i class="fas fa-check"></i> Full Production Crew</li>
+                    <li><i class="fas fa-check"></i> 8K Cinematic Resolution</li>
+                    <li><i class="fas fa-check"></i> Multi-Location Shoots</li>
+                </ul>
+                <button class="btn-outline" style="width: 100%;">CONTACT US</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="work">
+        <div class="section-header">
+            <p class="section-tag">OUR WORK</p>
+            <h2 class="section-title gradient-text">Recent Projects</h2>
+        </div>
+        <div class="bento-grid">
+            <div class="bento-item wide tall">
+                <img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=800" alt="Work 1">
+                <div class="bento-overlay">
+                    <span class="section-tag" style="font-size: 0.6rem;">BRAND FILM</span>
+                    <h3>The Urban Explorer</h3>
+                    <p>Client: Northface</p>
+                </div>
+            </div>
+            <div class="bento-item">
+                <img src="https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&q=80&w=400" alt="Work 2">
+                <div class="bento-overlay">
+                    <h3>Summer Vibes</h3>
+                </div>
+            </div>
+            <div class="bento-item tall">
+                <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=400" alt="Work 3">
+                <div class="bento-overlay">
+                    <h3>Cinematic Cuts</h3>
+                </div>
+            </div>
+            <div class="bento-item">
+                <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=400" alt="Work 4">
+                <div class="bento-overlay">
+                    <h3>Lens Focus</h3>
+                </div>
+            </div>
+            <div class="bento-item wide">
+                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=800" alt="Work 5">
+                <div class="bento-overlay">
+                    <h3>Portrait Series</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="book">
+        <div class="inquiry-split">
+            <div class="inquiry-info">
+                <h2 class="hero-title" style="font-size: 2.2rem;">Let's Create Something Extraordinary</h2>
+                <p style="color: var(--text-dim); margin-bottom: 2rem;">Ready to elevate your brand's visual identity? Fill out the form and our creative director will reach out within 24 hours.</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <i class="fas fa-envelope" style="color: var(--cyan);"></i>
+                        <span>hello@xerovamedia.digital</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <i class="fas fa-phone" style="color: var(--cyan);"></i>
+                        <span>+1 (555) 902-3412</span>
+                    </div>
+                </div>
+            </div>
+
+            <form class="inquiry-form">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label>FULL NAME</label>
+                        <input type="text" placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>EMAIL ADDRESS</label>
+                        <input type="email" placeholder="john@brand.com">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>SERVICE TYPE</label>
+                    <select>
+                        <option>Video Production</option>
+                        <option>Photography</option>
+                        <option>Full Media Package</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>PROJECT BRIEF</label>
+                    <textarea rows="4" placeholder="Tell us about your vision..."></textarea>
+                </div>
+                <button type="submit" class="btn-gradient" style="width: 100%; padding: 1.2rem;">SEND ENQUIRY</button>
+            </form>
+        </div>
+    </section>
+
+    <div class="final-cta">
+        <div class="gradient-mesh"></div>
+        <div style="position: relative; z-index: 1;">
+            <h2 class="hero-title" style="font-size: 2.5rem;">Your Story Deserves to Be Seen.</h2>
+            <a href="#book" class="btn-gradient" style="padding: 1.5rem 3.5rem; font-size: 1rem;">START YOUR PROJECT</a>
+        </div>
+    </div>
+
+    <script>
+        // Simple Intersection Observer for Process Steps
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.process-step').forEach(step => {
+            observer.observe(step);
+        });
+
+        // Sticky Nav Blur on Scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.background = "rgba(10, 13, 26, 0.95)";
+                nav.style.padding = "0.8rem 8%";
+            } else {
+                nav.style.background = "rgba(10, 13, 26, 0.85)";
+                nav.style.padding = "1.2rem 8%";
+            }
+        });
+    </script>
+</body>
+</html>

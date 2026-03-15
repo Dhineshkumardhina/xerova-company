@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xerova Growth | Data-Driven Digital Marketing & SEO</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;600&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0a0d1a;
+            --card: #111827;
+            --cyan: #00f5d4;
+            --purple: #9b5de5;
+            --pink: #f72585;
+            --green: #00e676;
+            --amber: #ffd60a;
+            --text: #e2e8f0;
+            --muted: #64748b;
+            --grad: linear-gradient(135deg, var(--cyan), var(--purple));
+            --trans: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, .nav-logo { font-family: 'Orbitron', sans-serif; text-transform: uppercase; letter-spacing: 2px; }
+        .section-tag { font-family: 'Exo 2', sans-serif; font-size: 0.8rem; letter-spacing: 5px; color: var(--muted); text-transform: uppercase; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* --- Background Particles --- */
+        #data-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            opacity: 0.3; pointer-events: none;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            position: fixed; top: 0; width: 100%; padding: 1.2rem 8%;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(10, 13, 26, 0.85); backdrop-filter: blur(15px);
+            z-index: 1000; border-bottom: 1px solid rgba(0, 245, 212, 0.1);
+        }
+        .nav-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.95rem;
+            letter-spacing: 0.28rem;
+        }
+        .nav-logo::before {
+            content: "";
+            width: 12px;
+            height: 12px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--cyan), var(--pink));
+            box-shadow: 0 0 18px rgba(0, 245, 212, 0.35);
+        }
+        .nav-logo span { color: var(--cyan); }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: var(--text); font-size: 0.85rem; transition: var(--trans); }
+        .nav-links a:hover { color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
+        .nav-launch {
+            padding: 0.75rem 1.35rem;
+            border: 1px solid rgba(0, 245, 212, 0.35);
+            border-radius: 999px;
+            background: linear-gradient(135deg, rgba(0, 245, 212, 0.16), rgba(247, 37, 133, 0.24));
+            color: var(--text);
+            box-shadow: 0 0 22px rgba(0, 245, 212, 0.16);
+        }
+        .nav-launch:hover {
+            border-color: rgba(0, 245, 212, 0.7);
+            color: #fff;
+            box-shadow: 0 0 28px rgba(247, 37, 133, 0.24);
+        }
+
+        /* --- Hero Section --- */
+        #hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 10%; position: relative; }
+        .hero-title { font-size: 4.5rem; line-height: 1.1; margin-bottom: 1rem; }
+        .hero-title span { 
+            background: linear-gradient(90deg, var(--cyan), var(--purple), var(--pink), var(--cyan));
+            background-size: 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: textFlow 8s linear infinite;
+        }
+        @keyframes textFlow { to { background-position: 300%; } }
+        .hero-sub { color: var(--muted); max-width: 750px; font-size: 1.2rem; margin-bottom: 2.5rem; }
+        .hero-btns { display: flex; gap: 1.5rem; }
+        
+        .btn { padding: 1rem 2rem; border-radius: 4px; font-weight: 700; font-family: 'Orbitron'; font-size: 0.8rem; cursor: pointer; transition: var(--trans); text-decoration: none; display: inline-block; border: none; }
+        .btn-grad { background: var(--grad); color: #fff; box-shadow: 0 0 15px rgba(0, 245, 212, 0.3); }
+        .btn-grad:hover { transform: translateY(-3px); box-shadow: 0 0 25px rgba(155, 93, 229, 0.5); }
+        .btn-outline { border: 1px solid var(--cyan); color: var(--cyan); background: transparent; }
+        .btn-outline:hover { background: var(--cyan); color: var(--bg); }
+
+        .hero-stats { margin-top: 5rem; display: flex; gap: 4rem; flex-wrap: wrap; justify-content: center; }
+        .stat-badge { text-align: center; }
+        .stat-num { font-size: 2.2rem; color: var(--cyan); font-weight: 900; display: block; font-family: 'Orbitron'; }
+        .stat-lab { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; margin-top: 0.5rem; }
+
+        /* --- Sections General --- */
+        section { padding: 100px 8%; position: relative; }
+        .section-header { text-align: center; margin-bottom: 4rem; }
+        .grad-text { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* --- Services Grid --- */
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .service-card {
+            background: var(--card); padding: 3rem 2rem; border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05); transition: var(--trans);
+            backdrop-filter: blur(10px);
+        }
+        .service-card:hover { transform: translateY(-10px); border-color: var(--cyan); box-shadow: 0 10px 40px rgba(0,245,212,0.15); }
+        .service-card i { font-size: 2.5rem; margin-bottom: 1.5rem; display: block; color: var(--cyan); transition: var(--trans); }
+        .service-card:hover i { transform: scale(1.1); color: var(--purple); }
+
+        /* --- Dashboard Mockup --- */
+        .dashboard-wrap { 
+            background: #0d1117; border: 1px solid #30363d; border-radius: 12px; padding: 2rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden;
+        }
+        .dashboard-wrap::after {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px; pointer-events: none;
+        }
+        .dash-top { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
+        .kpi-card { background: #161b22; padding: 1.5rem; border-radius: 8px; border: 1px solid #30363d; }
+        .kpi-val { font-size: 1.8rem; font-weight: 700; color: var(--cyan); display: block; }
+        .trend-up { color: var(--green); font-size: 0.8rem; }
+        
+        .chart-area { height: 300px; width: 100%; background: #161b22; border-radius: 8px; margin-bottom: 2rem; position: relative; padding: 20px; }
+        .svg-chart { width: 100%; height: 100%; }
+        .chart-path { 
+            fill: none; stroke: var(--cyan); stroke-width: 3; 
+            stroke-dasharray: 1000; stroke-dashoffset: 1000;
+        }
+        .animate-chart .chart-path { animation: drawPath 3s forwards ease-out; }
+        @keyframes drawPath { to { stroke-dashoffset: 0; } }
+
+        /* --- Growth Funnel --- */
+        .funnel-container { max-width: 600px; margin: 4rem auto; position: relative; }
+        .funnel-layer {
+            height: 60px; margin: 5px auto; display: flex; align-items: center; justify-content: center;
+            font-family: 'Orbitron'; font-size: 0.9rem; font-weight: 700; color: var(--bg);
+            clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 15% 100%);
+            transition: var(--trans); cursor: help;
+        }
+        .l1 { width: 100%; background: var(--cyan); }
+        .l2 { width: 85%; background: #00d9bc; }
+        .l3 { width: 70%; background: #00bda4; }
+        .l4 { width: 55%; background: #4d8dd5; }
+        .l5 { width: 40%; background: var(--purple); }
+        .funnel-layer:hover { transform: scale(1.05); filter: brightness(1.2); }
+
+        /* --- Bento Grid --- */
+        .bento-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 250px; gap: 1.5rem; }
+        .bento-item { background: var(--card); border-radius: 16px; padding: 2rem; border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden; transition: var(--trans); }
+        .bento-wide { grid-column: span 2; }
+        .bento-tall { grid-row: span 2; }
+        .bento-item:hover { border-color: var(--cyan); transform: translateY(-5px); }
+        .bento-item h3 { font-size: 1.5rem; margin-bottom: 1rem; color: #fff; }
+        .metric-pill { display: inline-block; padding: 4px 12px; background: rgba(0, 245, 212, 0.1); color: var(--cyan); border-radius: 50px; font-size: 0.75rem; margin-top: 10px; border: 1px solid rgba(0, 245, 212, 0.2); }
+
+        /* --- Marquee --- */
+        .marquee-wrap { overflow: hidden; white-space: nowrap; padding: 3rem 0; background: rgba(255,255,255,0.02); }
+        .marquee-content { display: inline-block; animation: scrollMarquee 40s linear infinite; }
+        @keyframes scrollMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .pill { display: inline-block; padding: 0.7rem 1.8rem; background: var(--card); border: 1px solid rgba(0,245,212,0.2); border-radius: 50px; margin: 0 15px; font-family: 'Orbitron'; font-size: 0.75rem; color: var(--cyan); box-shadow: 0 0 10px rgba(0,245,212,0.1); }
+
+        /* --- Audit Section --- */
+        .audit-container { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; background: #111827; padding: 4rem; border-radius: 30px; border: 1px solid rgba(255,255,255,0.05); }
+        .meter-box { text-align: center; position: relative; width: 200px; margin: 0 auto; }
+        .circular-meter { transform: rotate(-90deg); }
+        .meter-bg { fill: none; stroke: #1f2937; stroke-width: 8; }
+        .meter-progress { fill: none; stroke: var(--amber); stroke-width: 8; stroke-dasharray: 440; stroke-dashoffset: 440; transition: 2s ease-out; }
+        .audit-form input, .audit-form select { width: 100%; background: #0a0d1a; border: 1px solid rgba(255,255,255,0.1); padding: 1rem; color: #fff; border-radius: 6px; margin-bottom: 1rem; outline: none; }
+        .audit-form input:focus { border-color: var(--cyan); box-shadow: 0 0 15px rgba(0,245,212,0.2); }
+
+        /* --- CTA Footer --- */
+        .final-cta { text-align: center; padding: 150px 8%; background: radial-gradient(circle at center, rgba(155,93,229,0.1) 0%, transparent 70%); }
+
+        @media (max-width: 1024px) {
+            .hero-title { font-size: 3rem; }
+            .dash-top { grid-template-columns: 1fr 1fr; }
+            .audit-container { grid-template-columns: 1fr; text-align: center; }
+            .bento-grid { grid-template-columns: repeat(2, 1fr); }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="data-canvas"></canvas>
+
+    <nav>
+        <a href="#" class="nav-logo">XEROVA <span>GROWTH LAB</span></a>
+        <div class="nav-links">
+            <a href="#services">SERVICES</a>
+            <a href="#performance">DASHBOARD</a>
+            <a href="#funnel">STRATEGY</a>
+            <a href="#audit">FREE AUDIT</a>
+        </div>
+        <a href="#audit" class="btn btn-outline nav-launch">LAUNCH PROJECT</a>
+    </nav>
+
+    <section id="hero">
+        <p class="section-tag">ROI-Focused Marketing</p>
+        <h1 class="hero-title">Stop Guessing. <br> <span>Start Dominating.</span></h1>
+        <p class="hero-sub">Data-driven SEO, precision-targeted PPC, and full-funnel growth strategies that turn your marketing spend into measurable, compounding revenue.</p>
+        <div class="hero-btns">
+            <a href="#audit" class="btn btn-grad">GET A FREE AUDIT</a>
+            <a href="#performance" class="btn btn-outline">VIEW RESULTS</a>
+        </div>
+
+        <div class="hero-stats">
+            <div class="stat-badge">
+                <span class="stat-num" data-val="50">0</span>
+                <span class="stat-lab">$50M+ Managed</span>
+            </div>
+            <div class="stat-badge">
+                <span class="stat-num" data-val="800">0</span>
+                <span class="stat-lab">800% Avg ROI</span>
+            </div>
+            <div class="stat-badge">
+                <span class="stat-num" data-val="1200">0</span>
+                <span class="stat-lab">1,200+ Campaigns</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="services">
+        <div class="section-header">
+            <p class="section-tag">What We Do</p>
+            <h2 class="grad-text" style="font-size: 2.5rem;">Our Growth Services</h2>
+        </div>
+        <div class="services-grid">
+            <div class="service-card">
+                <i class="fas fa-search-location"></i>
+                <h3>SEO Dominance</h3>
+                <p>Rank #1 on Google. Own your niche organically with technical and on-page precision.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-mouse-pointer"></i>
+                <h3>PPC & Paid Search</h3>
+                <p>Precision-targeted ads that convert clicks into customers with zero wasted spend.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-filter"></i>
+                <h3>CRO Engine</h3>
+                <p>Optimizing every touchpoint of your site to maximize your existing traffic value.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-rocket"></i>
+                <h3>Growth Hacking</h3>
+                <p>Innovative, rapid-experimentation strategies to scale your user base exponentially.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="performance">
+        <div class="section-header">
+            <p class="section-tag">The Numbers Don't Lie</p>
+            <h2>Performance <span class="grad-text">Live Dashboard</span></h2>
+        </div>
+        <div class="dashboard-wrap">
+            <div class="dash-top">
+                <div class="kpi-card">
+                    <span class="section-tag" style="font-size: 0.6rem;">Impressions</span>
+                    <span class="kpi-val mono">1.2M</span>
+                    <span class="trend-up"><i class="fas fa-caret-up"></i> 12.4%</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="section-tag" style="font-size: 0.6rem;">CTR</span>
+                    <span class="kpi-val mono">4.82%</span>
+                    <span class="trend-up"><i class="fas fa-caret-up"></i> 0.5%</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="section-tag" style="font-size: 0.6rem;">CPA</span>
+                    <span class="kpi-val mono">$14.20</span>
+                    <span class="trend-up" style="color: var(--amber);"><i class="fas fa-caret-down"></i> 8.1%</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="section-tag" style="font-size: 0.6rem;">Revenue</span>
+                    <span class="kpi-val mono">$428K</span>
+                    <span class="trend-up"><i class="fas fa-caret-up"></i> 24.0%</span>
+                </div>
+            </div>
+            <div class="chart-area" id="chart-trigger">
+                <p class="mono" style="font-size: 0.7rem; color: var(--cyan); margin-bottom: 10px;">&gt; ANALYZING ORGANIC TRAFFIC TREND...</p>
+                <svg class="svg-chart" viewBox="0 0 1000 200">
+                    <path class="chart-path" d="M0,180 Q100,160 200,170 T400,120 T600,140 T800,40 T1000,20" />
+                </svg>
+            </div>
+            <div class="dash-table mono" style="font-size: 0.8rem;">
+                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; border-bottom: 1px solid #30363d; padding: 10px; color: var(--muted);">
+                    <span>KEYWORD</span><span>POS</span><span>VOL</span><span>GROWTH</span>
+                </div>
+                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 10px; border-bottom: 1px solid #30363d;">
+                    <span>Growth Marketing Agency</span><span style="color: var(--green);">#1</span><span>12K</span><span style="color: var(--green);">▲ 4</span>
+                </div>
+                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 10px;">
+                    <span>SaaS SEO Services</span><span style="color: var(--green);">#3</span><span>8.4K</span><span style="color: var(--green);">▲ 12</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="funnel">
+        <div class="section-header">
+            <p class="section-tag">Framework</p>
+            <h2 class="grad-text">The Growth Funnel</h2>
+        </div>
+        <div class="funnel-container">
+            <div class="funnel-layer l1">AWARENESS (SEO/CONTENT)</div>
+            <div class="funnel-layer l2">INTEREST (PPC/ADS)</div>
+            <div class="funnel-layer l3">CONSIDERATION (EMAIL)</div>
+            <div class="funnel-layer l4">CONVERSION (CRO)</div>
+            <div class="funnel-layer l5">RETENTION</div>
+        </div>
+    </section>
+
+    <div class="marquee-wrap">
+        <div class="marquee-content">
+            <span class="pill">GOOGLE ADS</span><span class="pill">SEMRUSH</span><span class="pill">AHREFS</span>
+            <span class="pill">META BUSINESS</span><span class="pill">GA4</span><span class="pill">HUBSPOT</span>
+            <span class="pill">KLAVIYO</span><span class="pill">LOOKER STUDIO</span>
+            <!-- Duplicated for loop -->
+            <span class="pill">GOOGLE ADS</span><span class="pill">SEMRUSH</span><span class="pill">AHREFS</span>
+            <span class="pill">META BUSINESS</span><span class="pill">GA4</span><span class="pill">HUBSPOT</span>
+            <span class="pill">KLAVIYO</span><span class="pill">LOOKER STUDIO</span>
+        </div>
+    </div>
+
+    <section id="audit">
+        <div class="audit-container">
+            <div>
+                <h2 class="grad-text" style="font-size: 2rem; margin-bottom: 1.5rem;">Your Competitors Are Already Ahead.</h2>
+                <p style="color: var(--muted); margin-bottom: 2rem;">Every day without a strategy is revenue left on the table. Get your free performance audit — no commitment, no fluff.</p>
+                <div class="meter-box">
+                    <svg class="circular-meter" width="160" height="160">
+                        <circle class="meter-bg" cx="80" cy="80" r="70"></circle>
+                        <circle class="meter-progress" id="audit-meter" cx="80" cy="80" r="70"></circle>
+                    </svg>
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                        <span class="mono" style="font-size: 2rem; font-weight: 900; color: var(--amber);">44</span>
+                        <p style="font-size: 0.6rem;">AVG SITE SCORE</p>
+                    </div>
+                </div>
+            </div>
+            <div class="audit-form">
+                <form>
+                    <input type="url" placeholder="Your Website URL" required>
+                    <input type="text" placeholder="Full Name" required>
+                    <input type="email" placeholder="Work Email" required>
+                    <select>
+                        <option>Monthly Budget: $2k - $5k</option>
+                        <option>Monthly Budget: $5k - $15k</option>
+                        <option>Monthly Budget: $15k+</option>
+                    </select>
+                    <button type="submit" class="btn btn-grad" style="width: 100%;">AUDIT MY WEBSITE FREE</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="final-cta">
+        <h2 class="hero-title" style="font-size: 2.5rem;">Your Growth Starts <br> <span class="grad-text">With One Decision.</span></h2>
+        <p style="margin-bottom: 2rem;">Let's make it the right one.</p>
+        <a href="#audit" class="btn btn-grad" style="padding: 1.5rem 3rem;">CLAIM YOUR STRATEGY SESSION</a>
+    </footer>
+
+    <script>
+        // --- Data Particles Animation ---
+        const canvas = document.getElementById('data-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function initParticles() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            for (let i = 0; i < 50; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: canvas.height + Math.random() * 100,
+                    size: Math.random() * 3 + 1,
+                    speed: Math.random() * 2 + 0.5,
+                    opacity: Math.random()
+                });
+            }
+        }
+
+        function drawParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                ctx.fillStyle = `rgba(0, 245, 212, ${p.opacity})`;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+                p.y -= p.speed;
+                if (p.y < -10) p.y = canvas.height + 10;
+            });
+            requestAnimationFrame(drawParticles);
+        }
+
+        window.addEventListener('resize', initParticles);
+        initParticles();
+        drawParticles();
+
+        // --- Counter Animation ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counters = entry.target.querySelectorAll('.stat-num');
+                    counters.forEach(counter => {
+                        const target = +counter.getAttribute('data-val');
+                        let count = 0;
+                        const update = () => {
+                            const speed = target / 50;
+                            if (count < target) {
+                                count += speed;
+                                counter.innerText = Math.ceil(count) + (target > 500 ? "+" : "");
+                                setTimeout(update, 30);
+                            } else {
+                                counter.innerText = target + (target > 500 ? "+" : "");
+                            }
+                        };
+                        update();
+                    });
+                    
+                    // Trigger Chart Animation
+                    if(entry.target.id === 'performance') {
+                        document.getElementById('chart-trigger').classList.add('animate-chart');
+                    }
+                    
+                    // Trigger Meter Animation
+                    if(entry.target.id === 'audit') {
+                        document.getElementById('audit-meter').style.strokeDashoffset = '246'; // Score 44/100
+                    }
+                }
+            });
+        }, { threshold: 0.3 });
+
+        observer.observe(document.getElementById('hero'));
+        observer.observe(document.getElementById('performance'));
+        observer.observe(document.getElementById('audit'));
+    </script>
+</body>
+</html>

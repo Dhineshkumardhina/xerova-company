@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xerova | Precision 3D Printing Services</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-deep: #0a0d1a;
+            --card-bg: #111827;
+            --cyan: #00f5d4;
+            --purple: #9b5de5;
+            --text-main: #e2e8f0;
+            --text-dim: #94a3b8;
+            --gradient: linear-gradient(135deg, var(--cyan), var(--purple));
+            --glass: rgba(17, 24, 39, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, .nav-logo, .stat-number {
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Background Decorations */
+        .dots-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(var(--cyan) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.05;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 13, 26, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 245, 212, 0.1);
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .nav-logo span {
+            color: var(--cyan);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 500;
+            transition: 0.3s;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .nav-links a:hover {
+            color: var(--cyan);
+            text-shadow: 0 0 10px var(--cyan);
+        }
+
+        .btn-outline {
+            padding: 0.6rem 1.5rem;
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: 0.3s;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+        }
+
+        .btn-outline:hover {
+            background: var(--cyan);
+            color: var(--bg-deep);
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.4);
+        }
+
+        /* Hero Section */
+        #hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 10%;
+            position: relative;
+        }
+
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            max-width: 900px;
+        }
+
+        .gradient-text {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtext {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .btn-gradient {
+            padding: 1rem 2rem;
+            background: var(--gradient);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            transition: 0.4s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(155, 93, 229, 0.4);
+        }
+
+        .quick-stats {
+            margin-top: 4rem;
+            display: flex;
+            gap: 3rem;
+        }
+
+        .stat-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            color: var(--cyan);
+            margin-bottom: 0.2rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        /* Section Styling */
+        section {
+            padding: 100px 10%;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 0.9rem;
+            letter-spacing: 5px;
+            color: var(--text-dim);
+        }
+
+        .section-subtitle {
+            font-size: 2.5rem;
+            font-style: italic;
+            font-weight: 700;
+        }
+
+        /* How It Works */
+        .process-flow {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .process-step {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            z-index: 1;
+        }
+
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--card-bg);
+            border: 1px solid var(--cyan);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+            color: var(--cyan);
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.2);
+            position: relative;
+        }
+
+        .process-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 60%;
+            width: 80%;
+            height: 2px;
+            border-top: 2px dashed rgba(0, 245, 212, 0.3);
+            z-index: -1;
+        }
+
+        /* Materials Grid */
+        .materials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .material-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .material-card:hover {
+            border-color: var(--cyan);
+            transform: translateY(-10px);
+            box-shadow: 0 10px 40px rgba(0, 245, 212, 0.1);
+        }
+
+        .material-card i {
+            font-size: 2rem;
+            color: var(--purple);
+            margin-bottom: 1rem;
+        }
+
+        .material-props {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .prop-tag {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+            background: rgba(155, 93, 229, 0.1);
+            color: var(--purple);
+            border-radius: 4px;
+        }
+
+        /* Pricing Tiers */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .price-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            padding: 3rem 2rem;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: 0.4s;
+        }
+
+        .price-card.featured {
+            border: 2px solid var(--cyan);
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 245, 212, 0.2);
+            position: relative;
+        }
+
+        .badge-popular {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--cyan);
+            color: var(--bg-deep);
+            padding: 0.3rem 1rem;
+            font-weight: 800;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .price-card h3 { margin-bottom: 1rem; }
+        .price-value { font-size: 2.5rem; color: #fff; margin-bottom: 2rem; font-family: 'Orbitron'; }
+        .price-list { list-style: none; margin-bottom: 2.5rem; text-align: left; }
+        .price-list li { margin-bottom: 0.8rem; color: var(--text-dim); }
+        .price-list li i { color: var(--cyan); margin-right: 10px; }
+
+        /* Upload Zone */
+        .upload-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 20px;
+        }
+
+        .drop-zone {
+            border: 2px dashed rgba(0, 245, 212, 0.3);
+            padding: 4rem 2rem;
+            text-align: center;
+            border-radius: 12px;
+            transition: 0.3s;
+            cursor: pointer;
+            margin-bottom: 2rem;
+        }
+
+        .drop-zone:hover {
+            border-color: var(--cyan);
+            background: rgba(0, 245, 212, 0.05);
+            box-shadow: inset 0 0 20px rgba(0, 245, 212, 0.05);
+        }
+
+        .upload-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label { color: var(--cyan); font-weight: 600; font-size: 0.9rem; }
+
+        select, input {
+            background: #1a1f2e;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 0.8rem;
+            color: white;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .price-estimate {
+            grid-column: span 2;
+            background: rgba(0, 245, 212, 0.05);
+            padding: 1.5rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        /* Portfolio */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 200px;
+            gap: 1rem;
+        }
+
+        .portfolio-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .portfolio-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.5s;
+        }
+
+        .item-1 { grid-column: span 2; grid-row: span 2; }
+        .item-2 { grid-column: span 1; grid-row: span 1; }
+
+        .portfolio-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 13, 26, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: 0.4s;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .portfolio-item:hover .portfolio-overlay { opacity: 1; }
+        .portfolio-item:hover img { transform: scale(1.1); }
+
+        /* FAQ */
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: #161b2b;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            border-left: 4px solid transparent;
+            transition: 0.3s;
+        }
+
+        .faq-item.active .faq-question {
+            border-left-color: var(--cyan);
+            background: rgba(0, 245, 212, 0.05);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            padding: 0 1.5rem;
+            color: var(--text-dim);
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+            padding: 1rem 1.5rem 2rem 1.5rem;
+        }
+
+        /* Banner */
+        .cta-banner {
+            margin: 100px 10%;
+            padding: 5rem;
+            background: linear-gradient(90deg, rgba(0, 245, 212, 0.1), rgba(155, 93, 229, 0.1));
+            border-radius: 30px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.5rem; }
+            .process-flow { flex-direction: column; gap: 3rem; }
+            .process-step:not(:last-child)::after { display: none; }
+            .upload-form { grid-template-columns: 1fr; }
+            .price-estimate { grid-column: span 1; }
+            .portfolio-grid { grid-template-columns: 1fr 1fr; }
+            .item-1 { grid-column: span 2; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dots-overlay"></div>
+
+    <nav>
+        <a href="#" class="nav-logo">XEROVA<span>.</span></a>
+        <div class="nav-links">
+            <a href="#how-it-works">PROCESS</a>
+            <a href="#materials">MATERIALS</a>
+            <a href="#pricing">PRICING</a>
+            <a href="#portfolio">GALLERY</a>
+        </div>
+        <a href="#upload" class="btn-outline">GET A QUOTE</a>
+    </nav>
+
+    <section id="hero">
+        <canvas id="hero-canvas"></canvas>
+        <h1 class="hero-title">Precision. <span class="gradient-text">Layer by Layer.</span></h1>
+        <p class="hero-subtext">Next-generation industrial 3D printing services for engineers, designers, and innovators. Rapid prototyping to production.</p>
+        <div class="hero-btns">
+            <a href="#upload" class="btn-gradient">UPLOAD YOUR DESIGN</a>
+            <a href="#materials" class="btn-outline">EXPLORE MATERIALS</a>
+        </div>
+        <div class="quick-stats">
+            <div class="stat-badge">
+                <span class="stat-number">200+</span>
+                <span class="stat-label">Projects</span>
+            </div>
+            <div class="stat-badge">
+                <span class="stat-number">15+</span>
+                <span class="stat-label">Countries</span>
+            </div>
+            <div class="stat-badge">
+                <span class="stat-number">FDM | SLA | SLS</span>
+                <span class="stat-label">Technologies</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works">
+        <div class="section-header">
+            <p class="section-title">HOW IT WORKS</p>
+            <h2 class="section-subtitle gradient-text">The Process</h2>
+        </div>
+        <div class="process-flow">
+            <div class="process-step">
+                <div class="step-icon"><i class="fas fa-file-upload"></i></div>
+                <h3>Upload Design</h3>
+                <p>Submit your CAD files (.STL, .OBJ) for instant analysis.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-icon"><i class="fas fa-microchip"></i></div>
+                <h3>Choose Material</h3>
+                <p>Select from over 20+ industrial-grade materials.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-icon"><i class="fas fa-box-open"></i></div>
+                <h3>Receive Print</h3>
+                <p>Doorstep delivery within 3–5 business days.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="materials">
+        <div class="section-header">
+            <p class="section-title">ENGINEERING GRADE</p>
+            <h2 class="section-subtitle gradient-text">Materials</h2>
+        </div>
+        <div class="materials-grid">
+            <!-- PLA -->
+            <div class="material-card">
+                <i class="fas fa-cube"></i>
+                <h3>PLA</h3>
+                <div class="material-props">
+                    <span class="prop-tag">Detailed</span>
+                    <span class="prop-tag">Biodegradable</span>
+                    <span class="prop-tag">Low Cost</span>
+                </div>
+                <p>Perfect for concept models and decorative pieces with high detail.</p>
+                <br>
+                <button class="btn-outline" style="width: 100%;">Select PLA</button>
+            </div>
+            <!-- Resin -->
+            <div class="material-card">
+                <i class="fas fa-vial"></i>
+                <h3>Resin (SLA)</h3>
+                <div class="material-props">
+                    <span class="prop-tag">Ultra High Res</span>
+                    <span class="prop-tag">Smooth Finish</span>
+                </div>
+                <p>Ideal for jewelry, dental work, and intricate miniatures.</p>
+                <br>
+                <button class="btn-outline" style="width: 100%;">Select Resin</button>
+            </div>
+            <!-- Carbon Fiber -->
+            <div class="material-card">
+                <i class="fas fa-atom"></i>
+                <h3>Carbon Fiber</h3>
+                <div class="material-props">
+                    <span class="prop-tag">High Strength</span>
+                    <span class="prop-tag">Heat Resistant</span>
+                </div>
+                <p>Industrial components requiring maximum durability and stiffness.</p>
+                <br>
+                <button class="btn-outline" style="width: 100%;">Select Carbon</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing">
+        <div class="section-header">
+            <p class="section-title">SERVICE TIERS</p>
+            <h2 class="section-subtitle gradient-text">Pricing</h2>
+        </div>
+        <div class="pricing-grid">
+            <div class="price-card">
+                <h3>Standard</h3>
+                <div class="price-value">$15+</div>
+                <ul class="price-list">
+                    <li><i class="fas fa-check"></i> FDM Printing</li>
+                    <li><i class="fas fa-check"></i> 5-7 Day Delivery</li>
+                    <li><i class="fas fa-check"></i> Basic PLA/PETG</li>
+                    <li><i class="fas fa-check"></i> Standard Quality</li>
+                </ul>
+                <a href="#upload" class="btn-outline">Get Started</a>
+            </div>
+            <div class="price-card featured">
+                <div class="badge-popular">MOST POPULAR</div>
+                <h3>Professional</h3>
+                <div class="price-value">$45+</div>
+                <ul class="price-list">
+                    <li><i class="fas fa-check"></i> SLA & SLS Included</li>
+                    <li><i class="fas fa-check"></i> 2-3 Day Priority</li>
+                    <li><i class="fas fa-check"></i> Engineering Materials</li>
+                    <li><i class="fas fa-check"></i> Surface Polishing</li>
+                </ul>
+                <a href="#upload" class="btn-gradient">Get Started</a>
+            </div>
+            <div class="price-card">
+                <h3>Industrial</h3>
+                <div class="price-value">Custom</div>
+                <ul class="price-list">
+                    <li><i class="fas fa-check"></i> Batch Production</li>
+                    <li><i class="fas fa-check"></i> Overnight Express</li>
+                    <li><i class="fas fa-check"></i> Metal & PEEK Printing</li>
+                    <li><i class="fas fa-check"></i> Full Quality Reports</li>
+                </ul>
+                <a href="#upload" class="btn-outline">Contact Sales</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="upload">
+        <div class="section-header">
+            <p class="section-title">INSTANT QUOTE</p>
+            <h2 class="section-subtitle gradient-text">Upload Your File</h2>
+        </div>
+        <div class="upload-container">
+            <div class="drop-zone" id="drop-zone">
+                <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: var(--cyan); margin-bottom: 1rem;"></i>
+                <p>Drag & Drop your .STL, .OBJ, or .3MF here</p>
+                <span style="color: var(--text-dim); font-size: 0.8rem;">Maximum file size: 50MB</span>
+            </div>
+            
+            <div class="upload-form">
+                <div class="form-group">
+                    <label>Material</label>
+                    <select id="calc-material">
+                        <option value="10">PLA (Standard)</option>
+                        <option value="25">Resin (High Detail)</option>
+                        <option value="40">Nylon (Industrial)</option>
+                        <option value="60">Carbon Fiber</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Infill Density (%)</label>
+                    <input type="number" id="calc-infill" value="20" min="10" max="100">
+                </div>
+                <div class="form-group">
+                    <label>Finish</label>
+                    <select>
+                        <option>Matte (Raw)</option>
+                        <option>Glossy Varnish</option>
+                        <option>Painted Custom</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Quantity</label>
+                    <input type="number" id="calc-qty" value="1" min="1">
+                </div>
+
+                <div class="price-estimate">
+                    <div>
+                        <p style="font-size: 0.8rem; color: var(--text-dim);">Estimated Price</p>
+                        <h2 id="total-price" style="color: var(--cyan);">$10.00</h2>
+                    </div>
+                    <button class="btn-gradient">REQUEST FINAL QUOTE</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio">
+        <div class="section-header">
+            <p class="section-title">OUR PRINTS</p>
+            <h2 class="section-subtitle gradient-text">Recent Projects</h2>
+        </div>
+        <div class="portfolio-grid">
+            <div class="portfolio-item item-1">
+                <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=800" alt="Print 1">
+                <div class="portfolio-overlay">
+                    <h3>Turbine Fan</h3>
+                    <p>Material: Nylon SLS</p>
+                    <span class="prop-tag">Aerospace</span>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <img src="https://images.unsplash.com/photo-1543069391-05971bcba392?auto=format&fit=crop&q=80&w=400" alt="Print 2">
+                <div class="portfolio-overlay">
+                    <h3>Dental Arc</h3>
+                    <p>Material: Resin</p>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <img src="https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&q=80&w=400" alt="Print 3">
+                <div class="portfolio-overlay">
+                    <h3>Custom Chassis</h3>
+                    <p>Material: Carbon Fiber</p>
+                </div>
+            </div>
+            <div class="portfolio-item item-2">
+                <img src="https://images.unsplash.com/photo-1535813548-66d927ad7c40?auto=format&fit=crop&q=80&w=400" alt="Print 4">
+                <div class="portfolio-overlay">
+                    <h3>Architecture</h3>
+                    <p>Material: PLA</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq">
+        <div class="section-header">
+            <p class="section-title">QUESTIONS</p>
+            <h2 class="section-subtitle gradient-text">FAQ</h2>
+        </div>
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question">What file formats do you accept? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">We primarily accept .STL, .OBJ, and .3MF files. For industrial SLS/Metal, we can also process .STEP and .IGES files via manual quote.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">What is your maximum build volume? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Our current maximum build volume for FDM is 500mm x 500mm x 500mm. For high-resolution Resin, it is 190mm x 120mm x 200mm.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">How long does shipping take? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Standard orders are processed in 3-5 business days. We offer Express 24-hour turnaround for Professional and Industrial tiers.</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="cta-banner">
+        <h2 class="hero-title" style="font-size: 2.5rem; margin-bottom: 2rem;">Ready to Bring Your Ideas to Life?</h2>
+        <button class="btn-gradient" style="padding: 1.2rem 3rem;">START YOUR ORDER</button>
+    </div>
+
+    <script>
+        // 1. Particle Background Animation
+        const canvas = document.getElementById('hero-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.opacity = Math.random() * 0.5;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+            }
+            draw() {
+                ctx.fillStyle = `rgba(0, 245, 212, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 100; i++) particles.push(new Particle());
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // 2. FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(q => {
+            q.addEventListener('click', () => {
+                const item = q.parentElement;
+                item.classList.toggle('active');
+            });
+        });
+
+        // 3. Simple Price Calculator
+        const materialInput = document.getElementById('calc-material');
+        const infillInput = document.getElementById('calc-infill');
+        const qtyInput = document.getElementById('calc-qty');
+        const priceDisplay = document.getElementById('total-price');
+
+        function updatePrice() {
+            const base = parseFloat(materialInput.value);
+            const infillMult = parseInt(infillInput.value) / 20;
+            const qty = parseInt(qtyInput.value);
+            const total = (base * infillMult * qty).toFixed(2);
+            priceDisplay.innerText = `$${total}`;
+        }
+
+        [materialInput, infillInput, qtyInput].forEach(el => {
+            el.addEventListener('input', updatePrice);
+        });
+
+        // 4. Drop Zone Visual Feedback
+        const dropZone = document.getElementById('drop-zone');
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = "#9b5de5";
+        });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.style.borderColor = "rgba(0, 245, 212, 0.3)";
+        });
+    </script>
+</body>
+</html>
