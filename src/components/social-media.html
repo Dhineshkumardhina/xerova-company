@@ -351,6 +351,9 @@
         .form-group { margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
         .form-group label { color: var(--cyan); font-size: 0.8rem; font-weight: 700; font-family: 'Orbitron'; }
         input, select, textarea {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
             background: #1a1f2e;
             border: 1px solid rgba(255,255,255,0.1);
             padding: 1rem;
@@ -453,6 +456,15 @@
             .price-card,
             .inquiry-split {
                 padding: 1.5rem 1rem;
+            }
+
+            .inquiry-split > * {
+                min-width: 0;
+            }
+
+            .inquiry-form {
+                width: 100%;
+                min-width: 0;
             }
 
             .inquiry-form > div { grid-template-columns: 1fr !important; }
