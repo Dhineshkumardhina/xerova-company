@@ -3,8 +3,19 @@ import { useEffect, useRef, useState } from "react";
 
 
 
+const timeline = [
+  { year: "2019", title: "Founded", desc: "Xerova Digital Services launched with a vision for premium digital solutions." },
+  { year: "2020", title: "Growth", desc: "Expanded to serve 50+ clients across multiple industries and launched R&D division." },
+  { year: "2022", title: "Innovation", desc: "Launched 3D printing services and custom merchandise production capabilities." },
+  { year: "2024", title: "Global Reach", desc: "Reached 200+ projects completed with clients in 15+ countries worldwide." },
+];
 
-
+const stats = [
+  { label: "Projects Completed", value: 200 },
+  { label: "Happy Clients", value: 120 },
+  { label: "Team Members", value: 35 },
+  { label: "Countries", value: 15 },
+];
 
 function AnimatedCounter({ value }: { value: number }) {
   const [count, setCount] = useState(0);
@@ -41,6 +52,41 @@ export default function AboutSection() {
   return (
     <section id="about" className="py-24 relative">
       <div className="container px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <p className="text-sm font-display tracking-[0.3em] uppercase text-primary mb-2">Who We Are</p>
+          <h2 className="font-display text-3xl md:text-5xl font-bold">
+            Our <span className="text-gradient">Story</span>
+          </h2>
+        </motion.div>
+
+        {/* Timeline */}
+        <div className="max-w-3xl mx-auto mb-20">
+          {timeline.map((item, i) => (
+            <motion.div
+              key={item.year}
+              initial={{ opacity: 0, x: i % 2 === 0 ? -30 : 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="flex gap-6 mb-8"
+            >
+              <div className="flex flex-col items-center">
+                <div className="w-12 h-12 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center font-display text-sm font-bold text-primary">
+                  {item.year}
+                </div>
+                {i < timeline.length - 1 && <div className="w-px flex-1 bg-border mt-2" />}
+              </div>
+              <div className="pb-8">
+                <h3 className="font-display text-lg font-semibold text-foreground">{item.title}</h3>
+                <p className="text-muted-foreground mt-1">{item.desc}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
 
         {/* Founder Quote */}
         <motion.div
@@ -52,7 +98,7 @@ export default function AboutSection() {
           <p className="text-lg md:text-xl italic text-foreground leading-relaxed mb-4">
             "Innovation isn't just about technology — it's about creating meaningful solutions that transform how businesses connect with their audience."
           </p>
-          <p className="font-display text-sm text-primary font-semibold">— Founder, Xerova Digitals</p>
+          <p className="font-display text-sm text-primary font-semibold">— Founder, Xerova Digital</p>
         </motion.div>
 
         {/* Stats */}
