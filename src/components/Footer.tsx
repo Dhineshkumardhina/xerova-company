@@ -5,7 +5,7 @@ const socials = [
   { icon: Linkedin, href: "#", label: "LinkedIn" },
   { icon: Instagram, href: "#", label: "Instagram" },
   { icon: Github, href: "#", label: "GitHub" },
-  { icon: whatsapp, href: "#", label: "Whatsapp" },
+  { icon: twitter, href: "#", label: "Whatsapp" },
 ];
 
 export default function Footer() {
