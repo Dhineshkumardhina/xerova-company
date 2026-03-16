@@ -1,5 +1,11 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+
+
+
+
+
+
 function AnimatedCounter({ value }: { value: number }) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
@@ -46,7 +52,7 @@ export default function AboutSection() {
           <p className="text-lg md:text-xl italic text-foreground leading-relaxed mb-4">
             "Innovation isn't just about technology — it's about creating meaningful solutions that transform how businesses connect with their audience."
           </p>
-          <p className="font-display text-sm text-primary font-semibold">— Founder, Xerova Digital Solutions</p>
+          <p className="font-display text-sm text-primary font-semibold">— Founder, Xerova Digitals</p>
         </motion.div>
 
         {/* Stats */}
