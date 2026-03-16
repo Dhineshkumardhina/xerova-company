@@ -1,16 +1,11 @@
-  import { motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 
 
 
 
-const stats = [
-  { label: "Projects Completed", value: 200 },
-  { label: "Happy Clients", value: 120 },
-  { label: "Team Members", value: 35 },
-  { label: "Countries", value: 15 },
-];
+
 
 function AnimatedCounter({ value }: { value: number }) {
   const [count, setCount] = useState(0);
