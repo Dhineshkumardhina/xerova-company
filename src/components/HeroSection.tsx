@@ -82,7 +82,7 @@ export default function HeroSection() {
             transition={{ delay: 0.2 }}
             className="text-sm font-display tracking-[0.3em] uppercase text-muted-foreground mb-4"
           >
-            Xerova Digital Services
+            Xerova Digital Solutions
           </motion.p>
 
           <motion.h1
