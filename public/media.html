@@ -1,1292 +1,787 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>NeonFrame Media Studio</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xerova Media Production | Premium Production & Content Creation</title>
+     <link rel="icon" type="image/png" href="./favicon.png">
+    <!-- Fonts --> 
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-deep: #0a0d1a;
+            --card-bg: #111827;
+            --cyan: #00f5d4;
+            --purple: #9b5de5;
+            --text-main: #e2e8f0;
+            --text-dim: #94a3b8;
+            --gradient: linear-gradient(135deg, var(--cyan), var(--purple));
+            --glass: rgba(17, 24, 39, 0.7);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
 
-    :root {
-      --bg: #050712;
-      --primary: #00f5ff;
-      --secondary: #ff00ff;
-      --accent: #8b5cff;
-      --text: #f5f7ff;
-      --muted: #9ca3c7;
-      --danger: #ff4b81;
-      --radius: 14px;
-      --shadow-neon: 0 0 14px rgba(0,245,255,0.6), 0 0 34px rgba(0,245,255,0.3);
-      --shadow-soft: 0 26px 70px rgba(0,0,0,0.9);
-    }
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
 
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #12142b, #050712 55%, #000 100%);
-      color: var(--text);
-      min-height: 100vh;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
+        h1, h2, h3, .nav-logo, .stat-number, .btn-text {
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
 
-    .neon-orbit {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: -1;
-    }
-    .neon-orbit::before,
-    .neon-orbit::after {
-      content: "";
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(90px);
-      opacity: 0.55;
-      mix-blend-mode: screen;
-    }
-    .neon-orbit::before {
-      width: 420px; height: 420px;
-      background: radial-gradient(circle, var(--primary), transparent 70%);
-      top: -120px; left: -40px;
-      animation: float1 18s ease-in-out infinite alternate;
-    }
-    .neon-orbit::after {
-      width: 520px; height: 520px;
-      background: radial-gradient(circle, var(--secondary), transparent 70%);
-      bottom: -160px; right: -60px;
-      animation: float2 22s ease-in-out infinite alternate;
-    }
-    @keyframes float1 {
-      0% { transform: translate(0,0); }
-      100% { transform: translate(40px,70px); }
-    }
-    @keyframes float2 {
-      0% { transform: translate(0,0); }
-      100% { transform: translate(-50px,-60px); }
-    }
+        /* Background Decorations */
+        .particle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(var(--cyan) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.08;
+            z-index: -1;
+            pointer-events: none;
+        }
 
-    .page {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 24px 20px 64px;
-    }
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.2rem 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 13, 26, 0.85);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 245, 212, 0.1);
+        }
 
-    /* NAV */
-    .nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 18px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, rgba(9,11,28,0.96), rgba(9,11,22,0.94));
-      border: 1px solid rgba(148,163,255,0.25);
-      box-shadow: var(--shadow-soft);
-      backdrop-filter: blur(16px);
-      position: sticky;
-      top: 12px;
-      z-index: 20;
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .logo-orb {
-      width: 30px; height: 30px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 20%, #ffffff, var(--primary) 35%, #001f30 70%);
-      box-shadow: var(--shadow-neon);
-      position: relative;
-    }
-    .logo-orb::after {
-      content: "";
-      position: absolute;
-      inset: 7px;
-      border-radius: inherit;
-      border: 2px solid rgba(3,255,247,0.8);
-      border-top-color: transparent;
-      border-bottom-color: transparent;
-      transform: rotate(35deg);
-    }
-    .logo-text {
-      display: flex;
-      flex-direction: column;
-      font-size: 13px;
-    }
-    .logo-name {
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-weight: 700;
-      font-size: 12px;
-      color: var(--primary);
-    }
-    .logo-sub {
-      font-size: 10px;
-      color: var(--muted);
-    }
-    .nav-links {
-      display: flex;
-      gap: 18px;
-      font-size: 13px;
-    }
-    .nav-links a {
-      position: relative;
-      text-decoration: none;
-      text-transform: uppercase;
-      letter-spacing: 0.09em;
-      color: var(--muted);
-      padding-bottom: 4px;
-      transition: color 0.25s ease;
-    }
-    .nav-links a::after {
-      content: "";
-      position: absolute;
-      left: 0; bottom: 0;
-      width: 0; height: 2px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      box-shadow: 0 0 8px rgba(0,245,255,0.7);
-      transition: width 0.27s ease;
-    }
-    .nav-links a:hover { color: var(--text); }
-    .nav-links a:hover::after { width: 100%; }
+        .nav-logo { font-size: 1.4rem; font-weight: 900; color: #fff; text-decoration: none; }
+        .nav-logo span { color: var(--cyan); }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: var(--text-main); font-weight: 500; font-size: 0.85rem; transition: var(--transition); }
+        .nav-links a:hover { color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
 
-    .nav-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      font-size: 12px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      border-radius: 999px;
-      color: #020617;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      box-shadow: var(--shadow-neon);
-      border: none;
-      cursor: pointer;
-      font-weight: 700;
-      position: relative;
-      overflow: hidden;
-    }
-    .nav-cta span.icon {
-      width: 15px; height: 15px;
-      border-radius: 50%;
-      border: 1px solid rgba(2,6,23,0.8);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      background: rgba(15,23,42,0.1);
-    }
+        /* Buttons */
+        .btn-gradient {
+            padding: 0.8rem 1.8rem;
+            background: var(--gradient);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 0 15px rgba(0, 245, 212, 0.2);
+            display: inline-block;
+        }
 
-    /* HERO */
-    .hero {
-      display: grid;
-      grid-template-columns: minmax(0, 3fr) minmax(0, 2.4fr);
-      gap: 34px;
-      margin-top: 40px;
-      align-items: center;
-    }
-    .hero-kicker {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.28em;
-      color: var(--muted);
-      margin-bottom: 14px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .hero-kicker-dot {
-      width: 7px; height: 7px;
-      border-radius: 999px;
-      background: var(--primary);
-      box-shadow: 0 0 12px rgba(0,245,255,0.8);
-    }
-    .hero-title {
-      font-size: clamp(34px, 4vw, 42px);
-      font-weight: 750;
-      letter-spacing: 0.03em;
-      line-height: 1.1;
-      margin-bottom: 14px;
-    }
-    .hero-title span.gradient {
-      background: linear-gradient(120deg, var(--primary), var(--secondary), var(--accent));
-      -webkit-background-clip: text;
-      color: transparent;
-      text-shadow: 0 0 22px rgba(56,189,248,0.7);
-      animation: neonFlicker 3.4s ease-in-out infinite;
-    }
-    .hero-subtitle {
-      font-size: 14px;
-      color: var(--muted);
-      max-width: 460px;
-    }
-    .hero-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 20px 0 26px;
-      font-size: 11px;
-    }
-    .tag-pill {
-      border-radius: 999px;
-      padding: 4px 10px;
-      border: 1px solid rgba(148,163,255,0.4);
-      color: var(--muted);
-      background: radial-gradient(circle at top, rgba(15,23,42,0.9), rgba(2,6,23,0.8));
-      backdrop-filter: blur(10px);
-    }
-    .tag-pill strong {
-      color: var(--primary);
-      font-weight: 600;
-    }
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-    }
-    .btn-primary {
-      border-radius: 999px;
-      padding: 11px 22px;
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      border: none;
-      cursor: pointer;
-      color: #020617;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      box-shadow: var(--shadow-neon);
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-      position: relative;
-      overflow: hidden;
-    }
-    .btn-ghost {
-      border-radius: 999px;
-      padding: 10px 18px;
-      font-size: 12px;
-      font-weight: 500;
-      border: 1px solid rgba(148,163,255,0.45);
-      color: var(--muted);
-      background: rgba(15,23,42,0.6);
-      backdrop-filter: blur(14px);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-    }
-    .btn-ghost-icon {
-      width: 16px; height: 16px;
-      border-radius: 4px;
-      border: 1px solid rgba(148,163,255,0.6);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-    }
-    .hero-meta {
-      margin-top: 14px;
-      font-size: 11px;
-      color: var(--muted);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-    }
-    .hero-dot-divider {
-      width: 3px; height: 3px;
-      border-radius: 999px;
-      background: rgba(148,163,255,0.7);
-    }
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(155, 93, 229, 0.5);
+        }
 
-    .hero-card {
-      position: relative;
-      border-radius: 26px;
-      padding: 18px 18px 20px;
-      background: radial-gradient(circle at top left, rgba(15,23,42,1), rgba(2,6,23,0.96));
-      border: 1px solid rgba(148,163,255,0.4);
-      box-shadow: var(--shadow-soft);
-      overflow: hidden;
-      animation: heroFloat 5s ease-in-out infinite alternate;
-    }
-    .hero-card-glow {
-      position: absolute;
-      inset: -40px;
-      background:
-        radial-gradient(circle at 0% 0%, rgba(0,245,255,0.26), transparent 60%),
-        radial-gradient(circle at 100% 40%, rgba(255,0,255,0.18), transparent 55%);
-      mix-blend-mode: screen;
-      opacity: 0.8;
-      pointer-events: none;
-    }
-    .hero-card-inner { position: relative; z-index: 1; }
-    .hero-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      font-size: 11px;
-      color: var(--muted);
-    }
-    .hero-card-title {
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-    }
-    .hero-card-status-pill {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      border-radius: 999px;
-      padding: 5px 9px;
-      border: 1px solid rgba(52,211,153,0.55);
-      color: #4ade80;
-      background: rgba(21,128,61,0.12);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .hero-card-status-pill-dot {
-      width: 6px; height: 6px;
-      border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 12px rgba(74,222,128,0.9);
-    }
-    .hero-card-body {
-      border-radius: 18px;
-      padding: 12px 12px 14px;
-      background: rgba(15,23,42,0.75);
-      border: 1px solid rgba(30,64,175,0.7);
-      font-size: 11px;
-      color: var(--muted);
-    }
-    .hero-card-footer {
-      margin-top: 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 10px;
-      color: var(--muted);
-    }
-    .hero-card-chip {
-      border-radius: 999px;
-      padding: 4px 8px;
-      border: 1px solid rgba(148,163,255,0.5);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(15,23,42,0.9);
-    }
-    .hero-card-chip-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: radial-gradient(circle, var(--primary), transparent 60%);
-      box-shadow: 0 0 12px rgba(56,189,248,0.9);
-    }
+        .btn-outline {
+            padding: 0.8rem 1.8rem;
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            background: transparent;
+        }
 
-    /* SECTION + PANEL */
-    .section {
-      margin-top: 56px;
-      display: grid;
-      grid-template-columns: minmax(0, 3fr) minmax(0, 3.3fr);
-      gap: 24px;
-      align-items: flex-start;
-    }
-    .section-header {
-      max-width: 360px;
-    }
-    .section-eyebrow {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.26em;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-    .section-title {
-      font-size: 20px;
-      font-weight: 650;
-      margin-bottom: 6px;
-    }
-    .section-title span { color: var(--primary); }
-    .section-desc {
-      font-size: 13px;
-      color: var(--muted);
-    }
+        .btn-outline:hover {
+            background: var(--cyan);
+            color: var(--bg-deep);
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.4);
+        }
 
-    .panel {
-      border-radius: var(--radius);
-      background: linear-gradient(145deg, rgba(9,9,20,0.96), rgba(5,6,20,0.96));
-      border: 1px solid rgba(148,163,255,0.4);
-      padding: 18px 18px 16px;
-      box-shadow: var(--shadow-soft);
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-    }
-    .panel::before {
-      content: "";
-      position: absolute;
-      inset: -40%;
-      background: radial-gradient(circle at top, rgba(0,245,255,0.14), transparent 60%);
-      opacity: 0.6;
-      mix-blend-mode: screen;
-      pointer-events: none;
-    }
-    .panel:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 24px 70px rgba(0,0,0,0.95);
-      border-color: rgba(56,189,248,0.7);
-    }
-    .panel-inner { position: relative; z-index: 1; }
-    .panel-header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-      font-size: 11px;
-      color: var(--muted);
-    }
-    .panel-label {
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-    }
-    .panel-badge {
-      border-radius: 999px;
-      padding: 3px 9px;
-      border: 1px solid rgba(96,165,250,0.7);
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      color: var(--primary);
-      background: rgba(15,23,42,0.8);
-    }
+        /* Hero Section */
+        #hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 10%;
+            position: relative;
+            overflow: hidden;
+        }
 
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px 14px;
-      margin-top: 8px;
-      margin-bottom: 10px;
-    }
-    .form-grid.single {
-      grid-template-columns: minmax(0, 1fr);
-    }
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      font-size: 11px;
-    }
-    .field-label {
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      font-weight: 500;
-    }
-    .field-label span.req {
-      color: var(--danger);
-      margin-left: 3px;
-    }
-    .field-input,
-    .field-textarea,
-    .field-select {
-      border-radius: 9px;
-      border: 1px solid rgba(71,85,105,0.95);
-      background: radial-gradient(circle at top left, rgba(15,23,42,0.98), rgba(2,6,23,0.98));
-      color: var(--text);
-      font-size: 12px;
-      padding: 8px 10px;
-      outline: none;
-      box-shadow: inset 0 0 0 1px rgba(15,23,42,1);
-      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.1s ease;
-    }
-    .field-input::placeholder,
-    .field-textarea::placeholder {
-      color: rgba(148,163,255,0.6);
-    }
-    .field-input:focus,
-    .field-textarea:focus,
-    .field-select:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 20px rgba(56,189,248,0.4);
-      transform: translateY(-0.5px);
-    }
-    .field-textarea {
-      min-height: 110px;
-      resize: vertical;
-    }
+        /* Film Grain & Light Leaks */
+        #hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url('https://www.transparenttextures.com/patterns/film-grain.png');
+            opacity: 0.3;
+            pointer-events: none;
+        }
 
-    /* Select and option colors */
-    .field-select {
-      appearance: none;
-      border-radius: 9px;
-      border: 1px solid rgba(71,85,105,0.95);
-      background:
-        radial-gradient(circle at top left, rgba(15,23,42,0.98), rgba(2,6,23,0.98));
-      color: var(--text);
-      font-size: 12px;
-      padding: 8px 26px 8px 10px;
-      outline: none;
-      box-shadow: inset 0 0 0 1px rgba(15,23,42,1);
-      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.1s ease;
-      background-image:
-        linear-gradient(45deg, transparent 50%, var(--primary) 50%),
-        linear-gradient(135deg, var(--primary) 50%, transparent 50%);
-      background-position: calc(100% - 12px) 11px, calc(100% - 7px) 11px;
-      background-size: 5px 5px, 5px 5px;
-      background-repeat: no-repeat;
-    }
-    .field-select option {
-      background-color: #020617;
-      color: #e5e7eb;
-    }
+        .light-leak {
+            position: absolute;
+            width: 40vw;
+            height: 40vw;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            z-index: -1;
+            animation: float 15s infinite alternate;
+        }
+        .leak-cyan { background: var(--cyan); top: -10%; left: -10%; }
+        .leak-purple { background: var(--purple); bottom: -10%; right: -10%; animation-delay: -5s; }
 
-    .small-note {
-      font-size: 10px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
+        @keyframes float {
+            0% { transform: translate(0,0) scale(1); }
+            100% { transform: translate(100px, 50px) scale(1.2); }
+        }
 
-    /* File upload pill */
-    .file-drop {
-      border-radius: 12px;
-      border: 1px dashed rgba(148,163,255,0.6);
-      padding: 10px 10px;
-      background: radial-gradient(circle at top left, rgba(15,23,42,0.98), rgba(2,6,23,0.95));
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      cursor: pointer;
-      transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-    }
-    .file-drop:hover {
-      border-color: var(--primary);
-      box-shadow: var(--shadow-neon);
-      background: radial-gradient(circle at top, rgba(34,211,238,0.12), rgba(15,23,42,1));
-    }
-    .file-drop-title {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: var(--muted);
-    }
-    .file-drop-main {
-      font-size: 12px;
-      color: var(--text);
-    }
-    .file-drop-meta {
-      font-size: 10px;
-      color: var(--muted);
-    }
-    .file-list {
-      font-size: 10px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
+        .hero-title { font-size: 3.5rem; line-height: 1.1; margin-bottom: 1.5rem; max-width: 900px; }
+        .gradient-text { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-subtext { font-size: 1.2rem; color: var(--text-dim); max-width: 650px; margin-bottom: 2.5rem; }
+        .hero-btns { display: flex; gap: 1.5rem; }
 
-    .panel-footer-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 12px;
-      font-size: 11px;
-      color: var(--muted);
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .badge-soft {
-      border-radius: 999px;
-      padding: 4px 9px;
-      border: 1px solid rgba(148,163,255,0.6);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(15,23,42,0.9);
-    }
-    .badge-soft-dot {
-      width: 6px; height: 6px;
-      border-radius: 999px;
-      background: radial-gradient(circle, var(--secondary), transparent 55%);
-      box-shadow: 0 0 10px rgba(244,114,182,0.9);
-    }
-    .panel-footer-buttons {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .panel-btn-primary {
-      border-radius: 999px;
-      padding: 7px 16px;
-      font-size: 11px;
-      border: none;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: #020617;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      box-shadow: var(--shadow-neon);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      position: relative;
-      overflow: hidden;
-    }
-    .panel-btn-ghost {
-      border-radius: 999px;
-      padding: 7px 12px;
-      font-size: 11px;
-      border: 1px solid rgba(71,85,105,0.9);
-      background: rgba(15,23,42,0.9);
-      color: var(--muted);
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .panel-btn-primary span.dot,
-    .panel-btn-ghost span.dot {
-      width: 7px; height: 7px;
-      border-radius: 999px;
-      background: radial-gradient(circle, var(--primary), transparent 60%);
-      box-shadow: 0 0 10px rgba(56,189,248,0.9);
-    }
+        .quick-stats { margin-top: 5rem; display: flex; gap: 4rem; }
+        .stat-badge { display: flex; flex-direction: column; align-items: center; }
+        .stat-number { font-size: 1.8rem; color: var(--cyan); text-shadow: 0 0 10px rgba(0,245,212,0.3); }
+        .stat-label { font-size: 0.75rem; color: var(--text-dim); }
 
-    /* Sample video grid */
-    .sample-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-      margin-top: 8px;
-    }
-    .sample-card {
-      border-radius: 14px;
-      border: 1px solid rgba(148,163,255,0.4);
-      background: radial-gradient(circle at top left, rgba(15,23,42,0.96), rgba(2,6,23,0.96));
-      overflow: hidden;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.8);
-      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
-    }
-    .sample-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 26px 60px rgba(0,0,0,0.95);
-      border-color: rgba(56,189,248,0.8);
-    }
-    .sample-media {
-      position: relative;
-      aspect-ratio: 16 / 9;
-      overflow: hidden;
-    }
-    .sample-media video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    .sample-meta {
-      padding: 8px 10px 10px;
-      font-size: 11px;
-    }
-    .sample-title {
-      font-size: 12px;
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
-    .sample-tagline {
-      font-size: 11px;
-      color: var(--muted);
-    }
-    @media (max-width: 900px) {
-      .sample-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
-    }
-    @media (max-width: 600px) {
-      .sample-grid { grid-template-columns: minmax(0,1fr); }
-    }
+        /* Sections Styling */
+        section { padding: 100px 8%; }
+        .section-header { text-align: center; margin-bottom: 4rem; }
+        .section-tag { font-family: 'Orbitron'; font-size: 0.8rem; letter-spacing: 5px; color: var(--text-dim); }
+        .section-title { font-size: 3rem; font-style: italic; font-weight: 700; margin-top: 0.5rem; }
 
-    /* Global hover transitions & glow layer for primary buttons */
-    a, button {
-      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-    }
-    a:hover, button:hover { transform: translateY(-2px); }
-    .btn-primary::before,
-    .panel-btn-primary::before,
-    .nav-cta::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      background:
-        radial-gradient(circle at 10% 0%, rgba(255,255,255,0.14), transparent 55%),
-        radial-gradient(circle at 80% 120%, rgba(0,245,255,0.3), transparent 60%);
-      opacity: 0;
-      transition: opacity 0.25s ease;
-      mix-blend-mode: screen;
-      pointer-events: none;
-    }
-    .btn-primary:hover::before,
-    .panel-btn-primary:hover::before,
-    .nav-cta:hover::before {
-      opacity: 1;
-    }
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
 
-    /* Scroll reveal */
-    .scroll-reveal {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .scroll-reveal.active {
-      opacity: 1;
-      transform: translateY(0);
-    }
+        .service-card {
+            background: var(--card-bg);
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
 
-    /* Neon flicker & hero float */
-    @keyframes neonFlicker {
-      0%,18%,22%,25%,53%,57%,100% {
-        text-shadow:
-          0 0 4px rgba(56,189,248,0.9),
-          0 0 12px rgba(56,189,248,0.8),
-          0 0 24px rgba(56,189,248,0.6);
-      }
-      20%,24%,55% { text-shadow: none; }
-    }
-    @keyframes heroFloat {
-      0% {
-        transform: translateY(0);
-        box-shadow: var(--shadow-soft);
-      }
-      100% {
-        transform: translateY(-6px);
-        box-shadow: 0 32px 70px rgba(0,0,0,0.9);
-      }
-    }
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--cyan);
+            box-shadow: 0 10px 40px rgba(0, 245, 212, 0.1);
+        }
 
-    /* Toast */
-    .toast {
-      position: fixed;
-      right: 16px;
-      bottom: 18px;
-      padding: 10px 14px;
-      border-radius: 12px;
-      font-size: 12px;
-      color: var(--text);
-      background: rgba(15,23,42,0.96);
-      border: 1px solid rgba(56,189,248,0.7);
-      box-shadow: var(--shadow-neon);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      opacity: 0;
-      transform: translateY(10px);
-      pointer-events: none;
-      transition: opacity 0.18s ease, transform 0.18s ease;
-      z-index: 50;
-    }
-    .toast.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .toast-dot {
-      width: 9px; height: 9px;
-      border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 12px rgba(34,197,94,0.95);
-    }
-    .toast.error {
-      border-color: rgba(248,113,113,0.9);
-    }
-    .toast.error .toast-dot {
-      background: var(--danger);
-      box-shadow: 0 0 12px rgba(248,113,113,0.95);
-    }
+        .service-card i {
+            font-size: 2.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
 
-    /* Neon cursor glow */
-    #cursorGlow {
-      position: fixed;
-      width: 160px; height: 160px;
-      border-radius: 50%;
-      pointer-events: none;
-      mix-blend-mode: screen;
-      background: radial-gradient(circle, rgba(0,245,255,0.35), transparent 60%);
-      opacity: 0;
-      transform: translate(-50%, -50%);
-      transition: opacity 0.3s ease;
-      z-index: 5;
-    }
+        .service-card h3 { margin-bottom: 1rem; font-size: 1.2rem; }
+        .service-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1.5rem; }
+        .explore-link { color: var(--cyan); text-decoration: none; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 5px; }
+        .explore-link::after { content: '→'; transition: transform 0.3s; }
+        .explore-link:hover::after { transform: translateX(5px); }
 
-    @media (max-width: 880px) {
-      .nav { padding-inline: 14px; }
-      .nav-links { display: none; }
-    }
-    @media (max-width: 780px) {
-      .hero { grid-template-columns: minmax(0, 1fr); }
-      .hero-card { order: -1; }
-      .section { grid-template-columns: minmax(0,1fr); }
-    }
-    @media (max-width: 520px) {
-      .page { padding-inline: 16px; }
-      .hero { margin-top: 28px; }
-      .panel { padding-inline: 14px; }
-      .nav { padding-inline: 12px; }
-    }
-  </style>
+        /* Process Flow */
+        .process-container {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-top: 4rem;
+        }
+
+        .process-container::before {
+            content: "";
+            position: absolute;
+            top: 30px;
+            left: 5%;
+            width: 90%;
+            height: 2px;
+            border-top: 2px dashed rgba(0, 245, 212, 0.2);
+            z-index: 0;
+        }
+
+        .process-step {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            z-index: 1;
+            padding: 0 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: 1s;
+        }
+
+        .process-step.visible { opacity: 1; transform: translateY(0); }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--bg-deep);
+            border: 2px solid var(--cyan);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Orbitron';
+            color: var(--cyan);
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 15px rgba(0,245,212,0.3);
+        }
+
+        /* Pricing */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .price-card {
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 3.5rem 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .price-card.featured {
+            border: 2px solid var(--cyan);
+            transform: scale(1.05);
+            background: rgba(17, 24, 39, 0.9);
+            position: relative;
+        }
+
+        .popular-tag {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gradient);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 800;
+        }
+
+        .price-card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .price-tagline { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 2rem; }
+        .price-value { font-size: 3rem; font-weight: 900; margin-bottom: 2rem; color: #fff; }
+        .price-list { list-style: none; text-align: left; margin-bottom: 2.5rem; }
+        .price-list li { margin-bottom: 1rem; color: var(--text-dim); font-size: 0.9rem; }
+        .price-list li i { color: var(--cyan); margin-right: 12px; }
+
+        /* Bento Portfolio */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 250px;
+            gap: 1.5rem;
+        }
+
+        .bento-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            background: var(--card-bg);
+        }
+
+        .bento-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s; filter: grayscale(30%); }
+        .bento-item:hover img { transform: scale(1.1); filter: grayscale(0%); }
+
+        .bento-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(transparent, rgba(10, 13, 26, 0.9));
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 2rem;
+            opacity: 0;
+            transition: 0.4s;
+        }
+
+        .bento-item:hover .bento-overlay { opacity: 1; }
+        .wide { grid-column: span 2; }
+        .tall { grid-row: span 2; }
+
+        /* Marquee */
+        .marquee-section { background: rgba(255,255,255,0.02); padding: 3rem 0; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .marquee-track { display: flex; overflow: hidden; width: 100%; }
+        .marquee-content { display: flex; gap: 4rem; animation: scroll 30s linear infinite; }
+        .eq-badge { display: flex; align-items: center; gap: 10px; color: var(--text-dim); font-family: 'Orbitron'; font-size: 0.9rem; white-space: nowrap; }
+        .eq-badge i { color: var(--cyan); font-size: 1.2rem; }
+
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* Inquiry Form */
+        .inquiry-split { display: grid; grid-template-columns: 1fr 1.5fr; gap: 5rem; background: var(--card-bg); border-radius: 30px; padding: 4rem; overflow: hidden; position: relative; }
+        .form-group { margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .form-group label { color: var(--cyan); font-size: 0.8rem; font-weight: 700; font-family: 'Orbitron'; }
+        input, select, textarea {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            background: #1a1f2e;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 1rem;
+            color: white;
+            border-radius: 8px;
+            outline: none;
+            font-family: 'Rajdhani';
+        }
+        input:focus, textarea:focus { border-color: var(--purple); }
+
+        /* CTA Banner */
+        .final-cta {
+            position: relative;
+            text-align: center;
+            padding: 8rem 0;
+            background: var(--bg-deep);
+            overflow: hidden;
+        }
+        .gradient-mesh {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(0, 245, 212, 0.1) 0%, rgba(155, 93, 229, 0.1) 50%, transparent 100%);
+            z-index: 0;
+        }
+
+        @media (max-width: 1024px) {
+            .inquiry-split { grid-template-columns: 1fr; }
+            .bento-grid { grid-template-columns: repeat(2, 1fr); }
+            .hero-title { font-size: 2.5rem; }
+            .process-container { flex-direction: column; gap: 3rem; }
+            .process-container::before { display: none; }
+            .nav-links { display: none; }
+        }
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem;
+                gap: 0.75rem;
+                align-items: flex-start;
+                flex-wrap: wrap;
+            }
+
+            .nav-logo { font-size: 1.05rem; }
+            nav .btn-outline {
+                width: 100%;
+                text-align: center;
+            }
+
+            #hero {
+                min-height: 100vh;
+                height: auto;
+                padding: 7rem 1rem 4rem;
+            }
+
+            section,
+            #platforms { padding: 72px 1rem; }
+            .hero-title { font-size: 2.25rem; }
+            .hero-sub { font-size: 1rem; }
+            .hero-btns,
+            .hero-stats {
+                width: 100%;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero-btns .btn { width: 100%; text-align: center; }
+            .section-header { margin-bottom: 2.5rem; }
+            .services-grid,
+            .bento-grid,
+            .pricing-grid,
+            .dashboard-container,
+            .inquiry-split { grid-template-columns: 1fr; }
+
+            .framework-container {
+                height: 360px;
+                border-radius: 20px;
+            }
+
+            .center-node {
+                width: 90px;
+                height: 90px;
+                font-size: 0.85rem;
+            }
+
+            .orbit-ring {
+                width: 260px;
+                height: 260px;
+            }
+
+            .orbit-node {
+                width: 82px;
+                height: 34px;
+                font-size: 0.58rem;
+            }
+
+            .n2 { right: -40px; }
+            .n4 { left: -40px; }
+            .platform-row,
+            .metric-pills { justify-content: flex-start; }
+            .metric-pills { flex-wrap: wrap; }
+            .price-card,
+            .inquiry-split {
+                padding: 1.5rem 1rem;
+            }
+
+            .inquiry-split > * {
+                min-width: 0;
+            }
+
+            .inquiry-form {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .inquiry-form > div { grid-template-columns: 1fr !important; }
+            .price-card.featured { transform: none; }
+            .final-cta { padding: 88px 1rem; }
+            .pulse-glow {
+                width: 260px;
+                height: 260px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="neon-orbit"></div>
-  <div id="cursorGlow"></div>
 
-  <div class="page">
-    <header class="nav">
-      <div class="logo">
-        <div class="logo-orb"></div>
-        <div class="logo-text">
-          <span class="logo-name">NEONFRAME</span>
-          <span class="logo-sub">Media Production</span>
+    <div class="particle-bg"></div>
+
+    <nav>
+        <a href="#" class="nav-logo">XEROVA<span> MEDIA PRODUCTION</span></a>
+        <div class="nav-links">
+            <a href="#services">SERVICES</a>
+            <a href="#process">PROCESS</a>
+            <a href="#pricing">PACKAGES</a>
+            <a href="#work">PORTFOLIO</a>
         </div>
-      </div>
+        <a href="#book" class="btn-outline">GET A QUOTE</a>
+    </nav>
 
-      <nav class="nav-links">
-        <a href="#home">Overview</a>
-        <a href="#samples">Samples</a>
-        <a href="#brief">Project brief</a>
-        <a href="#upload">Upload</a>
-      </nav>
-
-      <button class="nav-cta" onclick="document.getElementById('brief').scrollIntoView({behavior:'smooth'})">
-        Start brief
-        <span class="icon">↗</span>
-      </button>
-    </header>
-
-    <!-- HERO -->
-    <main id="home" class="hero scroll-reveal">
-      <section>
-        <div class="hero-kicker">
-          <span class="hero-kicker-dot"></span>
-          Neon-native media studio
-        </div>
-        <h1 class="hero-title">
-          Bring your <span class="gradient">video & photo</span> ideas to life.
-        </h1>
-        <p class="hero-subtitle">
-          NeonFrame Media Studio edits, grades, and crafts visuals for creators, brands,
-          and agencies – from cinematic reels to sharp product photos.
-        </p>
-
-        <div class="hero-tags">
-          <div class="tag-pill"><strong>Video</strong> editing & VFX</div>
-          <div class="tag-pill">Color grading · sound design</div>
-          <div class="tag-pill">Photo retouch · composites</div>
+    <section id="hero">
+        <div class="light-leak leak-cyan"></div>
+        <div class="light-leak leak-purple"></div>
+        
+        <h1 class="hero-title">We Don't Just Capture Moments — <span class="gradient-text">We Create Them.</span></h1>
+        <p class="hero-subtext">Premium video production, photography, and high-impact content creation for brands that demand cinematic excellence.</p>
+        
+        <div class="hero-btns">
+            <a href="#work" class="btn-gradient">VIEW OUR WORK</a>
+            <a href="#book" class="btn-outline">GET A QUOTE</a>
         </div>
 
-        <div class="hero-actions">
-          <a href="#brief" class="btn-primary">
-            Create a brief
-            <span>⟶</span>
-          </a>
-          <a href="#upload" class="btn-ghost">
-            <span class="btn-ghost-icon">⭳</span>
-            Upload raw files
-          </a>
-        </div>
-
-        <div class="hero-meta">
-          <span>Average delivery: 3–7 business days*</span>
-          <span class="hero-dot-divider"></span>
-          <span>Rush edits available for urgent launches</span>
-        </div>
-      </section>
-
-      <aside class="hero-card" aria-hidden="true">
-        <div class="hero-card-glow"></div>
-        <div class="hero-card-inner">
-          <div class="hero-card-header">
-            <span class="hero-card-title">Current production queue</span>
-            <span class="hero-card-status-pill">
-              <span class="hero-card-status-pill-dot"></span>
-              Slots open
-            </span>
-          </div>
-          <div class="hero-card-body">
-            <p>Typical projects we handle:</p>
-            <ul style="margin-top:6px; padding-left:16px;">
-              <li>Social reels & shorts</li>
-              <li>Brand trailers & product videos</li>
-              <li>Portrait & product photo edits</li>
-            </ul>
-          </div>
-          <div class="hero-card-footer">
-            <div class="hero-card-chip">
-              <span class="hero-card-chip-dot"></span>
-              Multi-format delivery: MP4, MOV, JPG, PNG
+        <div class="quick-stats">
+            <div class="stat-badge">
+                <span class="stat-number">50+</span>
+                <span class="stat-label">Projects</span>
             </div>
-            <span>Tell us your platform · we’ll match specs.</span>
-          </div>
+            <div class="stat-badge">
+                <span class="stat-number">4K & 8K</span>
+                <span class="stat-label">Production</span>
+            </div>
+            <div class="stat-badge">
+                <span class="stat-number">48hr</span>
+                <span class="stat-label">Turnaround</span>
+            </div>
         </div>
-      </aside>
-    </main>
-
-    <!-- SAMPLES SECTION -->
-    <section id="samples" class="section scroll-reveal">
-      <div class="section-header">
-        <p class="section-eyebrow">Sample work</p>
-        <h2 class="section-title">See our <span>edit style</span></h2>
-        <p class="section-desc">
-          A few recent clips we’ve cut and graded. Share links like these in your brief
-          if you want us to match a specific look.
-        </p>
-      </div>
-
-      <div class="panel">
-        <div class="panel-inner">
-          <div class="panel-header-row">
-            <span class="panel-label">Edited samples</span>
-            <span class="panel-badge">Preview only</span>
-          </div>
-
-          <div class="sample-grid">
-            <!-- Replace src paths with your own files -->
-            <article class="sample-card">
-              <div class="sample-media">
-                <video src="samples/reel-product.mp4" controls preload="metadata"></video>
-              </div>
-              <div class="sample-meta">
-                <h3 class="sample-title">Product reel – Neon sneakers</h3>
-                <p class="sample-tagline">Fast cuts · bold colors · beat‑synced transitions</p>
-              </div>
-            </article>
-
-            <article class="sample-card">
-              <div class="sample-media">
-                <video src="samples/creator-vlog.mp4" controls preload="metadata"></video>
-              </div>
-              <div class="sample-meta">
-                <h3 class="sample-title">Creator vlog – Day in life</h3>
-                <p class="sample-tagline">Soft grade · smooth motion · subtitle overlays</p>
-              </div>
-            </article>
-
-            <article class="sample-card">
-              <div class="sample-media">
-                <video src="samples/brand-ad.mp4" controls preload="metadata"></video>
-              </div>
-              <div class="sample-meta">
-                <h3 class="sample-title">Brand spot – Launch teaser</h3>
-                <p class="sample-tagline">Cinematic look · logo reveal · sound design</p>
-              </div>
-            </article>
-          </div>
-
-          <p class="small-note" style="margin-top:10px;">
-            Replace the <code>src</code> values with your own MP4 files or YouTube/Vimeo embeds.
-          </p>
-        </div>
-      </div>
     </section>
 
-    <!-- PROJECT BRIEF -->
-    <section id="brief" class="section scroll-reveal">
-      <div class="section-header">
-        <p class="section-eyebrow">Project brief</p>
-        <h2 class="section-title">Describe how <span>you want it</span></h2>
-        <p class="section-desc">
-          Tell us exactly how you want your video or photo to look, feel, and sound –
-          so our editors can match your vision frame by frame.
-        </p>
-      </div>
-
-      <div class="panel">
-        <div class="panel-inner">
-          <div class="panel-header-row">
-            <span class="panel-label">Creative & edit instructions</span>
-            <span class="panel-badge">Step 1 of 2</span>
-          </div>
-
-          <form id="briefForm" onsubmit="handleSubmit(event, 'brief')">
-            <div class="form-grid">
-              <div class="field">
-                <label class="field-label">Client name<span class="req">*</span></label>
-                <input class="field-input" type="text" name="name" placeholder="Your full name" required />
-              </div>
-              <div class="field">
-                <label class="field-label">Email<span class="req">*</span></label>
-                <input class="field-input" type="email" name="email" placeholder="you@example.com" required />
-              </div>
-              <div class="field">
-                <label class="field-label">Phone / WhatsApp</label>
-                <input class="field-input" type="tel" name="phone" placeholder="+91 ..." />
-              </div>
-              <div class="field">
-                <label class="field-label">Company / brand</label>
-                <input class="field-input" type="text" name="brand" placeholder="Channel, brand, or project name" />
-              </div>
-            </div>
-
-            <div class="form-grid">
-              <div class="field">
-                <label class="field-label">Type of work<span class="req">*</span></label>
-                <select class="field-select" name="workType" required>
-                  <option value="" disabled selected hidden>Select one</option>
-                  <option>Video edit</option>
-                  <option>Photo edit</option>
-                  <option>Both – video & photo</option>
-                </select>
-              </div>
-              <div class="field">
-                <label class="field-label">Primary platform</label>
-                <select class="field-select" name="platform">
-                  <option value="" disabled selected hidden>Optional</option>
-                  <option>Instagram / Reels</option>
-                  <option>YouTube / Shorts</option>
-                  <option>Facebook</option>
-                  <option>Website / Landing page</option>
-                  <option>Other</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-grid single">
-              <div class="field">
-                <label class="field-label">How should it look / feel?<span class="req">*</span></label>
-                <textarea class="field-textarea" name="style" placeholder="Explain your vision: energy (fast / calm), colors, mood, any references or links." required></textarea>
-              </div>
-            </div>
-
-            <div class="form-grid single">
-              <div class="field">
-                <label class="field-label">Specific edit instructions</label>
-                <textarea class="field-textarea" name="instructions" placeholder="Tell us what to add/remove: text on screen, cuts, transitions, music style, logo placement, subtitles, etc."></textarea>
-                <p class="small-note">The more detail you give, the closer we can match your idea on the first version.</p>
-              </div>
-            </div>
-
-            <div class="form-grid">
-              <div class="field">
-                <label class="field-label">Preferred end date<span class="req">*</span></label>
-                <input class="field-input" type="date" name="deadline" required />
-              </div>
-              <div class="field">
-                <label class="field-label">Budget range (optional)</label>
-                <input class="field-input" type="text" name="budget" placeholder="Example: ₹10K – ₹25K" />
-              </div>
-            </div>
-
-            <div class="panel-footer-row">
-              <div class="badge-soft">
-                <span class="badge-soft-dot"></span>
-                After this step, attach your raw files in the upload block below.
-              </div>
-              <div class="panel-footer-buttons">
-                <button type="button" class="panel-btn-ghost" onclick="document.getElementById('briefForm').reset()">
-                  <span class="dot"></span>
-                  Reset
-                </button>
-                <button type="submit" class="panel-btn-primary">
-                  <span class="dot"></span>
-                  Save brief
-                </button>
-              </div>
-            </div>
-          </form>
+    <section id="services">
+        <div class="section-header">
+            <p class="section-tag">OUR SERVICES</p>
+            <h2 class="section-title gradient-text">What We Offer</h2>
         </div>
-      </div>
+        <div class="services-grid">
+            <div class="service-card">
+                <i class="fas fa-video"></i>
+                <h3>Video Production</h3>
+                <p>High-end brand films, commercials, and corporate videos tailored for impact.</p>
+                <a href="#" class="explore-link">Explore</a>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-camera"></i>
+                <h3>Photography</h3>
+                <p>Professional product, lifestyle, and editorial photography for digital platforms.</p>
+                <a href="#" class="explore-link">Explore</a>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-hashtag"></i>
+                <h3>Content Creation</h3>
+                <p>Social-first short-form content (Reels/TikTok) optimized for engagement.</p>
+                <a href="#" class="explore-link">Explore</a>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-note"></i>
+                <h3>Content Writing</h3>
+                <p>Stunning 4K FPV and cinematic aerial shots captured by licensed pilots.</p>
+                <a href="#" class="explore-link">Explore</a>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-cut"></i>
+                <h3>Post-Production</h3>
+                <p>Advanced color grading, sound design, and motion graphics editing.</p>
+                <a href="#" class="explore-link">Explore</a>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-bullhorn"></i>
+                <h3>Brand Storytelling</h3>
+                <p>Developing narrative strategies that connect your brand with its audience.</p>
+                <a href="#" class="explore-link">Explore</a>
+            </div>
+        </div>
     </section>
 
-    <!-- UPLOAD SECTION -->
-    <section id="upload" class="section scroll-reveal">
-      <div class="section-header">
-        <p class="section-eyebrow">Upload</p>
-        <h2 class="section-title">Send your <span>raw files</span></h2>
-        <p class="section-desc">
-          Upload your video, audio, and photo files so our editors can start working.
-          You can add multiple files in one go.
-        </p>
-      </div>
-
-      <div class="panel">
-        <div class="panel-inner">
-          <div class="panel-header-row">
-            <span class="panel-label">Files & reference material</span>
-            <span class="panel-badge">Step 2 of 2</span>
-          </div>
-
-          <!-- NOTE: backend handling for uploads must be added server-side -->
-          <form id="uploadForm" onsubmit="handleSubmit(event, 'upload')" enctype="multipart/form-data">
-            <div class="form-grid single">
-              <div class="field">
-                <label class="field-label">Project reference ID (optional)</label>
-                <input class="field-input" type="text" name="refId" placeholder="If we gave you a project ID, add it here" />
-              </div>
+    <div class="marquee-section">
+        <div class="marquee-track">
+            <div class="marquee-content">
+                <div class="eq-badge"><i class="fas fa-bolt"></i> SONY FX6</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> DJI RONIN</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> RED CAMERA</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> NIKON Z9</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> MAVIC 3 PRO</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> DAVINCI RESOLVE</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> ADOBE SUITE</div>
+                <!-- Duplicate for infinite effect -->
+                <div class="eq-badge"><i class="fas fa-bolt"></i> SONY FX6</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> DJI RONIN</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> RED CAMERA</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> NIKON Z9</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> MAVIC 3 PRO</div>
+                <div class="eq-badge"><i class="fas fa-bolt"></i> DAVINCI RESOLVE</div>
             </div>
-
-            <div class="form-grid single">
-              <div class="field">
-                <label class="field-label">Upload video, audio & photos<span class="req">*</span></label>
-                <label class="file-drop" for="fileInput">
-                  <div class="file-drop-title">Drag & drop files here</div>
-                  <div class="file-drop-main">or click to browse your device</div>
-                  <div class="file-drop-meta">Accepted: MP4, MOV, MP3, WAV, JPG, PNG • You can select multiple files.</div>
-                  <div id="fileList" class="file-list">No files selected yet.</div>
-                </label>
-                <input
-                  id="fileInput"
-                  class="field-input"
-                  style="display:none"
-                  type="file"
-                  name="files"
-                  multiple
-                  accept=".mp4,.mov,.mp3,.wav,.jpg,.jpeg,.png"
-                  required
-                  onchange="updateFileList()"
-                />
-              </div>
-            </div>
-
-            <div class="form-grid single">
-              <div class="field">
-                <label class="field-label">Extra notes for our team</label>
-                <textarea class="field-textarea" name="notes" placeholder="Anything we should know about the footage, order of clips, music licensing, or brand rules?"></textarea>
-              </div>
-            </div>
-
-            <div class="panel-footer-row">
-              <div class="badge-soft">
-                <span class="badge-soft-dot"></span>
-                This is a front‑end demo – connect this form to your backend to actually upload files.
-              </div>
-              <div class="panel-footer-buttons">
-                <button type="button" class="panel-btn-ghost" onclick="document.getElementById('uploadForm').reset(); resetFileList();">
-                  <span class="dot"></span>
-                  Clear
-                </button>
-                <button type="submit" class="panel-btn-primary">
-                  <span class="dot"></span>
-                  Submit request
-                </button>
-              </div>
-            </div>
-          </form>
         </div>
-      </div>
+    </div>
+
+    <section id="process">
+        <div class="section-header">
+            <p class="section-tag">THE WORKFLOW</p>
+            <h2 class="section-title gradient-text">How We Work</h2>
+        </div>
+        <div class="process-container">
+            <div class="process-step">
+                <div class="step-number">01</div>
+                <h3>Brief & Vision</h3>
+                <p>Initial discovery to align on goals and creative direction.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">02</div>
+                <h3>Pre-Production</h3>
+                <p>Scripting, storyboarding, and scouting the perfect locations.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">03</div>
+                <h3>Shoot Day</h3>
+                <p>Capturing the magic with high-end equipment and crew.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">04</div>
+                <h3>Delivery</h3>
+                <p>Precision editing and final files delivered in 48 hours.</p>
+            </div>
+        </div>
     </section>
-  </div>
 
-  <div id="toast" class="toast" role="status" aria-live="polite">
-    <span class="toast-dot"></span>
-    <span id="toastText">Saved</span>
-  </div>
+    <section id="pricing">
+        <div class="section-header">
+            <p class="section-tag">PACKAGES</p>
+            <h2 class="section-title gradient-text">Select a Tier</h2>
+        </div>
+        <div class="pricing-grid">
+            <div class="price-card">
+                <h3>Starter</h3>
+                <p class="price-tagline">Perfect for small businesses</p>
+                <div class="price-value">₹999</div>
+                <ul class="price-list">
+                    <li><i class="fas fa-check"></i> 1 High-res Brand Video</li>
+                    <li><i class="fas fa-check"></i> 10 Profession Photos</li>
+                    <li><i class="fas fa-check"></i> 2 Revision Rounds</li>
+                    <li><i class="fas fa-check"></i> 5-Day Delivery</li>
+                </ul>
+                <button class="btn-outline" style="width: 100%;">BOOK NOW</button>
+            </div>
+            <div class="price-card featured">
+                <div class="popular-tag">MOST POPULAR</div>
+                <h3>Studio</h3>
+                <p class="price-tagline">The ultimate content package</p>
+                <div class="price-value">₹2,499</div>
+                <ul class="price-list">
+                    <li><i class="fas fa-check"></i> 3 Commercial Ads</li>
+                    <li><i class="fas fa-check"></i> 25 Lifestyle Photos</li>
+                    <li><i class="fas fa-check"></i> Aerial Drone Shots</li>
+                    <li><i class="fas fa-check"></i> 48hr Priority Delivery</li>
+                </ul>
+                <button class="btn-gradient" style="width: 100%;">BOOK NOW</button>
+            </div>
+            <div class="price-card">
+                <h3>Enterprise</h3>
+                <p class="price-tagline">Custom full-scale production</p>
+                <div class="price-value">Custom</div>
+                <ul class="price-list">
+                    <li><i class="fas fa-check"></i> Unlimited Deliverables</li>
+                    <li><i class="fas fa-check"></i> Full Production Crew</li>
+                    <li><i class="fas fa-check"></i> 8K Cinematic Resolution</li>
+                    <li><i class="fas fa-check"></i> Multi-Location Shoots</li>
+                </ul>
+                <button class="btn-outline" style="width: 100%;">CONTACT US</button>
+            </div>
+        </div>
+    </section>
 
-  <script>
-    // Neon cursor glow
-    (function () {
-      const glow = document.getElementById('cursorGlow');
-      if (!glow) return;
+    <section id="work">
+        <div class="section-header">
+            <p class="section-tag">OUR WORK</p>
+            <h2 class="section-title gradient-text">Recent Projects</h2>
+        </div>
+        <div class="bento-grid">
+            <div class="bento-item wide tall">
+                <img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=800" alt="Work 1">
+                <div class="bento-overlay">
+                    <span class="section-tag" style="font-size: 0.6rem;">BRAND FILM</span>
+                    <h3>The Urban Explorer</h3>
+                    <p>Client: Northface</p>
+                </div>
+            </div>
+            <div class="bento-item">
+                <img src="https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&q=80&w=400" alt="Work 2">
+                <div class="bento-overlay">
+                    <h3>Summer Vibes</h3>
+                </div>
+            </div>
+            <div class="bento-item tall">
+                <img src="https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=400" alt="Work 3">
+                <div class="bento-overlay">
+                    <h3>Cinematic Cuts</h3>
+                </div>
+            </div>
+            <div class="bento-item">
+                <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=400" alt="Work 4">
+                <div class="bento-overlay">
+                    <h3>Lens Focus</h3>
+                </div>
+            </div>
+            <div class="bento-item wide">
+                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=800" alt="Work 5">
+                <div class="bento-overlay">
+                    <h3>Portrait Series</h3>
+                </div>
+            </div>
+        </div>
+    </section>
 
-      document.addEventListener('mousemove', function (e) {
-        glow.style.opacity = 1;
-        glow.style.left = e.clientX + 'px';
-        glow.style.top = e.clientY + 'px';
-      });
+    <section id="book">
+        <div class="inquiry-split">
+            <div class="inquiry-info">
+                <h2 class="hero-title" style="font-size: 2.2rem;">Let's Create Something Extraordinary</h2>
+                <p style="color: var(--text-dim); margin-bottom: 2rem;">Ready to elevate your brand's visual identity? Fill out the form and our creative director will reach out within 24 hours.</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <i class="fas fa-envelope" style="color: var(--cyan);"></i>
+                        <span>hello@xerovamedia.digital</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <i class="fas fa-phone" style="color: var(--cyan);"></i>
+                        <span>+1 (555) 902-3412</span>
+                    </div>
+                </div>
+            </div>
 
-      document.addEventListener('mouseleave', function () {
-        glow.style.opacity = 0;
-      });
-    })();
+            <form class="inquiry-form">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="form-group">
+                        <label>FULL NAME</label>
+                        <input type="text" placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>EMAIL ADDRESS</label>
+                        <input type="email" placeholder="john@brand.com">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>SERVICE TYPE</label>
+                    <select>
+                        <option>Video Production</option>
+                        <option>Photography</option>
+                        <option>Full Media Package</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>PROJECT BRIEF</label>
+                    <textarea rows="4" placeholder="Tell us about your vision..."></textarea>
+                </div>
+                <button type="submit" class="btn-gradient" style="width: 100%; padding: 1.2rem;">SEND ENQUIRY</button>
+            </form>
+        </div>
+    </section>
 
-    // Scroll reveal
-    function setupScrollReveal() {
-      const elements = document.querySelectorAll('.scroll-reveal');
-      if (!('IntersectionObserver' in window)) {
-        elements.forEach(function (el) { el.classList.add('active'); });
-        return;
-      }
+    <div class="final-cta">
+        <div class="gradient-mesh"></div>
+        <div style="position: relative; z-index: 1;">
+            <h2 class="hero-title" style="font-size: 2.5rem;">Your Story Deserves to Be Seen.</h2>
+            <a href="media.html" class="btn-gradient" style="padding: 1.5rem 3.5rem; font-size: 1rem;">START YOUR PROJECT</a>
+        </div>
+    </div>
 
-      const observer = new IntersectionObserver(function (entries, obs) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('active');
-            obs.unobserve(entry.target);
-          }
+    <script>
+        // Simple Intersection Observer for Process Steps
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.process-step').forEach(step => {
+            observer.observe(step);
         });
-      }, {
-        threshold: 0.15,
-        rootMargin: '0px 0px -10% 0px'
-      });
 
-      elements.forEach(function (el) { observer.observe(el); });
-    }
-    document.addEventListener('DOMContentLoaded', setupScrollReveal);
-
-    // Toast
-    function showToast(message, isError) {
-      const toast = document.getElementById('toast');
-      const toastText = document.getElementById('toastText');
-
-      toastText.textContent = message;
-      if (isError) toast.classList.add('error');
-      else toast.classList.remove('error');
-
-      toast.classList.add('visible');
-      setTimeout(function () { toast.classList.remove('visible'); }, 2600);
-    }
-
-    // File list display
-    function updateFileList() {
-      const input = document.getElementById('fileInput');
-      const list = document.getElementById('fileList');
-      if (!input.files.length) {
-        list.textContent = 'No files selected yet.';
-        return;
-      }
-      const names = Array.from(input.files).map(f => f.name);
-      list.textContent = names.join(' • ');
-    }
-    function resetFileList() {
-      const list = document.getElementById('fileList');
-      list.textContent = 'No files selected yet.';
-    }
-
-    // Form submit (front-end only demo)
-    function handleSubmit(event, type) {
-      event.preventDefault();
-      const form = event.target;
-
-      if (!form.checkValidity()) {
-        showToast('Please fill the required fields.', true);
-        return;
-      }
-
-      const formData = new FormData(form);
-      const payload = {};
-      formData.forEach((value, key) => {
-        if (payload[key]) {
-          if (!Array.isArray(payload[key])) payload[key] = [payload[key]];
-          payload[key].push(value);
-        } else {
-          payload[key] = value;
-        }
-      });
-      payload._type = type;
-
-      console.log('NeonFrame form submission:', payload);
-
-      form.reset();
-      if (type === 'upload') resetFileList();
-
-      showToast(
-        type === 'brief'
-          ? 'Brief saved. You can now upload your files.'
-          : 'Request received. We will reply with timelines.'
-      );
-    }
-  </script>
+        // Sticky Nav Blur on Scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.background = "rgba(10, 13, 26, 0.95)";
+                nav.style.padding = "0.8rem 8%";
+            } else {
+                nav.style.background = "rgba(10, 13, 26, 0.85)";
+                nav.style.padding = "1.2rem 8%";
+            }
+        });
+    </script>
 </body>
 </html>
