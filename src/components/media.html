@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>NeonFrame Media Studio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #050712;
+      --primary: #00f5ff;
+      --secondary: #ff00ff;
+      --accent: #8b5cff;
+      --text: #f5f7ff;
+      --muted: #9ca3c7;
+      --danger: #ff4b81;
+      --radius: 14px;
+      --shadow-neon: 0 0 14px rgba(0,245,255,0.6), 0 0 34px rgba(0,245,255,0.3);
+      --shadow-soft: 0 26px 70px rgba(0,0,0,0.9);
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #12142b, #050712 55%, #000 100%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .neon-orbit {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .neon-orbit::before,
+    .neon-orbit::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.55;
+      mix-blend-mode: screen;
+    }
+    .neon-orbit::before {
+      width: 420px; height: 420px;
+      background: radial-gradient(circle, var(--primary), transparent 70%);
+      top: -120px; left: -40px;
+      animation: float1 18s ease-in-out infinite alternate;
+    }
+    .neon-orbit::after {
+      width: 520px; height: 520px;
+      background: radial-gradient(circle, var(--secondary), transparent 70%);
+      bottom: -160px; right: -60px;
+      animation: float2 22s ease-in-out infinite alternate;
+    }
+    @keyframes float1 {
+      0% { transform: translate(0,0); }
+      100% { transform: translate(40px,70px); }
+    }
+    @keyframes float2 {
+      0% { transform: translate(0,0); }
+      100% { transform: translate(-50px,-60px); }
+    }
+
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px 20px 64px;
+    }
+
+    /* NAV */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(9,11,28,0.96), rgba(9,11,22,0.94));
+      border: 1px solid rgba(148,163,255,0.25);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(16px);
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-orb {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #ffffff, var(--primary) 35%, #001f30 70%);
+      box-shadow: var(--shadow-neon);
+      position: relative;
+    }
+    .logo-orb::after {
+      content: "";
+      position: absolute;
+      inset: 7px;
+      border-radius: inherit;
+      border: 2px solid rgba(3,255,247,0.8);
+      border-top-color: transparent;
+      border-bottom-color: transparent;
+      transform: rotate(35deg);
+    }
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      font-size: 13px;
+    }
+    .logo-name {
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--primary);
+    }
+    .logo-sub {
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      font-size: 13px;
+    }
+    .nav-links a {
+      position: relative;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--muted);
+      padding-bottom: 4px;
+      transition: color 0.25s ease;
+    }
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: 0;
+      width: 0; height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      box-shadow: 0 0 8px rgba(0,245,255,0.7);
+      transition: width 0.27s ease;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border-radius: 999px;
+      color: #020617;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      box-shadow: var(--shadow-neon);
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      position: relative;
+      overflow: hidden;
+    }
+    .nav-cta span.icon {
+      width: 15px; height: 15px;
+      border-radius: 50%;
+      border: 1px solid rgba(2,6,23,0.8);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      background: rgba(15,23,42,0.1);
+    }
+
+    /* HERO */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.4fr);
+      gap: 34px;
+      margin-top: 40px;
+      align-items: center;
+    }
+    .hero-kicker {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.28em;
+      color: var(--muted);
+      margin-bottom: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hero-kicker-dot {
+      width: 7px; height: 7px;
+      border-radius: 999px;
+      background: var(--primary);
+      box-shadow: 0 0 12px rgba(0,245,255,0.8);
+    }
+    .hero-title {
+      font-size: clamp(34px, 4vw, 42px);
+      font-weight: 750;
+      letter-spacing: 0.03em;
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+    .hero-title span.gradient {
+      background: linear-gradient(120deg, var(--primary), var(--secondary), var(--accent));
+      -webkit-background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 22px rgba(56,189,248,0.7);
+      animation: neonFlicker 3.4s ease-in-out infinite;
+    }
+    .hero-subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 460px;
+    }
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0 26px;
+      font-size: 11px;
+    }
+    .tag-pill {
+      border-radius: 999px;
+      padding: 4px 10px;
+      border: 1px solid rgba(148,163,255,0.4);
+      color: var(--muted);
+      background: radial-gradient(circle at top, rgba(15,23,42,0.9), rgba(2,6,23,0.8));
+      backdrop-filter: blur(10px);
+    }
+    .tag-pill strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    .btn-primary {
+      border-radius: 999px;
+      padding: 11px 22px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      color: #020617;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      box-shadow: var(--shadow-neon);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-ghost {
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid rgba(148,163,255,0.45);
+      color: var(--muted);
+      background: rgba(15,23,42,0.6);
+      backdrop-filter: blur(14px);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .btn-ghost-icon {
+      width: 16px; height: 16px;
+      border-radius: 4px;
+      border: 1px solid rgba(148,163,255,0.6);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+    .hero-meta {
+      margin-top: 14px;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    .hero-dot-divider {
+      width: 3px; height: 3px;
+      border-radius: 999px;
+      background: rgba(148,163,255,0.7);
+    }
+
+    .hero-card {
+      position: relative;
+      border-radius: 26px;
+      padding: 18px 18px 20px;
+      background: radial-gradient(circle at top left, rgba(15,23,42,1), rgba(2,6,23,0.96));
+      border: 1px solid rgba(148,163,255,0.4);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      animation: heroFloat 5s ease-in-out infinite alternate;
+    }
+    .hero-card-glow {
+      position: absolute;
+      inset: -40px;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(0,245,255,0.26), transparent 60%),
+        radial-gradient(circle at 100% 40%, rgba(255,0,255,0.18), transparent 55%);
+      mix-blend-mode: screen;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+    .hero-card-inner { position: relative; z-index: 1; }
+    .hero-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .hero-card-title {
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+    }
+    .hero-card-status-pill {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      border-radius: 999px;
+      padding: 5px 9px;
+      border: 1px solid rgba(52,211,153,0.55);
+      color: #4ade80;
+      background: rgba(21,128,61,0.12);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hero-card-status-pill-dot {
+      width: 6px; height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 12px rgba(74,222,128,0.9);
+    }
+    .hero-card-body {
+      border-radius: 18px;
+      padding: 12px 12px 14px;
+      background: rgba(15,23,42,0.75);
+      border: 1px solid rgba(30,64,175,0.7);
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .hero-card-footer {
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .hero-card-chip {
+      border-radius: 999px;
+      padding: 4px 8px;
+      border: 1px solid rgba(148,163,255,0.5);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15,23,42,0.9);
+    }
+    .hero-card-chip-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--primary), transparent 60%);
+      box-shadow: 0 0 12px rgba(56,189,248,0.9);
+    }
+
+    /* SECTION + PANEL */
+    .section {
+      margin-top: 56px;
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 3.3fr);
+      gap: 24px;
+      align-items: flex-start;
+    }
+    .section-header {
+      max-width: 360px;
+    }
+    .section-eyebrow {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.26em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: 20px;
+      font-weight: 650;
+      margin-bottom: 6px;
+    }
+    .section-title span { color: var(--primary); }
+    .section-desc {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .panel {
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(9,9,20,0.96), rgba(5,6,20,0.96));
+      border: 1px solid rgba(148,163,255,0.4);
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at top, rgba(0,245,255,0.14), transparent 60%);
+      opacity: 0.6;
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+    .panel:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 24px 70px rgba(0,0,0,0.95);
+      border-color: rgba(56,189,248,0.7);
+    }
+    .panel-inner { position: relative; z-index: 1; }
+    .panel-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .panel-label {
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+    .panel-badge {
+      border-radius: 999px;
+      padding: 3px 9px;
+      border: 1px solid rgba(96,165,250,0.7);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--primary);
+      background: rgba(15,23,42,0.8);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px 14px;
+      margin-top: 8px;
+      margin-bottom: 10px;
+    }
+    .form-grid.single {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 11px;
+    }
+    .field-label {
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      font-weight: 500;
+    }
+    .field-label span.req {
+      color: var(--danger);
+      margin-left: 3px;
+    }
+    .field-input,
+    .field-textarea,
+    .field-select {
+      border-radius: 9px;
+      border: 1px solid rgba(71,85,105,0.95);
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.98), rgba(2,6,23,0.98));
+      color: var(--text);
+      font-size: 12px;
+      padding: 8px 10px;
+      outline: none;
+      box-shadow: inset 0 0 0 1px rgba(15,23,42,1);
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.1s ease;
+    }
+    .field-input::placeholder,
+    .field-textarea::placeholder {
+      color: rgba(148,163,255,0.6);
+    }
+    .field-input:focus,
+    .field-textarea:focus,
+    .field-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 20px rgba(56,189,248,0.4);
+      transform: translateY(-0.5px);
+    }
+    .field-textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    /* Select and option colors */
+    .field-select {
+      appearance: none;
+      border-radius: 9px;
+      border: 1px solid rgba(71,85,105,0.95);
+      background:
+        radial-gradient(circle at top left, rgba(15,23,42,0.98), rgba(2,6,23,0.98));
+      color: var(--text);
+      font-size: 12px;
+      padding: 8px 26px 8px 10px;
+      outline: none;
+      box-shadow: inset 0 0 0 1px rgba(15,23,42,1);
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.1s ease;
+      background-image:
+        linear-gradient(45deg, transparent 50%, var(--primary) 50%),
+        linear-gradient(135deg, var(--primary) 50%, transparent 50%);
+      background-position: calc(100% - 12px) 11px, calc(100% - 7px) 11px;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+    }
+    .field-select option {
+      background-color: #020617;
+      color: #e5e7eb;
+    }
+
+    .small-note {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* File upload pill */
+    .file-drop {
+      border-radius: 12px;
+      border: 1px dashed rgba(148,163,255,0.6);
+      padding: 10px 10px;
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.98), rgba(2,6,23,0.95));
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+    .file-drop:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-neon);
+      background: radial-gradient(circle at top, rgba(34,211,238,0.12), rgba(15,23,42,1));
+    }
+    .file-drop-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+    }
+    .file-drop-main {
+      font-size: 12px;
+      color: var(--text);
+    }
+    .file-drop-meta {
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .file-list {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .panel-footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      font-size: 11px;
+      color: var(--muted);
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .badge-soft {
+      border-radius: 999px;
+      padding: 4px 9px;
+      border: 1px solid rgba(148,163,255,0.6);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15,23,42,0.9);
+    }
+    .badge-soft-dot {
+      width: 6px; height: 6px;
+      border-radius: 999px;
+      background: radial-gradient(circle, var(--secondary), transparent 55%);
+      box-shadow: 0 0 10px rgba(244,114,182,0.9);
+    }
+    .panel-footer-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .panel-btn-primary {
+      border-radius: 999px;
+      padding: 7px 16px;
+      font-size: 11px;
+      border: none;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #020617;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      box-shadow: var(--shadow-neon);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+    .panel-btn-ghost {
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 11px;
+      border: 1px solid rgba(71,85,105,0.9);
+      background: rgba(15,23,42,0.9);
+      color: var(--muted);
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .panel-btn-primary span.dot,
+    .panel-btn-ghost span.dot {
+      width: 7px; height: 7px;
+      border-radius: 999px;
+      background: radial-gradient(circle, var(--primary), transparent 60%);
+      box-shadow: 0 0 10px rgba(56,189,248,0.9);
+    }
+
+    /* Sample video grid */
+    .sample-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .sample-card {
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,255,0.4);
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.96), rgba(2,6,23,0.96));
+      overflow: hidden;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.8);
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+    .sample-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 26px 60px rgba(0,0,0,0.95);
+      border-color: rgba(56,189,248,0.8);
+    }
+    .sample-media {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+    }
+    .sample-media video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .sample-meta {
+      padding: 8px 10px 10px;
+      font-size: 11px;
+    }
+    .sample-title {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .sample-tagline {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    @media (max-width: 900px) {
+      .sample-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width: 600px) {
+      .sample-grid { grid-template-columns: minmax(0,1fr); }
+    }
+
+    /* Global hover transitions & glow layer for primary buttons */
+    a, button {
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    }
+    a:hover, button:hover { transform: translateY(-2px); }
+    .btn-primary::before,
+    .panel-btn-primary::before,
+    .nav-cta::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(255,255,255,0.14), transparent 55%),
+        radial-gradient(circle at 80% 120%, rgba(0,245,255,0.3), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+    .btn-primary:hover::before,
+    .panel-btn-primary:hover::before,
+    .nav-cta:hover::before {
+      opacity: 1;
+    }
+
+    /* Scroll reveal */
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .scroll-reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Neon flicker & hero float */
+    @keyframes neonFlicker {
+      0%,18%,22%,25%,53%,57%,100% {
+        text-shadow:
+          0 0 4px rgba(56,189,248,0.9),
+          0 0 12px rgba(56,189,248,0.8),
+          0 0 24px rgba(56,189,248,0.6);
+      }
+      20%,24%,55% { text-shadow: none; }
+    }
+    @keyframes heroFloat {
+      0% {
+        transform: translateY(0);
+        box-shadow: var(--shadow-soft);
+      }
+      100% {
+        transform: translateY(-6px);
+        box-shadow: 0 32px 70px rgba(0,0,0,0.9);
+      }
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      right: 16px;
+      bottom: 18px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 12px;
+      color: var(--text);
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(56,189,248,0.7);
+      box-shadow: var(--shadow-neon);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      z-index: 50;
+    }
+    .toast.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .toast-dot {
+      width: 9px; height: 9px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 12px rgba(34,197,94,0.95);
+    }
+    .toast.error {
+      border-color: rgba(248,113,113,0.9);
+    }
+    .toast.error .toast-dot {
+      background: var(--danger);
+      box-shadow: 0 0 12px rgba(248,113,113,0.95);
+    }
+
+    /* Neon cursor glow */
+    #cursorGlow {
+      position: fixed;
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      pointer-events: none;
+      mix-blend-mode: screen;
+      background: radial-gradient(circle, rgba(0,245,255,0.35), transparent 60%);
+      opacity: 0;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s ease;
+      z-index: 5;
+    }
+
+    @media (max-width: 880px) {
+      .nav { padding-inline: 14px; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 780px) {
+      .hero { grid-template-columns: minmax(0, 1fr); }
+      .hero-card { order: -1; }
+      .section { grid-template-columns: minmax(0,1fr); }
+    }
+    @media (max-width: 520px) {
+      .page { padding-inline: 16px; }
+      .hero { margin-top: 28px; }
+      .panel { padding-inline: 14px; }
+      .nav { padding-inline: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="neon-orbit"></div>
+  <div id="cursorGlow"></div>
+
+  <div class="page">
+    <header class="nav">
+      <div class="logo">
+        <div class="logo-orb"></div>
+        <div class="logo-text">
+          <span class="logo-name">NEONFRAME</span>
+          <span class="logo-sub">Media Production</span>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <a href="#home">Overview</a>
+        <a href="#samples">Samples</a>
+        <a href="#brief">Project brief</a>
+        <a href="#upload">Upload</a>
+      </nav>
+
+      <button class="nav-cta" onclick="document.getElementById('brief').scrollIntoView({behavior:'smooth'})">
+        Start brief
+        <span class="icon">↗</span>
+      </button>
+    </header>
+
+    <!-- HERO -->
+    <main id="home" class="hero scroll-reveal">
+      <section>
+        <div class="hero-kicker">
+          <span class="hero-kicker-dot"></span>
+          Neon-native media studio
+        </div>
+        <h1 class="hero-title">
+          Bring your <span class="gradient">video & photo</span> ideas to life.
+        </h1>
+        <p class="hero-subtitle">
+          NeonFrame Media Studio edits, grades, and crafts visuals for creators, brands,
+          and agencies – from cinematic reels to sharp product photos.
+        </p>
+
+        <div class="hero-tags">
+          <div class="tag-pill"><strong>Video</strong> editing & VFX</div>
+          <div class="tag-pill">Color grading · sound design</div>
+          <div class="tag-pill">Photo retouch · composites</div>
+        </div>
+
+        <div class="hero-actions">
+          <a href="#brief" class="btn-primary">
+            Create a brief
+            <span>⟶</span>
+          </a>
+          <a href="#upload" class="btn-ghost">
+            <span class="btn-ghost-icon">⭳</span>
+            Upload raw files
+          </a>
+        </div>
+
+        <div class="hero-meta">
+          <span>Average delivery: 3–7 business days*</span>
+          <span class="hero-dot-divider"></span>
+          <span>Rush edits available for urgent launches</span>
+        </div>
+      </section>
+
+      <aside class="hero-card" aria-hidden="true">
+        <div class="hero-card-glow"></div>
+        <div class="hero-card-inner">
+          <div class="hero-card-header">
+            <span class="hero-card-title">Current production queue</span>
+            <span class="hero-card-status-pill">
+              <span class="hero-card-status-pill-dot"></span>
+              Slots open
+            </span>
+          </div>
+          <div class="hero-card-body">
+            <p>Typical projects we handle:</p>
+            <ul style="margin-top:6px; padding-left:16px;">
+              <li>Social reels & shorts</li>
+              <li>Brand trailers & product videos</li>
+              <li>Portrait & product photo edits</li>
+            </ul>
+          </div>
+          <div class="hero-card-footer">
+            <div class="hero-card-chip">
+              <span class="hero-card-chip-dot"></span>
+              Multi-format delivery: MP4, MOV, JPG, PNG
+            </div>
+            <span>Tell us your platform · we’ll match specs.</span>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- SAMPLES SECTION -->
+    <section id="samples" class="section scroll-reveal">
+      <div class="section-header">
+        <p class="section-eyebrow">Sample work</p>
+        <h2 class="section-title">See our <span>edit style</span></h2>
+        <p class="section-desc">
+          A few recent clips we’ve cut and graded. Share links like these in your brief
+          if you want us to match a specific look.
+        </p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-inner">
+          <div class="panel-header-row">
+            <span class="panel-label">Edited samples</span>
+            <span class="panel-badge">Preview only</span>
+          </div>
+
+          <div class="sample-grid">
+            <!-- Replace src paths with your own files -->
+            <article class="sample-card">
+              <div class="sample-media">
+                <video src="samples/reel-product.mp4" controls preload="metadata"></video>
+              </div>
+              <div class="sample-meta">
+                <h3 class="sample-title">Product reel – Neon sneakers</h3>
+                <p class="sample-tagline">Fast cuts · bold colors · beat‑synced transitions</p>
+              </div>
+            </article>
+
+            <article class="sample-card">
+              <div class="sample-media">
+                <video src="samples/creator-vlog.mp4" controls preload="metadata"></video>
+              </div>
+              <div class="sample-meta">
+                <h3 class="sample-title">Creator vlog – Day in life</h3>
+                <p class="sample-tagline">Soft grade · smooth motion · subtitle overlays</p>
+              </div>
+            </article>
+
+            <article class="sample-card">
+              <div class="sample-media">
+                <video src="samples/brand-ad.mp4" controls preload="metadata"></video>
+              </div>
+              <div class="sample-meta">
+                <h3 class="sample-title">Brand spot – Launch teaser</h3>
+                <p class="sample-tagline">Cinematic look · logo reveal · sound design</p>
+              </div>
+            </article>
+          </div>
+
+          <p class="small-note" style="margin-top:10px;">
+            Replace the <code>src</code> values with your own MP4 files or YouTube/Vimeo embeds.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECT BRIEF -->
+    <section id="brief" class="section scroll-reveal">
+      <div class="section-header">
+        <p class="section-eyebrow">Project brief</p>
+        <h2 class="section-title">Describe how <span>you want it</span></h2>
+        <p class="section-desc">
+          Tell us exactly how you want your video or photo to look, feel, and sound –
+          so our editors can match your vision frame by frame.
+        </p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-inner">
+          <div class="panel-header-row">
+            <span class="panel-label">Creative & edit instructions</span>
+            <span class="panel-badge">Step 1 of 2</span>
+          </div>
+
+          <form id="briefForm" onsubmit="handleSubmit(event, 'brief')">
+            <div class="form-grid">
+              <div class="field">
+                <label class="field-label">Client name<span class="req">*</span></label>
+                <input class="field-input" type="text" name="name" placeholder="Your full name" required />
+              </div>
+              <div class="field">
+                <label class="field-label">Email<span class="req">*</span></label>
+                <input class="field-input" type="email" name="email" placeholder="you@example.com" required />
+              </div>
+              <div class="field">
+                <label class="field-label">Phone / WhatsApp</label>
+                <input class="field-input" type="tel" name="phone" placeholder="+91 ..." />
+              </div>
+              <div class="field">
+                <label class="field-label">Company / brand</label>
+                <input class="field-input" type="text" name="brand" placeholder="Channel, brand, or project name" />
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label class="field-label">Type of work<span class="req">*</span></label>
+                <select class="field-select" name="workType" required>
+                  <option value="" disabled selected hidden>Select one</option>
+                  <option>Video edit</option>
+                  <option>Photo edit</option>
+                  <option>Both – video & photo</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="field-label">Primary platform</label>
+                <select class="field-select" name="platform">
+                  <option value="" disabled selected hidden>Optional</option>
+                  <option>Instagram / Reels</option>
+                  <option>YouTube / Shorts</option>
+                  <option>Facebook</option>
+                  <option>Website / Landing page</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-grid single">
+              <div class="field">
+                <label class="field-label">How should it look / feel?<span class="req">*</span></label>
+                <textarea class="field-textarea" name="style" placeholder="Explain your vision: energy (fast / calm), colors, mood, any references or links." required></textarea>
+              </div>
+            </div>
+
+            <div class="form-grid single">
+              <div class="field">
+                <label class="field-label">Specific edit instructions</label>
+                <textarea class="field-textarea" name="instructions" placeholder="Tell us what to add/remove: text on screen, cuts, transitions, music style, logo placement, subtitles, etc."></textarea>
+                <p class="small-note">The more detail you give, the closer we can match your idea on the first version.</p>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label class="field-label">Preferred end date<span class="req">*</span></label>
+                <input class="field-input" type="date" name="deadline" required />
+              </div>
+              <div class="field">
+                <label class="field-label">Budget range (optional)</label>
+                <input class="field-input" type="text" name="budget" placeholder="Example: ₹10K – ₹25K" />
+              </div>
+            </div>
+
+            <div class="panel-footer-row">
+              <div class="badge-soft">
+                <span class="badge-soft-dot"></span>
+                After this step, attach your raw files in the upload block below.
+              </div>
+              <div class="panel-footer-buttons">
+                <button type="button" class="panel-btn-ghost" onclick="document.getElementById('briefForm').reset()">
+                  <span class="dot"></span>
+                  Reset
+                </button>
+                <button type="submit" class="panel-btn-primary">
+                  <span class="dot"></span>
+                  Save brief
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- UPLOAD SECTION -->
+    <section id="upload" class="section scroll-reveal">
+      <div class="section-header">
+        <p class="section-eyebrow">Upload</p>
+        <h2 class="section-title">Send your <span>raw files</span></h2>
+        <p class="section-desc">
+          Upload your video, audio, and photo files so our editors can start working.
+          You can add multiple files in one go.
+        </p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-inner">
+          <div class="panel-header-row">
+            <span class="panel-label">Files & reference material</span>
+            <span class="panel-badge">Step 2 of 2</span>
+          </div>
+
+          <!-- NOTE: backend handling for uploads must be added server-side -->
+          <form id="uploadForm" onsubmit="handleSubmit(event, 'upload')" enctype="multipart/form-data">
+            <div class="form-grid single">
+              <div class="field">
+                <label class="field-label">Project reference ID (optional)</label>
+                <input class="field-input" type="text" name="refId" placeholder="If we gave you a project ID, add it here" />
+              </div>
+            </div>
+
+            <div class="form-grid single">
+              <div class="field">
+                <label class="field-label">Upload video, audio & photos<span class="req">*</span></label>
+                <label class="file-drop" for="fileInput">
+                  <div class="file-drop-title">Drag & drop files here</div>
+                  <div class="file-drop-main">or click to browse your device</div>
+                  <div class="file-drop-meta">Accepted: MP4, MOV, MP3, WAV, JPG, PNG • You can select multiple files.</div>
+                  <div id="fileList" class="file-list">No files selected yet.</div>
+                </label>
+                <input
+                  id="fileInput"
+                  class="field-input"
+                  style="display:none"
+                  type="file"
+                  name="files"
+                  multiple
+                  accept=".mp4,.mov,.mp3,.wav,.jpg,.jpeg,.png"
+                  required
+                  onchange="updateFileList()"
+                />
+              </div>
+            </div>
+
+            <div class="form-grid single">
+              <div class="field">
+                <label class="field-label">Extra notes for our team</label>
+                <textarea class="field-textarea" name="notes" placeholder="Anything we should know about the footage, order of clips, music licensing, or brand rules?"></textarea>
+              </div>
+            </div>
+
+            <div class="panel-footer-row">
+              <div class="badge-soft">
+                <span class="badge-soft-dot"></span>
+                This is a front‑end demo – connect this form to your backend to actually upload files.
+              </div>
+              <div class="panel-footer-buttons">
+                <button type="button" class="panel-btn-ghost" onclick="document.getElementById('uploadForm').reset(); resetFileList();">
+                  <span class="dot"></span>
+                  Clear
+                </button>
+                <button type="submit" class="panel-btn-primary">
+                  <span class="dot"></span>
+                  Submit request
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite">
+    <span class="toast-dot"></span>
+    <span id="toastText">Saved</span>
+  </div>
+
+  <script>
+    // Neon cursor glow
+    (function () {
+      const glow = document.getElementById('cursorGlow');
+      if (!glow) return;
+
+      document.addEventListener('mousemove', function (e) {
+        glow.style.opacity = 1;
+        glow.style.left = e.clientX + 'px';
+        glow.style.top = e.clientY + 'px';
+      });
+
+      document.addEventListener('mouseleave', function () {
+        glow.style.opacity = 0;
+      });
+    })();
+
+    // Scroll reveal
+    function setupScrollReveal() {
+      const elements = document.querySelectorAll('.scroll-reveal');
+      if (!('IntersectionObserver' in window)) {
+        elements.forEach(function (el) { el.classList.add('active'); });
+        return;
+      }
+
+      const observer = new IntersectionObserver(function (entries, obs) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+            obs.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.15,
+        rootMargin: '0px 0px -10% 0px'
+      });
+
+      elements.forEach(function (el) { observer.observe(el); });
+    }
+    document.addEventListener('DOMContentLoaded', setupScrollReveal);
+
+    // Toast
+    function showToast(message, isError) {
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toastText');
+
+      toastText.textContent = message;
+      if (isError) toast.classList.add('error');
+      else toast.classList.remove('error');
+
+      toast.classList.add('visible');
+      setTimeout(function () { toast.classList.remove('visible'); }, 2600);
+    }
+
+    // File list display
+    function updateFileList() {
+      const input = document.getElementById('fileInput');
+      const list = document.getElementById('fileList');
+      if (!input.files.length) {
+        list.textContent = 'No files selected yet.';
+        return;
+      }
+      const names = Array.from(input.files).map(f => f.name);
+      list.textContent = names.join(' • ');
+    }
+    function resetFileList() {
+      const list = document.getElementById('fileList');
+      list.textContent = 'No files selected yet.';
+    }
+
+    // Form submit (front-end only demo)
+    function handleSubmit(event, type) {
+      event.preventDefault();
+      const form = event.target;
+
+      if (!form.checkValidity()) {
+        showToast('Please fill the required fields.', true);
+        return;
+      }
+
+      const formData = new FormData(form);
+      const payload = {};
+      formData.forEach((value, key) => {
+        if (payload[key]) {
+          if (!Array.isArray(payload[key])) payload[key] = [payload[key]];
+          payload[key].push(value);
+        } else {
+          payload[key] = value;
+        }
+      });
+      payload._type = type;
+
+      console.log('NeonFrame form submission:', payload);
+
+      form.reset();
+      if (type === 'upload') resetFileList();
+
+      showToast(
+        type === 'brief'
+          ? 'Brief saved. You can now upload your files.'
+          : 'Request received. We will reply with timelines.'
+      );
+    }
+  </script>
+</body>
+</html>
