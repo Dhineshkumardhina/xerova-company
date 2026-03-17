@@ -35,7 +35,7 @@ export default function PortfolioSection() {
               transition={{ delay: i * 0.08 }}
               className="glass-card neon-border-hover overflow-hidden group cursor-pointer"
             >
-              <div className={`h-48 bg-gradient-to-br ${p.color} flex items-center justify-center group-hover:scale-105 transition-transform duration-500`}>
+              <div className={`h-48 bg-gradient-to-br ₹{p.color} flex items-center justify-center group-hover:scale-105 transition-transform duration-500`}>
                 <span className="font-display text-lg font-semibold text-foreground/50">{p.category}</span>
               </div>
               <div className="p-5">
