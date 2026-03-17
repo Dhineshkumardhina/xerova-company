@@ -127,7 +127,7 @@ export default function ContactSection() {
             <div className="glass-card overflow-hidden rounded-xl h-48">
               <iframe
                 title="Location Map"
-                src="https://maps.app.goo.gl/qdSed8AN2HpYpJSy7"
+                src="<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d246.48973731629977!2d79.81819978700989!3d11.962195942579946!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sin!4v1773706554255!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
