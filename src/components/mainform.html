@@ -1,0 +1,2139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xerova Digital — Project Enquiry</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0d1a;
+  --bg2: #0f1320;
+  --card: rgba(17,24,39,0.95);
+  --input-bg: #1e293b;
+  --border: rgba(0,245,212,0.15);
+  --cyan: #00f5d4;
+  --purple: #9b5de5;
+  --pink: #f72585;
+  --green: #00e676;
+  --amber: #ffd60a;
+  --text: #e2e8f0;
+  --muted: #64748b;
+  --font-display: 'Orbitron', monospace;
+  --font-ui: 'Exo 2', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── CANVAS ── */
+#canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.5rem;
+  height: 64px;
+  background: rgba(10,13,26,0.7);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s;
+}
+nav.scrolled {
+  border-bottom: 1px solid;
+  border-image: linear-gradient(90deg, var(--cyan), var(--purple)) 1;
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.nav-logo span:first-child { color: var(--cyan); }
+.nav-logo span:last-child { color: var(--text); font-weight: 400; }
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--cyan); }
+.nav-cta {
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  background: transparent;
+  padding: 0.45rem 1.2rem;
+  border-radius: 4px;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.nav-cta:hover {
+  background: rgba(0,245,212,0.1);
+  box-shadow: 0 0 20px rgba(0,245,212,0.3);
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  z-index: 1;
+  padding: 130px 2rem 60px;
+  text-align: center;
+}
+.hero-label {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 1.2rem;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 1rem;
+}
+.hero h1 .grad {
+  background: linear-gradient(90deg, var(--cyan), var(--purple), var(--pink));
+  background-size: 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradShift 4s ease infinite;
+}
+@keyframes gradShift {
+  0%,100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.hero p {
+  color: var(--muted);
+  font-size: 1rem;
+  max-width: 560px;
+  margin: 0 auto 2rem;
+  line-height: 1.7;
+}
+.trust-badges {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.trust-badge {
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  color: var(--muted);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 0.4rem 1rem;
+  border-radius: 100px;
+  letter-spacing: 0.03em;
+}
+.trust-badge span { color: var(--cyan); margin-right: 0.4rem; }
+
+/* ── MAIN LAYOUT ── */
+.page-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem 6rem;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* ── FORM CARD ── */
+.form-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 0 60px rgba(0,245,212,0.05), 0 40px 80px rgba(0,0,0,0.4);
+  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+}
+.form-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(0,245,212,0.2), transparent, rgba(155,93,229,0.2));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ── PROGRESS BAR ── */
+.progress-wrap {
+  margin-bottom: 2.5rem;
+}
+.progress-steps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+.progress-steps::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0; right: 0;
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  transform: translateY(-50%);
+  z-index: 0;
+}
+.progress-fill-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--cyan), var(--purple));
+  transform: translateY(-50%);
+  z-index: 1;
+  transition: width 0.5s ease;
+}
+.step-node {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.1);
+  background: var(--bg2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--muted);
+  z-index: 2;
+  position: relative;
+  transition: all 0.4s;
+  cursor: default;
+}
+.step-node.active {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  box-shadow: 0 0 16px rgba(0,245,212,0.5);
+  animation: nodePulse 2s ease infinite;
+}
+@keyframes nodePulse {
+  0%,100% { box-shadow: 0 0 16px rgba(0,245,212,0.5); }
+  50% { box-shadow: 0 0 28px rgba(0,245,212,0.8); }
+}
+.step-node.done {
+  border-color: var(--cyan);
+  background: var(--cyan);
+  color: var(--bg);
+}
+.progress-bar {
+  height: 3px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyan), var(--purple));
+  border-radius: 100px;
+  transition: width 0.5s ease;
+  position: relative;
+  overflow: hidden;
+}
+.progress-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shimmer 2s linear infinite;
+}
+@keyframes shimmer { to { left: 100%; } }
+.progress-label {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+.progress-label span { color: var(--cyan); }
+
+/* ── STEP ── */
+.step { display: none; animation: stepIn 0.35s ease; }
+.step.active { display: block; }
+@keyframes stepIn {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.step-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  background: rgba(0,245,212,0.08);
+  border: 1px solid rgba(0,245,212,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+.step-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.03em;
+}
+.step-sub {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 0.2rem;
+}
+
+/* ── FIELD ── */
+.field-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  margin-bottom: 1.2rem;
+}
+.field-group.full { grid-template-columns: 1fr; }
+.field-group.thirds { grid-template-columns: 1fr 1fr 1fr; }
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.field label {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.field input,
+.field select,
+.field textarea {
+  background: var(--input-bg);
+  border: 1px solid #334155;
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  padding: 0.7rem 1rem;
+  outline: none;
+  transition: all 0.2s;
+  width: 100%;
+}
+.field input::placeholder,
+.field textarea::placeholder { color: #475569; }
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(0,245,212,0.12);
+}
+.field select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+.field select option { background: #1e293b; }
+.field textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+
+/* Phone field */
+.phone-wrap {
+  display: flex;
+  gap: 0.5rem;
+}
+.phone-wrap select {
+  width: 90px;
+  flex-shrink: 0;
+  padding-right: 0.5rem;
+  font-size: 0.8rem;
+}
+.phone-wrap input { flex: 1; }
+
+/* ── PILL SELECT ── */
+.pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.2rem;
+}
+.pill {
+  padding: 0.35rem 0.9rem;
+  border-radius: 100px;
+  border: 1px solid #334155;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+.pill:hover { border-color: rgba(0,245,212,0.4); color: var(--text); }
+.pill.selected {
+  border-color: var(--cyan);
+  background: rgba(0,245,212,0.1);
+  color: var(--cyan);
+  box-shadow: 0 0 10px rgba(0,245,212,0.2);
+}
+
+/* ── SERVICE CARDS ── */
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-top: 0.4rem;
+}
+.service-card {
+  background: var(--input-bg);
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 1rem 0.75rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+  user-select: none;
+}
+.service-card:hover {
+  border-color: rgba(0,245,212,0.4);
+  background: rgba(0,245,212,0.04);
+}
+.service-card.selected {
+  border-color: var(--cyan);
+  background: rgba(0,245,212,0.08);
+  box-shadow: 0 0 16px rgba(0,245,212,0.15);
+}
+.service-card .check {
+  position: absolute;
+  top: 6px; right: 6px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--cyan);
+  color: var(--bg);
+  font-size: 0.6rem;
+  display: none;
+  align-items: center; justify-content: center;
+}
+.service-card.selected .check { display: flex; }
+.service-card .icon { font-size: 1.5rem; margin-bottom: 0.4rem; }
+.service-card .name {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--muted);
+  line-height: 1.3;
+}
+.service-card.selected .name { color: var(--cyan); }
+
+/* ── TOGGLE ── */
+.toggle-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.toggle {
+  position: relative;
+  width: 44px; height: 24px;
+  cursor: pointer;
+}
+.toggle input { display: none; }
+.toggle-track {
+  width: 100%; height: 100%;
+  background: #334155;
+  border-radius: 100px;
+  transition: background 0.3s;
+  position: relative;
+}
+.toggle input:checked + .toggle-track { background: var(--cyan); }
+.toggle-track::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 20px; height: 20px;
+  background: white;
+  border-radius: 50%;
+  transition: left 0.3s;
+}
+.toggle input:checked + .toggle-track::after { left: 22px; }
+.toggle-label {
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* ── URL REVEAL ── */
+.url-reveal {
+  display: none;
+  margin-top: 0.75rem;
+  animation: fadeSlide 0.3s ease;
+}
+.url-reveal.visible { display: block; }
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── CHECKBOXES ── */
+.checkbox-group { margin-top: 0.4rem; }
+.checkbox-category {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--purple);
+  margin: 0.75rem 0 0.4rem;
+}
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0;
+  cursor: pointer;
+}
+.checkbox-item input[type="checkbox"] { display: none; }
+.checkbox-box {
+  width: 18px; height: 18px;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  background: var(--input-bg);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.checkbox-item input:checked + .checkbox-box {
+  background: var(--cyan);
+  border-color: var(--cyan);
+}
+.checkbox-item input:checked + .checkbox-box::after {
+  content: '✓';
+  color: var(--bg);
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+.checkbox-item span {
+  font-size: 0.85rem;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+.checkbox-item:hover span { color: var(--text); }
+
+/* ── PLATFORM PILLS ── */
+.platform-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.4rem; }
+
+/* ── NUMBER STEPPER ── */
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--input-bg);
+  border: 1px solid #334155;
+  border-radius: 8px;
+  overflow: hidden;
+  width: fit-content;
+}
+.stepper button {
+  width: 40px; height: 42px;
+  background: transparent;
+  border: none;
+  color: var(--cyan);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: var(--font-display);
+}
+.stepper button:hover { background: rgba(0,245,212,0.08); }
+.stepper input {
+  width: 60px;
+  text-align: center;
+  background: transparent !important;
+  border: none !important;
+  border-left: 1px solid #334155 !important;
+  border-right: 1px solid #334155 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  font-family: var(--font-display) !important;
+  font-size: 0.9rem !important;
+  color: var(--text) !important;
+  padding: 0 !important;
+  height: 42px;
+}
+
+/* ── RADIO PILLS ── */
+.radio-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.4rem; }
+.radio-pill {
+  padding: 0.4rem 1rem;
+  border-radius: 100px;
+  border: 1px solid #334155;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+.radio-pill:hover { border-color: rgba(0,245,212,0.4); color: var(--text); }
+.radio-pill.active {
+  border-color: var(--cyan);
+  background: rgba(0,245,212,0.1);
+  color: var(--cyan);
+  box-shadow: 0 0 10px rgba(0,245,212,0.2);
+}
+
+/* ── RANGE SLIDER ── */
+.range-wrap { margin-top: 0.5rem; }
+.range-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  height: 4px;
+  background: #334155;
+  border-radius: 100px;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 12px rgba(0,245,212,0.6);
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 20px rgba(0,245,212,0.9);
+}
+.range-value {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--cyan);
+  margin-top: 0.6rem;
+  letter-spacing: 0.05em;
+}
+.range-presets {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+.range-preset {
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #334155;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.range-preset:hover, .range-preset.active {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: rgba(0,245,212,0.08);
+}
+
+/* ── CURRENCY TOGGLE ── */
+.currency-toggle {
+  display: flex;
+  background: var(--input-bg);
+  border: 1px solid #334155;
+  border-radius: 8px;
+  overflow: hidden;
+  width: fit-content;
+  margin-top: 0.4rem;
+}
+.currency-btn {
+  padding: 0.5rem 1.2rem;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.currency-btn.active {
+  background: rgba(0,245,212,0.15);
+  color: var(--cyan);
+}
+
+/* ── DATE PICKER ── */
+input[type="date"] {
+  color-scheme: dark;
+}
+
+/* ── FILE DROP ── */
+.file-drop {
+  border: 2px dashed #334155;
+  border-radius: 10px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: var(--input-bg);
+  margin-top: 0.4rem;
+}
+.file-drop:hover, .file-drop.drag-over {
+  border-color: var(--cyan);
+  background: rgba(0,245,212,0.04);
+  animation: borderPulse 1s ease infinite;
+}
+@keyframes borderPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(0,245,212,0.2); }
+  50% { box-shadow: 0 0 0 6px rgba(0,245,212,0); }
+}
+.file-drop input { display: none; }
+.file-drop-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+.file-drop p {
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.file-drop p span { color: var(--cyan); }
+.file-drop small {
+  font-size: 0.7rem;
+  color: #475569;
+  display: block;
+  margin-top: 0.3rem;
+}
+.uploaded-files { margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.4rem; }
+.uploaded-file {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0,245,212,0.06);
+  border: 1px solid rgba(0,245,212,0.2);
+  border-radius: 6px;
+  padding: 0.4rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--cyan);
+}
+.uploaded-file button {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: color 0.2s;
+}
+.uploaded-file button:hover { color: var(--pink); }
+
+/* ── REVIEW SUMMARY ── */
+.review-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+.review-section {
+  background: var(--input-bg);
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 1rem;
+}
+.review-section-title {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.review-edit {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  color: var(--purple);
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.review-edit:hover { color: var(--cyan); }
+.review-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-bottom: 0.6rem;
+}
+.review-item:last-child { margin-bottom: 0; }
+.review-key {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.review-val {
+  font-size: 0.85rem;
+  color: var(--text);
+}
+.review-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.25rem; }
+.review-tag {
+  background: rgba(155,93,229,0.15);
+  border: 1px solid rgba(155,93,229,0.3);
+  color: var(--purple);
+  font-family: var(--font-ui);
+  font-size: 0.68rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* ── REF LINKS ── */
+.ref-links { margin-top: 0.4rem; }
+.ref-link-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.ref-link-item input { flex: 1; }
+.ref-link-item button {
+  width: 36px; height: 36px;
+  background: rgba(247,37,133,0.1);
+  border: 1px solid rgba(247,37,133,0.3);
+  border-radius: 6px;
+  color: var(--pink);
+  cursor: pointer;
+  font-size: 0.8rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.ref-link-item button:hover { background: rgba(247,37,133,0.2); }
+.add-link-btn {
+  background: transparent;
+  border: 1px dashed #334155;
+  border-radius: 6px;
+  color: var(--cyan);
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  margin-top: 0.25rem;
+}
+.add-link-btn:hover {
+  border-color: var(--cyan);
+  background: rgba(0,245,212,0.04);
+}
+
+/* ── CONSENT ── */
+.consent-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(0,245,212,0.03);
+  border: 1px solid rgba(0,245,212,0.1);
+  border-radius: 8px;
+}
+.consent-wrap input[type="checkbox"] { display: none; }
+.consent-box {
+  width: 20px; height: 20px;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  background: var(--input-bg);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: all 0.2s;
+}
+.consent-wrap input:checked + .consent-box {
+  background: var(--cyan);
+  border-color: var(--cyan);
+  box-shadow: 0 0 10px rgba(0,245,212,0.4);
+}
+.consent-wrap input:checked + .consent-box::after {
+  content: '✓';
+  color: var(--bg);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.consent-text {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.consent-text a { color: var(--cyan); text-decoration: none; }
+
+/* ── NAV BUTTONS ── */
+.step-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.btn-back {
+  background: transparent;
+  border: 1px solid #334155;
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  padding: 0.7rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-back:hover {
+  border-color: var(--muted);
+  color: var(--text);
+}
+.btn-next {
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  border: none;
+  color: var(--bg);
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 0.75rem 2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-next::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.4s;
+}
+.btn-next:hover { box-shadow: 0 0 30px rgba(0,245,212,0.4); }
+.btn-next:hover::after { left: 100%; }
+.btn-submit {
+  background: linear-gradient(135deg, var(--cyan), var(--purple), var(--pink));
+  background-size: 200%;
+  border: none;
+  color: white;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 1rem 2.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+  animation: gradShift 3s ease infinite;
+  width: 100%;
+  margin-top: 1rem;
+}
+.btn-submit:hover {
+  box-shadow: 0 0 40px rgba(0,245,212,0.4);
+  transform: translateY(-2px);
+}
+.submit-note {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+/* ── SUCCESS ── */
+.success-screen {
+  display: none;
+  text-align: center;
+  padding: 3rem 1rem;
+  animation: stepIn 0.5s ease;
+}
+.success-screen.active { display: block; }
+.success-check {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: rgba(0,245,212,0.1);
+  border: 2px solid var(--cyan);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 2rem;
+  box-shadow: 0 0 40px rgba(0,245,212,0.3);
+  animation: successPulse 2s ease infinite;
+}
+@keyframes successPulse {
+  0%,100% { box-shadow: 0 0 40px rgba(0,245,212,0.3); }
+  50% { box-shadow: 0 0 60px rgba(0,245,212,0.6); }
+}
+.success-screen h2 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+.success-screen p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  max-width: 400px;
+  margin: 0 auto 2rem;
+  line-height: 1.7;
+}
+.success-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.success-btn {
+  padding: 0.65rem 1.3rem;
+  border-radius: 8px;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.success-btn.primary {
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  border: none;
+  color: var(--bg);
+}
+.success-btn.secondary {
+  background: transparent;
+  border: 1px solid #334155;
+  color: var(--muted);
+}
+.success-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+
+/* ── CONFETTI ── */
+.confetti-wrap {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  overflow: hidden;
+}
+.confetti-particle {
+  position: absolute;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  animation: confettiFall 3s ease forwards;
+}
+@keyframes confettiFall {
+  0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: sticky;
+  top: 90px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.sidebar-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.2rem;
+  backdrop-filter: blur(20px);
+}
+.sidebar-title {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 0.75rem;
+}
+.trust-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+.trust-point:last-child { margin-bottom: 0; }
+.trust-point span:first-child {
+  color: var(--cyan);
+  font-size: 0.8rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.trust-point p {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.trust-point p strong { color: var(--text); font-weight: 500; }
+
+/* Chat bubble */
+.chat-bubble {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: rgba(0,245,212,0.05);
+  border: 1px solid rgba(0,245,212,0.15);
+  transition: all 0.2s;
+}
+.chat-bubble:hover { background: rgba(0,245,212,0.1); }
+.chat-icon {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(0,245,212,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  animation: chatPulse 2s ease infinite;
+  flex-shrink: 0;
+}
+@keyframes chatPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(0,245,212,0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(0,245,212,0); }
+}
+.chat-text p { font-family: var(--font-ui); font-size: 0.8rem; color: var(--cyan); font-weight: 500; }
+.chat-text small { font-size: 0.7rem; color: var(--muted); }
+
+/* Project ticker */
+.project-ticker {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+  line-height: 1.5;
+  min-height: 2.5rem;
+  transition: opacity 0.3s;
+}
+.project-ticker span { color: var(--green); }
+
+/* Response time */
+.response-time {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: rgba(0,230,118,0.05);
+  border: 1px solid rgba(0,230,118,0.15);
+  border-radius: 8px;
+}
+.response-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: blink 1.5s ease infinite;
+  flex-shrink: 0;
+}
+@keyframes blink {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.response-time p {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--green);
+}
+
+/* ── FOOTER ── */
+footer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 2rem;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+footer .footer-logo {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+footer .footer-logo span { color: var(--cyan); }
+footer p {
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 0.75rem;
+}
+.footer-socials {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+.footer-socials a {
+  width: 34px; height: 34px;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.footer-socials a:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  box-shadow: 0 0 10px rgba(0,245,212,0.2);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .page-wrap { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+}
+@media (max-width: 768px) {
+  nav { padding: 0 1rem; }
+  .nav-links { display: none; }
+  .form-card { padding: 1.5rem; }
+  .field-group { grid-template-columns: 1fr; }
+  .service-grid { grid-template-columns: repeat(2, 1fr); }
+  .review-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 1.8rem; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-logo"><span>XEROVA</span><span> Digital</span></div>
+  <ul class="nav-links">
+    <li><a href="#">Home</a></li>
+    <li><a href="#">Services</a></li>
+    <li><a href="#">Portfolio</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <button class="nav-cta">GET A QUOTE</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-label">Xerova Digital · Project Enquiry</p>
+  <h1>Let's Build Something<br><span class="grad">Extraordinary Together.</span></h1>
+  <p>Tell us about your project — the more detail, the better we can craft a solution tailored exactly to your needs.</p>
+  <div class="trust-badges">
+    <span class="trust-badge"><span>🔒</span>100% Confidential</span>
+    <span class="trust-badge"><span>⚡</span>Response Within 24hrs</span>
+    <span class="trust-badge"><span>✅</span>No Commitment Required</span>
+  </div>
+</section>
+
+<!-- MAIN -->
+<div class="page-wrap">
+  <!-- FORM CARD -->
+  <div class="form-card" id="formCard">
+
+    <!-- PROGRESS -->
+    <div class="progress-wrap">
+      <div class="progress-steps" id="progressSteps">
+        <div class="progress-fill-line" id="fillLine" style="width:0%"></div>
+        <div class="step-node active" data-step="1">01</div>
+        <div class="step-node" data-step="2">02</div>
+        <div class="step-node" data-step="3">03</div>
+        <div class="step-node" data-step="4">04</div>
+        <div class="step-node" data-step="5">05</div>
+      </div>
+      <div class="progress-bar"><div class="progress-bar-fill" id="progressFill" style="width:20%"></div></div>
+      <div class="progress-label">Step <span id="stepNum">1</span> of 5</div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="step active" id="step1">
+      <div class="step-header">
+        <div class="step-icon">👤</div>
+        <div>
+          <div class="step-title">About You</div>
+          <div class="step-sub">First, let's get to know you.</div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field">
+          <label>Full Name</label>
+          <input type="text" placeholder="John Doe" id="name">
+        </div>
+        <div class="field">
+          <label>Email Address</label>
+          <input type="email" placeholder="you@company.com" id="email">
+        </div>
+      </div>
+      <div class="field-group">
+        <div class="field">
+          <label>Phone Number</label>
+          <div class="phone-wrap">
+            <select>
+              <option value="+91">🇮🇳 +91</option>
+              <option value="+1">🇺🇸 +1</option>
+              <option value="+44">🇬🇧 +44</option>
+              <option value="+61">🇦🇺 +61</option>
+              <option value="+971">🇦🇪 +971</option>
+            </select>
+            <input type="tel" placeholder="98765 43210">
+          </div>
+        </div>
+        <div class="field">
+          <label>Company / Brand Name</label>
+          <input type="text" placeholder="Your company (or 'Personal')">
+        </div>
+      </div>
+      <div class="field-group">
+        <div class="field">
+          <label>Your Role</label>
+          <select>
+            <option>Select your role</option>
+            <option>Founder / CEO</option>
+            <option>Marketing Manager</option>
+            <option>Developer</option>
+            <option>Designer</option>
+            <option>Freelancer</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>How Did You Hear About Us?</label>
+          <div class="pill-group" id="heardPills">
+            <span class="pill" data-val="google">Google Search</span>
+            <span class="pill" data-val="instagram">Instagram</span>
+            <span class="pill" data-val="linkedin">LinkedIn</span>
+            <span class="pill" data-val="referral">Referral</span>
+            <span class="pill" data-val="portfolio">Portfolio</span>
+            <span class="pill" data-val="other">Other</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <div></div>
+        <button class="btn-next" onclick="goStep(2)">NEXT →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step" id="step2">
+      <div class="step-header">
+        <div class="step-icon">📦</div>
+        <div>
+          <div class="step-title">Your Project</div>
+          <div class="step-sub">Tell us what you need built.</div>
+        </div>
+      </div>
+
+      <div class="field full" style="margin-bottom:1.2rem">
+        <label>Service Required (select all that apply)</label>
+        <div class="service-grid" id="serviceGrid">
+          <div class="service-card" onclick="toggleService(this)">
+            <div class="check">✓</div>
+            <div class="icon">🌐</div>
+            <div class="name">Web Solutions</div>
+          </div>
+          <div class="service-card" onclick="toggleService(this)">
+            <div class="check">✓</div>
+            <div class="icon">🖨️</div>
+            <div class="name">3D Printing</div>
+          </div>
+          <div class="service-card" onclick="toggleService(this)">
+            <div class="check">✓</div>
+            <div class="icon">🎬</div>
+            <div class="name">Media Production</div>
+          </div>
+          <div class="service-card" onclick="toggleService(this)">
+            <div class="check">✓</div>
+            <div class="icon">💻</div>
+            <div class="name">IT Support</div>
+          </div>
+          <div class="service-card" onclick="toggleService(this)">
+            <div class="check">✓</div>
+            <div class="icon">📱</div>
+            <div class="name">Social Media</div>
+          </div>
+          <div class="service-card" onclick="toggleService(this)">
+            <div class="check">✓</div>
+            <div class="icon">🎨</div>
+            <div class="name">Creative Design</div>
+          </div>
+          <div class="service-card" onclick="toggleService(this)">
+            <div class="check">✓</div>
+            <div class="icon">📈</div>
+            <div class="name">Digital Marketing</div>
+          </div>
+          <div class="service-card" onclick="toggleService(this)">
+            <div class="check">✓</div>
+            <div class="icon">⚙️</div>
+            <div class="name">Custom Software</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field">
+          <label>Project Title / Name</label>
+          <input type="text" placeholder="e.g. Brand Redesign for XYZ Store">
+        </div>
+        <div class="field">
+          <label>Industry / Niche</label>
+          <select>
+            <option>Select industry</option>
+            <option>E-Commerce</option>
+            <option>Fashion</option>
+            <option>Food & Beverage</option>
+            <option>Tech / SaaS</option>
+            <option>Healthcare</option>
+            <option>Education</option>
+            <option>Real Estate</option>
+            <option>Finance</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-group full">
+        <div class="field">
+          <label>Project Description</label>
+          <textarea placeholder="Describe your project in detail — goals, target audience, key features, inspiration..." rows="4"></textarea>
+        </div>
+      </div>
+
+      <div class="field-group full">
+        <div class="field">
+          <label>Do you have an existing website / product?</label>
+          <div class="toggle-wrap" style="margin-top:0.4rem">
+            <label class="toggle">
+              <input type="checkbox" id="hasWebsite" onchange="toggleURL()">
+              <div class="toggle-track"></div>
+            </label>
+            <span class="toggle-label">Yes, I have an existing site</span>
+          </div>
+          <div class="url-reveal" id="urlReveal">
+            <input type="url" placeholder="https://yourwebsite.com" style="margin-top:0.5rem">
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button class="btn-back" onclick="goStep(1)">← BACK</button>
+        <button class="btn-next" onclick="goStep(3)">NEXT →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step" id="step3">
+      <div class="step-header">
+        <div class="step-icon">📋</div>
+        <div>
+          <div class="step-title">Scope & Requirements</div>
+          <div class="step-sub">Let's define the project scope.</div>
+        </div>
+      </div>
+
+      <div class="field-group full" style="margin-bottom:1.2rem">
+        <div class="field">
+          <label>Project Scale</label>
+          <div class="range-wrap">
+            <div class="range-labels">
+              <span>Small</span><span>Medium</span><span>Large</span><span>Enterprise</span>
+            </div>
+            <input type="range" min="1" max="4" value="2" id="scaleSlider" oninput="updateScale(this.value)">
+            <div class="range-value" id="scaleValue">Medium — Ideal for growing businesses with defined goals.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field">
+          <label>Key Features Required</label>
+          <div class="checkbox-group">
+            <div class="checkbox-category">Design</div>
+            <label class="checkbox-item"><input type="checkbox"><span class="checkbox-box"></span><span>Custom UI Design</span></label>
+            <label class="checkbox-item"><input type="checkbox"><span class="checkbox-box"></span><span>Brand Identity</span></label>
+            <label class="checkbox-item"><input type="checkbox"><span class="checkbox-box"></span><span>Motion Graphics</span></label>
+            <div class="checkbox-category">Development</div>
+            <label class="checkbox-item"><input type="checkbox"><span class="checkbox-box"></span><span>CMS Integration</span></label>
+            <label class="checkbox-item"><input type="checkbox"><span class="checkbox-box"></span><span>Payment Gateway</span></label>
+            <label class="checkbox-item"><input type="checkbox"><span class="checkbox-box"></span><span>API Integration</span></label>
+            <label class="checkbox-item"><input type="checkbox"><span class="checkbox-box"></span><span>Admin Dashboard</span></label>
+            <div class="checkbox-category">Marketing</div>
+            <label class="checkbox-item"><input type="checkbox"><span class="checkbox-box"></span><span>SEO Setup</span></label>
+            <label class="checkbox-item"><input type="checkbox"><span class="checkbox-box"></span><span>Analytics Integration</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Target Platforms</label>
+          <div class="platform-pills">
+            <span class="pill" onclick="this.classList.toggle('selected')">Desktop</span>
+            <span class="pill" onclick="this.classList.toggle('selected')">Mobile</span>
+            <span class="pill" onclick="this.classList.toggle('selected')">Tablet</span>
+            <span class="pill" onclick="this.classList.toggle('selected')">iOS App</span>
+            <span class="pill" onclick="this.classList.toggle('selected')">Android App</span>
+            <span class="pill" onclick="this.classList.toggle('selected')">PWA</span>
+          </div>
+
+          <label style="margin-top:1.5rem">Number of Pages / Screens</label>
+          <div class="stepper" style="margin-top:0.4rem">
+            <button onclick="stepperChange(-1)">−</button>
+            <input type="number" id="pageCount" value="5" min="1">
+            <button onclick="stepperChange(1)">+</button>
+          </div>
+
+          <label style="margin-top:1.5rem">Content Ready?</label>
+          <div class="radio-pills" id="contentReady">
+            <span class="radio-pill active" onclick="setRadio(this,'contentReady')">Yes, fully ready</span>
+            <span class="radio-pill" onclick="setRadio(this,'contentReady')">Partially ready</span>
+            <span class="radio-pill" onclick="setRadio(this,'contentReady')">Need content help</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button class="btn-back" onclick="goStep(2)">← BACK</button>
+        <button class="btn-next" onclick="goStep(4)">NEXT →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step" id="step4">
+      <div class="step-header">
+        <div class="step-icon">💰</div>
+        <div>
+          <div class="step-title">Budget & Timeline</div>
+          <div class="step-sub">Budget & delivery expectations.</div>
+        </div>
+      </div>
+
+      <div class="field-group full" style="margin-bottom:1.2rem">
+        <div class="field">
+          <label>Currency Preference</label>
+          <div class="currency-toggle">
+            <button class="currency-btn active" id="btnINR" onclick="setCurrency('INR')">INR ₹</button>
+            <button class="currency-btn" id="btnUSD" onclick="setCurrency('USD')">USD $</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group full" style="margin-bottom:1.5rem">
+        <div class="field">
+          <label>Budget Range</label>
+          <div class="range-wrap">
+            <input type="range" min="0" max="100" value="30" id="budgetSlider" oninput="updateBudget()">
+            <div class="range-value" id="budgetValue">₹50,000 – ₹1,50,000</div>
+          </div>
+          <div class="range-presets" id="budgetPresets">
+            <button class="range-preset" onclick="setBudgetPreset(this,10,'Under ₹25K')">Under ₹25K</button>
+            <button class="range-preset active" onclick="setBudgetPreset(this,30,'₹25K–₹1L')">₹25K–₹1L</button>
+            <button class="range-preset" onclick="setBudgetPreset(this,60,'₹1L–₹5L')">₹1L–₹5L</button>
+            <button class="range-preset" onclick="setBudgetPreset(this,90,'₹5L+')">₹5L+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field">
+          <label>Desired Launch Date</label>
+          <input type="date" id="launchDate">
+        </div>
+        <div class="field">
+          <label>Timeline Flexibility</label>
+          <div class="radio-pills" id="timeline" style="margin-top:0.4rem">
+            <span class="radio-pill active" onclick="setRadio(this,'timeline')">Flexible</span>
+            <span class="radio-pill" onclick="setRadio(this,'timeline')">Fixed Deadline</span>
+            <span class="radio-pill" onclick="setRadio(this,'timeline')">ASAP</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field">
+          <label>Ongoing Support Needed?</label>
+          <div class="toggle-wrap" style="margin-top:0.4rem">
+            <label class="toggle">
+              <input type="checkbox" id="needsSupport" onchange="toggleSupport()">
+              <div class="toggle-track"></div>
+            </label>
+            <span class="toggle-label">Yes, I need support</span>
+          </div>
+          <div class="url-reveal" id="supportReveal">
+            <select style="margin-top:0.5rem">
+              <option>Monthly Retainer</option>
+              <option>Pay-Per-Issue</option>
+              <option>Annual Contract</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>How Would You Like to Be Quoted?</label>
+          <div class="radio-pills" id="quoteType" style="margin-top:0.4rem">
+            <span class="radio-pill active" onclick="setRadio(this,'quoteType')">Fixed Price</span>
+            <span class="radio-pill" onclick="setRadio(this,'quoteType')">Hourly Rate</span>
+            <span class="radio-pill" onclick="setRadio(this,'quoteType')">Milestone-Based</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button class="btn-back" onclick="goStep(3)">← BACK</button>
+        <button class="btn-next" onclick="goStep(5)">NEXT →</button>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="step" id="step5">
+      <div class="step-header">
+        <div class="step-icon">🚀</div>
+        <div>
+          <div class="step-title">Final Details & Review</div>
+          <div class="step-sub">Almost there — review & submit.</div>
+        </div>
+      </div>
+
+      <!-- REVIEW SUMMARY -->
+      <div class="review-grid" style="margin-bottom:1.5rem">
+        <div class="review-section">
+          <div class="review-section-title">
+            About You
+            <a class="review-edit" onclick="goStep(1)">Edit ✎</a>
+          </div>
+          <div class="review-item">
+            <span class="review-key">Name</span>
+            <span class="review-val" id="rev-name">—</span>
+          </div>
+          <div class="review-item">
+            <span class="review-key">Email</span>
+            <span class="review-val" id="rev-email">—</span>
+          </div>
+          <div class="review-item">
+            <span class="review-key">Source</span>
+            <span class="review-val" id="rev-source">—</span>
+          </div>
+        </div>
+        <div class="review-section">
+          <div class="review-section-title">
+            Services
+            <a class="review-edit" onclick="goStep(2)">Edit ✎</a>
+          </div>
+          <div class="review-item">
+            <span class="review-key">Selected Services</span>
+            <div class="review-tags" id="rev-services"></div>
+          </div>
+        </div>
+        <div class="review-section">
+          <div class="review-section-title">
+            Scope
+            <a class="review-edit" onclick="goStep(3)">Edit ✎</a>
+          </div>
+          <div class="review-item">
+            <span class="review-key">Project Scale</span>
+            <span class="review-val" id="rev-scale">Medium</span>
+          </div>
+          <div class="review-item">
+            <span class="review-key">Pages / Screens</span>
+            <span class="review-val" id="rev-pages">5</span>
+          </div>
+        </div>
+        <div class="review-section">
+          <div class="review-section-title">
+            Budget
+            <a class="review-edit" onclick="goStep(4)">Edit ✎</a>
+          </div>
+          <div class="review-item">
+            <span class="review-key">Budget Range</span>
+            <span class="review-val" id="rev-budget">₹50K–₹1.5L</span>
+          </div>
+          <div class="review-item">
+            <span class="review-key">Quote Type</span>
+            <span class="review-val" id="rev-quote">Fixed Price</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADDITIONAL FIELDS -->
+      <div class="field-group full">
+        <div class="field">
+          <label>Attach Files (optional)</label>
+          <div class="file-drop" id="fileDrop" onclick="document.getElementById('fileInput').click()" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="handleDrop(event)">
+            <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.fig,.zip" onchange="handleFiles(this.files)">
+            <div class="file-drop-icon">📁</div>
+            <p>Drag & drop files or <span>click to browse</span></p>
+            <small>Accepts .pdf .doc .png .jpg .fig .zip — Max 10MB each</small>
+          </div>
+          <div class="uploaded-files" id="uploadedFiles"></div>
+        </div>
+      </div>
+
+      <div class="field-group full">
+        <div class="field">
+          <label>Reference / Inspiration Links (optional)</label>
+          <div class="ref-links" id="refLinks">
+            <div class="ref-link-item">
+              <input type="url" placeholder="https://inspiration-site.com">
+              <button onclick="removeRefLink(this)">✕</button>
+            </div>
+          </div>
+          <button class="add-link-btn" onclick="addRefLink()">+ Add Another Link</button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field">
+          <label>Preferred Communication</label>
+          <div class="radio-pills" id="commPref">
+            <span class="radio-pill active" onclick="setRadio(this,'commPref')">Email</span>
+            <span class="radio-pill" onclick="setRadio(this,'commPref')">WhatsApp</span>
+            <span class="radio-pill" onclick="setRadio(this,'commPref')">Phone Call</span>
+            <span class="radio-pill" onclick="setRadio(this,'commPref')">Video Call</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Preferred Meeting Time</label>
+          <select>
+            <option>Morning (9AM–12PM)</option>
+            <option>Afternoon (12–5PM)</option>
+            <option>Evening (5–9PM)</option>
+            <option>Anytime</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-group full">
+        <div class="field">
+          <label>Anything Else?</label>
+          <textarea placeholder="Any special requirements, questions, or context we should know..." rows="3"></textarea>
+        </div>
+      </div>
+
+      <!-- CONSENT -->
+      <div class="consent-wrap">
+        <input type="checkbox" id="consent">
+        <label class="consent-box" for="consent"></label>
+        <p class="consent-text">I agree to Xerova Digital's <a href="#">Privacy Policy</a> and <a href="#">Terms of Service</a>, and consent to being contacted regarding my project enquiry. My data will be handled with strict confidentiality.</p>
+      </div>
+
+      <button class="btn-submit" onclick="submitForm()">LAUNCH MY PROJECT 🚀</button>
+      <p class="submit-note">We'll review your brief and respond within 24 hours with a tailored proposal.</p>
+
+      <div class="step-nav" style="margin-top:0; padding-top:1rem; border-top:none; justify-content:flex-start">
+        <button class="btn-back" onclick="goStep(4)">← BACK</button>
+      </div>
+    </div>
+
+    <!-- SUCCESS SCREEN -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-check">✓</div>
+      <h2>Your Brief Has Been <span class="grad">Received!</span></h2>
+      <p>Our team is reviewing your project details. Expect a tailored response within 24 hours. We're excited to work with you.</p>
+      <div class="success-actions">
+        <a class="success-btn primary" href="#">📁 View Our Portfolio</a>
+        <a class="success-btn secondary" href="#">📞 Book a Call</a>
+        <a class="success-btn secondary" href="#">🏠 Back to Home</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-title">Why Work With Us?</div>
+      <div class="trust-point">
+        <span>✦</span>
+        <p><strong>Dedicated Project Manager</strong> — One point of contact from start to finish.</p>
+      </div>
+      <div class="trust-point">
+        <span>✦</span>
+        <p><strong>NDA on Request</strong> — Your ideas stay yours, always.</p>
+      </div>
+      <div class="trust-point">
+        <span>✦</span>
+        <p><strong>Agile Development</strong> — Transparent sprints, real progress.</p>
+      </div>
+      <div class="trust-point">
+        <span>✦</span>
+        <p><strong>Post-Launch Support</strong> — We don't disappear after delivery.</p>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Live Chat</div>
+      <div class="chat-bubble">
+        <div class="chat-icon">💬</div>
+        <div class="chat-text">
+          <p>Chat with us</p>
+          <small>Typically replies in minutes</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Recent Projects</div>
+      <div class="project-ticker" id="projectTicker">
+        🟢 Just completed: <span>E-Commerce Platform</span> for FashionBrand
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="response-time">
+        <div class="response-dot"></div>
+        <p>⚡ Avg. response: &lt; 3 hours</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFETTI CONTAINER -->
+<div class="confetti-wrap" id="confettiWrap"></div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><span>XEROVA</span> Digital</div>
+  <p>Crafting the Future, One Pixel at a Time.</p>
+  <div class="footer-socials">
+    <a href="#">𝕏</a>
+    <a href="#">in</a>
+    <a href="#">📷</a>
+    <a href="#">▶</a>
+  </div>
+</footer>
+
+<script>
+// ── CANVAS CIRCUIT NETWORK ──
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let nodes = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function initNodes() {
+  nodes = [];
+  const count = Math.floor((window.innerWidth * window.innerHeight) / 18000);
+  for (let i = 0; i < count; i++) {
+    nodes.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      r: Math.random() * 2 + 1
+    });
+  }
+}
+initNodes();
+
+function drawNetwork() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  nodes.forEach(n => {
+    n.x += n.vx;
+    n.y += n.vy;
+    if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
+    if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
+
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(0,245,212,0.5)';
+    ctx.fill();
+  });
+
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const dx = nodes[i].x - nodes[j].x;
+      const dy = nodes[i].y - nodes[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 120) {
+        ctx.beginPath();
+        ctx.moveTo(nodes[i].x, nodes[i].y);
+        ctx.lineTo(nodes[j].x, nodes[j].y);
+        ctx.strokeStyle = `rgba(0,245,212,${0.15 * (1 - dist / 120)})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(drawNetwork);
+}
+drawNetwork();
+
+// ── NAVBAR SCROLL ──
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// ── STEP NAVIGATION ──
+let currentStep = 1;
+const totalSteps = 5;
+
+function goStep(n) {
+  document.getElementById(`step${currentStep}`).classList.remove('active');
+  currentStep = n;
+  document.getElementById(`step${n}`).classList.add('active');
+  updateProgress(n);
+  if (n === 5) populateReview();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateProgress(n) {
+  document.getElementById('stepNum').textContent = n;
+  const pct = (n / totalSteps) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  const fillPct = ((n - 1) / (totalSteps - 1)) * 100;
+  document.getElementById('fillLine').style.width = fillPct + '%';
+
+  document.querySelectorAll('.step-node').forEach((node, i) => {
+    const s = i + 1;
+    node.classList.remove('active', 'done');
+    if (s < n) { node.classList.add('done'); node.textContent = '✓'; }
+    else if (s === n) { node.classList.add('active'); node.textContent = `0${s}`; }
+    else { node.textContent = `0${s}`; }
+  });
+}
+
+// ── PILL TOGGLES ──
+document.querySelectorAll('#heardPills .pill').forEach(p => {
+  p.addEventListener('click', () => p.classList.toggle('selected'));
+});
+
+function toggleService(card) { card.classList.toggle('selected'); }
+
+function setRadio(el, groupId) {
+  document.querySelectorAll(`#${groupId} .radio-pill`).forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── TOGGLE REVEALS ──
+function toggleURL() {
+  document.getElementById('urlReveal').classList.toggle('visible', document.getElementById('hasWebsite').checked);
+}
+function toggleSupport() {
+  document.getElementById('supportReveal').classList.toggle('visible', document.getElementById('needsSupport').checked);
+}
+
+// ── SCALE SLIDER ──
+const scaleLabels = [
+  '', 
+  'Small — Perfect for individuals and early-stage projects.',
+  'Medium — Ideal for growing businesses with defined goals.',
+  'Large — Complex systems for established brands.',
+  'Enterprise — Full-scale infrastructure and custom platforms.'
+];
+function updateScale(v) {
+  document.getElementById('scaleValue').textContent = scaleLabels[v];
+}
+
+// ── STEPPER ──
+function stepperChange(d) {
+  const inp = document.getElementById('pageCount');
+  inp.value = Math.max(1, parseInt(inp.value || 1) + d);
+}
+
+// ── BUDGET ──
+let currency = 'INR';
+const budgetRanges = {
+  INR: ['Under ₹25K','₹25K–₹1L','₹1L–₹5L','₹5L+'],
+  USD: ['Under $300','$300–$1,200','$1,200–$6,000','$6,000+']
+};
+
+function updateBudget() {
+  const v = parseInt(document.getElementById('budgetSlider').value);
+  const ranges = currency === 'INR'
+    ? ['Under ₹25,000','₹25,000 – ₹1,00,000','₹1,00,000 – ₹5,00,000','₹5,00,000+']
+    : ['Under $300','$300 – $1,200','$1,200 – $6,000','$6,000+'];
+  const idx = v < 25 ? 0 : v < 50 ? 1 : v < 75 ? 2 : 3;
+  document.getElementById('budgetValue').textContent = ranges[idx];
+}
+
+function setCurrency(c) {
+  currency = c;
+  document.getElementById('btnINR').classList.toggle('active', c === 'INR');
+  document.getElementById('btnUSD').classList.toggle('active', c === 'USD');
+  const presets = document.getElementById('budgetPresets');
+  const labels = budgetRanges[c];
+  presets.querySelectorAll('.range-preset').forEach((btn, i) => {
+    btn.textContent = labels[i];
+  });
+  updateBudget();
+}
+
+function setBudgetPreset(btn, val, label) {
+  document.getElementById('budgetSlider').value = val;
+  document.querySelectorAll('.range-preset').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateBudget();
+}
+
+// ── FILE UPLOAD ──
+function handleFiles(files) {
+  const wrap = document.getElementById('uploadedFiles');
+  Array.from(files).forEach(f => {
+    const div = document.createElement('div');
+    div.className = 'uploaded-file';
+    div.innerHTML = `<span>📄 ${f.name}</span><button onclick="this.parentElement.remove()">✕</button>`;
+    wrap.appendChild(div);
+  });
+  document.getElementById('fileDrop').classList.remove('drag-over');
+}
+function handleDrop(e) {
+  e.preventDefault();
+  handleFiles(e.dataTransfer.files);
+}
+
+// ── REF LINKS ──
+function addRefLink() {
+  const container = document.getElementById('refLinks');
+  if (container.children.length >= 3) return;
+  const div = document.createElement('div');
+  div.className = 'ref-link-item';
+  div.innerHTML = `<input type="url" placeholder="https://inspiration-site.com"><button onclick="removeRefLink(this)">✕</button>`;
+  div.style.animation = 'fadeSlide 0.3s ease';
+  container.appendChild(div);
+}
+function removeRefLink(btn) {
+  btn.parentElement.remove();
+}
+
+// ── POPULATE REVIEW ──
+function populateReview() {
+  document.getElementById('rev-name').textContent = document.getElementById('name').value || '—';
+  document.getElementById('rev-email').textContent = document.getElementById('email').value || '—';
+
+  const sources = [...document.querySelectorAll('#heardPills .pill.selected')].map(p => p.textContent).join(', ');
+  document.getElementById('rev-source').textContent = sources || '—';
+
+  const services = [...document.querySelectorAll('#serviceGrid .service-card.selected .name')].map(c => c.textContent);
+  const svcWrap = document.getElementById('rev-services');
+  svcWrap.innerHTML = services.length ? services.map(s => `<span class="review-tag">${s}</span>`).join('') : '<span style="color:var(--muted);font-size:0.82rem">None selected</span>';
+
+  const scaleVal = document.getElementById('scaleSlider').value;
+  const scaleNames = ['','Small','Medium','Large','Enterprise'];
+  document.getElementById('rev-scale').textContent = scaleNames[scaleVal];
+  document.getElementById('rev-pages').textContent = document.getElementById('pageCount').value + ' screens';
+  document.getElementById('rev-budget').textContent = document.getElementById('budgetValue').textContent;
+
+  const quoteActive = document.querySelector('#quoteType .radio-pill.active');
+  document.getElementById('rev-quote').textContent = quoteActive ? quoteActive.textContent : 'Fixed Price';
+}
+
+// ── SUBMIT ──
+function submitForm() {
+  const consent = document.getElementById('consent');
+  if (!consent.checked) {
+    consent.parentElement.style.animation = 'none';
+    consent.parentElement.offsetHeight;
+    consent.parentElement.style.animation = 'shake 0.4s ease';
+    return;
+  }
+  // Hide all steps
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('successScreen').classList.add('active');
+  document.querySelector('.progress-wrap').style.display = 'none';
+  fireConfetti();
+}
+
+// ── CONFETTI ──
+function fireConfetti() {
+  const wrap = document.getElementById('confettiWrap');
+  const colors = ['#00f5d4','#9b5de5','#f72585','#ffd60a','#00e676'];
+  for (let i = 0; i < 80; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-particle';
+    p.style.cssText = `
+      left: ${Math.random() * 100}%;
+      top: -10px;
+      background: ${colors[Math.floor(Math.random() * colors.length)]};
+      width: ${Math.random() * 8 + 4}px;
+      height: ${Math.random() * 8 + 4}px;
+      animation-delay: ${Math.random() * 1}s;
+      animation-duration: ${Math.random() * 2 + 2}s;
+      border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+    `;
+    wrap.appendChild(p);
+    setTimeout(() => p.remove(), 4000);
+  }
+}
+
+// ── PROJECT TICKER ──
+const projects = [
+  '🟢 Just completed: <span>E-Commerce Platform</span> for FashionBrand',
+  '🟢 Just completed: <span>Brand Identity</span> for TechStartup Inc.',
+  '🟢 Just launched: <span>Custom Web App</span> for LogisticsGroup',
+];
+let tickerIdx = 0;
+setInterval(() => {
+  const el = document.getElementById('projectTicker');
+  el.style.opacity = '0';
+  setTimeout(() => {
+    tickerIdx = (tickerIdx + 1) % projects.length;
+    el.innerHTML = projects[tickerIdx];
+    el.style.opacity = '1';
+  }, 300);
+}, 4000);
+
+// Add shake keyframe
+const style = document.createElement('style');
+style.textContent = `@keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }`;
+document.head.appendChild(style);
+</script>
+</body>
+</html>
