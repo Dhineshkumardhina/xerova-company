@@ -520,7 +520,7 @@
         <div class="seq-line" id="l-2"><h2 class="hero-title">Our Code.</h2></div>
         <div class="seq-line" id="l-3"><h2 class="hero-title" style="color: var(--cyan);">One Extraordinary Product.</h2></div>
         <br>
-        <a href="feedback.html" class="btn btn-grad" style="padding: 1.5rem 3.5rem;">START BUILDING TODAY</a>
+        <a href="#" class="btn btn-grad" style="padding: 1.5rem 3.5rem;">START BUILDING TODAY</a>
         <p class="mono" style="color: var(--green); margin-top: 2rem; font-size: 0.8rem;">🟢 All Copyrights reserved</p>
     </section>
 
@@ -559,7 +559,7 @@
                 tabs.forEach(t => t.classList.remove('active'));
                 panes.forEach(p => p.classList.remove('active'));
                 tab.classList.add('active');
-                document.getElementById(`pane-${target}`).classList.add('active');
+                document.getElementById(`pane-₹{target}`).classList.add('active');
             });
         });
 
@@ -579,7 +579,7 @@
 
             const base = comp * 2000;
             const pageAdd = pages * 150;
-            totalDisp.innerText = `$${(base + pageAdd).toLocaleString()}+`;
+            totalDisp.innerText = `₹₹{(base + pageAdd).toLocaleString()}+`;
             
             const times = ["2-3 Weeks", "4-6 Weeks", "8-12 Weeks"];
             timeDisp.innerText = times[comp-1];
