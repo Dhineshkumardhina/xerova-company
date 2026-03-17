@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xerova Growth | Data-Driven Digital Marketing & SEO</title>
+    <title>Xerova | Custom Web Apps & Engineering Excellence</title>
      <link rel="icon" type="image/png" href="./favicon.png">
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;600&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;600&family=Outfit:wght@300;400;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg: #0a0d1a;
             --card: #111827;
+            --code-bg: #0d1117;
             --cyan: #00f5d4;
             --purple: #9b5de5;
-            --pink: #f72585;
             --green: #00e676;
             --amber: #ffd60a;
             --text: #e2e8f0;
@@ -29,7 +29,7 @@
         body {
             background-color: var(--bg);
             color: var(--text);
-            font-family: 'DM Sans', sans-serif;
+            font-family: 'Outfit', sans-serif;
             overflow-x: hidden;
             line-height: 1.6;
         }
@@ -38,10 +38,10 @@
         .section-tag { font-family: 'Exo 2', sans-serif; font-size: 0.8rem; letter-spacing: 5px; color: var(--muted); text-transform: uppercase; }
         .mono { font-family: 'JetBrains Mono', monospace; }
 
-        /* --- Background Particles --- */
-        #data-canvas {
+        /* --- Matrix Rain Background --- */
+        #matrix-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            opacity: 0.3; pointer-events: none;
+            opacity: 0.08; pointer-events: none;
         }
 
         /* --- Navigation --- */
@@ -65,8 +65,8 @@
             width: 12px;
             height: 12px;
             border-radius: 999px;
-            background: linear-gradient(135deg, var(--cyan), var(--pink));
-            box-shadow: 0 0 18px rgba(0, 245, 212, 0.35);
+            background: var(--grad);
+            box-shadow: 0 0 18px rgba(0, 245, 212, 0.45);
         }
         .nav-logo span { color: var(--cyan); }
         .nav-links { display: flex; gap: 2rem; }
@@ -76,45 +76,40 @@
             padding: 0.75rem 1.35rem;
             border: 1px solid rgba(0, 245, 212, 0.35);
             border-radius: 999px;
-            background: linear-gradient(135deg, rgba(0, 245, 212, 0.16), rgba(247, 37, 133, 0.24));
+            background: linear-gradient(135deg, rgba(0, 245, 212, 0.18), rgba(155, 93, 229, 0.24));
             color: var(--text);
             box-shadow: 0 0 22px rgba(0, 245, 212, 0.16);
         }
         .nav-launch:hover {
             border-color: rgba(0, 245, 212, 0.7);
             color: #fff;
-            box-shadow: 0 0 28px rgba(247, 37, 133, 0.24);
+            box-shadow: 0 0 28px rgba(155, 93, 229, 0.28);
         }
 
         /* --- Hero Section --- */
         #hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 10%; position: relative; }
-        .hero-title { font-size: 4.5rem; line-height: 1.1; margin-bottom: 1rem; }
-        .hero-title span { 
-            background: linear-gradient(90deg, var(--cyan), var(--purple), var(--pink), var(--cyan));
-            background-size: 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: textFlow 8s linear infinite;
+        .hero-title { font-size: 4rem; line-height: 1.1; margin-bottom: 1rem; }
+        .grad-text { 
+            background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-size: 200% auto; animation: shine 5s linear infinite;
         }
-        @keyframes textFlow { to { background-position: 300%; } }
+        @keyframes shine { to { background-position: 200% center; } }
         .hero-sub { color: var(--muted); max-width: 750px; font-size: 1.2rem; margin-bottom: 2.5rem; }
         .hero-btns { display: flex; gap: 1.5rem; }
         
-        .btn { padding: 1rem 2rem; border-radius: 4px; font-weight: 700; font-family: 'Orbitron'; font-size: 0.8rem; cursor: pointer; transition: var(--trans); text-decoration: none; display: inline-block; border: none; }
+        .btn { padding: 1rem 2.2rem; border-radius: 4px; font-weight: 700; font-family: 'Orbitron'; font-size: 0.8rem; cursor: pointer; transition: var(--trans); text-decoration: none; display: inline-block; border: none; }
         .btn-grad { background: var(--grad); color: #fff; box-shadow: 0 0 15px rgba(0, 245, 212, 0.3); }
         .btn-grad:hover { transform: translateY(-3px); box-shadow: 0 0 25px rgba(155, 93, 229, 0.5); }
         .btn-outline { border: 1px solid var(--cyan); color: var(--cyan); background: transparent; }
         .btn-outline:hover { background: var(--cyan); color: var(--bg); }
 
         .hero-stats { margin-top: 5rem; display: flex; gap: 4rem; flex-wrap: wrap; justify-content: center; }
-        .stat-badge { text-align: center; }
         .stat-num { font-size: 2.2rem; color: var(--cyan); font-weight: 900; display: block; font-family: 'Orbitron'; }
         .stat-lab { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; margin-top: 0.5rem; }
 
-        /* --- Sections General --- */
+        /* --- Services Grid --- */
         section { padding: 100px 8%; position: relative; }
         .section-header { text-align: center; margin-bottom: 4rem; }
-        .grad-text { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-        /* --- Services Grid --- */
         .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
         .service-card {
             background: var(--card); padding: 3rem 2rem; border-radius: 12px;
@@ -125,76 +120,80 @@
         .service-card i { font-size: 2.5rem; margin-bottom: 1.5rem; display: block; color: var(--cyan); transition: var(--trans); }
         .service-card:hover i { transform: scale(1.1); color: var(--purple); }
 
-        /* --- Dashboard Mockup --- */
-        .dashboard-wrap { 
-            background: #0d1117; border: 1px solid #30363d; border-radius: 12px; padding: 2rem;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden;
+        /* --- Browser Mockup --- */
+        .browser-mockup {
+            max-width: 1000px; margin: 0 auto; background: #0d1117; border-radius: 12px;
+            border: 1px solid #30363d; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 20px rgba(0,245,212,0.1);
         }
-        .dashboard-wrap::after {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-            background-size: 100% 4px; pointer-events: none;
+        .browser-header {
+            background: #161b22; padding: 12px 20px; display: flex; align-items: center; gap: 15px;
+            border-bottom: 1px solid #30363d;
         }
-        .dash-top { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
-        .kpi-card { background: #161b22; padding: 1.5rem; border-radius: 8px; border: 1px solid #30363d; }
-        .kpi-val { font-size: 1.8rem; font-weight: 700; color: var(--cyan); display: block; }
-        .trend-up { color: var(--green); font-size: 0.8rem; }
-        
-        .chart-area { height: 300px; width: 100%; background: #161b22; border-radius: 8px; margin-bottom: 2rem; position: relative; padding: 20px; }
-        .svg-chart { width: 100%; height: 100%; }
-        .chart-path { 
-            fill: none; stroke: var(--cyan); stroke-width: 3; 
-            stroke-dasharray: 1000; stroke-dashoffset: 1000;
-        }
-        .animate-chart .chart-path { animation: drawPath 3s forwards ease-out; }
-        @keyframes drawPath { to { stroke-dashoffset: 0; } }
+        .browser-dots { display: flex; gap: 6px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .browser-tabs { display: flex; gap: 10px; flex: 1; margin-left: 20px; }
+        .b-tab { padding: 6px 15px; background: #0d1117; border-radius: 6px; font-size: 0.7rem; cursor: pointer; color: var(--muted); transition: 0.3s; }
+        .b-tab.active { background: #30363d; color: var(--cyan); }
+        .browser-content { height: 500px; padding: 20px; position: relative; overflow: hidden; }
+        .preview-pane { position: absolute; inset: 0; padding: 40px; opacity: 0; transition: 0.5s; display: flex; align-items: center; justify-content: center; }
+        .preview-pane.active { opacity: 1; }
+        .mock-ui { width: 100%; height: 100%; background: #1c2128; border-radius: 8px; border: 1px dashed var(--muted); display: flex; flex-direction: column; padding: 20px; }
 
-        /* --- Growth Funnel --- */
-        .funnel-container { max-width: 600px; margin: 4rem auto; position: relative; }
-        .funnel-layer {
-            height: 60px; margin: 5px auto; display: flex; align-items: center; justify-content: center;
-            font-family: 'Orbitron'; font-size: 0.9rem; font-weight: 700; color: var(--bg);
-            clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 15% 100%);
-            transition: var(--trans); cursor: help;
-        }
-        .l1 { width: 100%; background: var(--cyan); }
-        .l2 { width: 85%; background: #00d9bc; }
-        .l3 { width: 70%; background: #00bda4; }
-        .l4 { width: 55%; background: #4d8dd5; }
-        .l5 { width: 40%; background: var(--purple); }
-        .funnel-layer:hover { transform: scale(1.05); filter: brightness(1.2); }
+        /* --- Tech Stack Diagram --- */
+        .tech-layers { display: flex; flex-direction: column; gap: 2rem; max-width: 800px; margin: 4rem auto; position: relative; }
+        .layer { background: var(--card); padding: 2rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); text-align: center; position: relative; z-index: 2; }
+        .layer h4 { font-family: 'Orbitron'; color: var(--cyan); margin-bottom: 1rem; font-size: 0.8rem; }
+        .pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+        .tpill { padding: 6px 15px; background: rgba(255,255,255,0.05); border-radius: 50px; font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
+        .tpill:hover { border-color: var(--cyan); background: rgba(0,245,212,0.1); }
+        .layer-connector { position: absolute; left: 50%; width: 2px; height: 2rem; background: var(--grad); transform: translateX(-50%); z-index: 1; }
+        .c1 { top: 100%; }
+        .c2 { top: 100%; }
 
         /* --- Bento Grid --- */
         .bento-grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 250px; gap: 1.5rem; }
-        .bento-item { background: var(--card); border-radius: 16px; padding: 2rem; border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden; transition: var(--trans); }
+        .bento-item { background: var(--card); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden; transition: var(--trans); }
         .bento-wide { grid-column: span 2; }
         .bento-tall { grid-row: span 2; }
-        .bento-item:hover { border-color: var(--cyan); transform: translateY(-5px); }
-        .bento-item h3 { font-size: 1.5rem; margin-bottom: 1rem; color: #fff; }
-        .metric-pill { display: inline-block; padding: 4px 12px; background: rgba(0, 245, 212, 0.1); color: var(--cyan); border-radius: 50px; font-size: 0.75rem; margin-top: 10px; border: 1px solid rgba(0, 245, 212, 0.2); }
+        .bento-item:hover { transform: scale(1.02); border-color: var(--cyan); }
+        .bento-overlay { position: absolute; inset: 0; background: linear-gradient(transparent, rgba(10,13,26,0.95)); padding: 2rem; display: flex; flex-direction: column; justify-content: flex-end; }
+        .scroll-preview { height: 100%; width: 100%; overflow: hidden; position: relative; }
+        .scroll-content { position: absolute; width: 100%; animation: scrollAuto 15s linear infinite; }
+        @keyframes scrollAuto { 0% { top: 0; } 100% { top: -100%; } }
+
+        /* --- Code Snippet Widget --- */
+        .code-widget { max-width: 900px; margin: 0 auto; background: var(--code-bg); border-radius: 12px; border: 1px solid #30363d; overflow: hidden; }
+        .code-tabs { background: #161b22; display: flex; border-bottom: 1px solid #30363d; }
+        .c-tab { padding: 12px 20px; font-size: 0.75rem; color: var(--muted); border-right: 1px solid #30363d; cursor: pointer; }
+        .c-tab.active { background: var(--code-bg); color: var(--text); border-bottom: 2px solid var(--cyan); }
+        .code-display { padding: 25px; font-size: 0.9rem; min-height: 300px; white-space: pre-wrap; color: #abb2bf; }
+        .tag { color: var(--cyan); }
+        .prop { color: var(--purple); }
+        .str { color: var(--green); }
+        .func { color: var(--amber); }
+
+        /* --- Estimator Sliders --- */
+        .estimator-wrap { background: var(--card); padding: 3rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
+        .slider-group { margin-bottom: 2rem; }
+        .slider-group label { display: block; margin-bottom: 1rem; font-family: 'Orbitron'; font-size: 0.7rem; color: var(--cyan); }
+        input[type="range"] { width: 100%; accent-color: var(--cyan); background: #30363d; height: 4px; border-radius: 2px; }
+        .est-display { background: rgba(255,255,255,0.02); padding: 2rem; border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1); text-align: center; }
+        .est-val { font-size: 2.5rem; color: var(--cyan); font-weight: 900; font-family: 'Orbitron'; display: block; }
 
         /* --- Marquee --- */
-        .marquee-wrap { overflow: hidden; white-space: nowrap; padding: 3rem 0; background: rgba(255,255,255,0.02); }
-        .marquee-content { display: inline-block; animation: scrollMarquee 40s linear infinite; }
+        .marquee-wrap { overflow: hidden; white-space: nowrap; padding: 2rem 0; background: rgba(255,255,255,0.02); }
+        .marquee-content { display: inline-block; animation: scrollMarquee 30s linear infinite; }
         @keyframes scrollMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-        .pill { display: inline-block; padding: 0.7rem 1.8rem; background: var(--card); border: 1px solid rgba(0,245,212,0.2); border-radius: 50px; margin: 0 15px; font-family: 'Orbitron'; font-size: 0.75rem; color: var(--cyan); box-shadow: 0 0 10px rgba(0,245,212,0.1); }
+        .mpill { display: inline-block; padding: 0.6rem 1.5rem; background: var(--card); border: 1px solid rgba(0,245,212,0.2); border-radius: 50px; margin: 0 10px; font-family: 'Orbitron'; font-size: 0.7rem; color: var(--cyan); }
 
-        /* --- Audit Section --- */
-        .audit-container { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; background: #111827; padding: 4rem; border-radius: 30px; border: 1px solid rgba(255,255,255,0.05); }
-        .meter-box { text-align: center; position: relative; width: 200px; margin: 0 auto; }
-        .circular-meter { transform: rotate(-90deg); }
-        .meter-bg { fill: none; stroke: #1f2937; stroke-width: 8; }
-        .meter-progress { fill: none; stroke: var(--amber); stroke-width: 8; stroke-dasharray: 440; stroke-dashoffset: 440; transition: 2s ease-out; }
-        .audit-form input, .audit-form select { width: 100%; background: #0a0d1a; border: 1px solid rgba(255,255,255,0.1); padding: 1rem; color: #fff; border-radius: 6px; margin-bottom: 1rem; outline: none; }
-        .audit-form input:focus { border-color: var(--cyan); box-shadow: 0 0 15px rgba(0,245,212,0.2); }
+        /* --- CTA Banner --- */
+        .final-cta { text-align: center; padding: 150px 10%; position: relative; overflow: hidden; }
+        .seq-line { opacity: 0; transform: translateY(20px); transition: 1s ease; margin-bottom: 10px; }
+        .seq-line.visible { opacity: 1; transform: translateY(0); }
 
-        /* --- CTA Footer --- */
-        .final-cta { text-align: center; padding: 150px 8%; background: radial-gradient(circle at center, rgba(155,93,229,0.1) 0%, transparent 70%); }
-
-        @media (max-width: 1024px) {
-            .hero-title { font-size: 3rem; }
-            .dash-top { grid-template-columns: 1fr 1fr; }
-            .audit-container { grid-template-columns: 1fr; text-align: center; }
+        @media (max-width: 900px) {
+            .hero-title { font-size: 2.5rem; }
+            .estimator-wrap, .contact-split { grid-template-columns: 1fr; }
             .bento-grid { grid-template-columns: repeat(2, 1fr); }
             .nav-links { display: none; }
         }
@@ -216,14 +215,14 @@
                 text-align: center;
             }
 
+            section { padding: 72px 1rem; }
             #hero {
                 min-height: 100vh;
                 height: auto;
                 padding: 7rem 1rem 4rem;
             }
 
-            section { padding: 72px 1rem; }
-            .hero-title { font-size: 2.35rem; }
+            .hero-title { font-size: 2.25rem; }
             .hero-sub { font-size: 1rem; }
             .hero-btns,
             .hero-stats {
@@ -235,295 +234,370 @@
             .hero-btns .btn { width: 100%; text-align: center; }
             .section-header { margin-bottom: 2.5rem; }
             .services-grid,
-            .dash-top,
-            .bento-grid,
-            .pricing-grid { grid-template-columns: 1fr; }
-
-            .dashboard-wrap,
-            .audit-container {
-                padding: 1.5rem 1rem;
-                border-radius: 20px;
-            }
-
-            .audit-form {
-                width: 100%;
-                text-align: left;
-            }
-
-            .chart-area {
-                height: 220px;
+            .bento-grid { grid-template-columns: 1fr; }
+            .browser-header {
+                flex-wrap: wrap;
                 padding: 1rem;
             }
 
-            .dash-table { overflow-x: auto; }
-            .dash-table > div { min-width: 520px; }
+            .browser-tabs {
+                margin-left: 0;
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: 0.25rem;
+            }
+
+            .browser-content {
+                height: auto;
+                min-height: 320px;
+                padding: 1rem;
+            }
+
+            .preview-pane {
+                position: relative;
+                inset: auto;
+                display: none;
+                padding: 0;
+            }
+
+            .preview-pane.active { display: flex; }
+            .preview-pane .mock-ui > div:last-child,
+            .preview-pane .mock-ui > div {
+                grid-template-columns: 1fr !important;
+            }
+
+            .preview-pane .mock-ui > div[style*="display: flex"] {
+                display: grid !important;
+            }
+
             .bento-wide,
             .bento-tall {
                 grid-column: span 1;
                 grid-row: span 1;
             }
 
-            .meter-box { width: 160px; }
+            .estimator-wrap {
+                padding: 1.5rem 1rem;
+                gap: 2rem;
+            }
+
+            .code-tabs { overflow-x: auto; }
+            .code-display {
+                font-size: 0.78rem;
+                min-height: auto;
+            }
+
             .final-cta { padding: 96px 1rem; }
         }
     </style>
 </head>
 <body>
 
-    <canvas id="data-canvas"></canvas>
+    <canvas id="matrix-canvas"></canvas>
 
     <nav>
-        <a href="#" class="nav-logo">XEROVA <span>GROWTH LAB</span></a>
+        <a href="#" class="nav-logo">XEROVA <span>WEB LAB</span></a>
         <div class="nav-links">
-            <a href="#services">SERVICES</a>
-            <a href="#performance">DASHBOARD</a>
-            <a href="#funnel">STRATEGY</a>
-            <a href="#audit">FREE AUDIT</a>
+            <a href="#services">BUILD</a>
+            <a href="#stack">TECH</a>
+            <a href="#work">PORTFOLIO</a>
+            <a href="#estimate">ESTIMATE</a>
         </div>
-        <a href="#audit" class="btn btn-outline nav-launch">LAUNCH PROJECT</a>
+        <a href="#contact" class="btn btn-outline nav-launch">LAUNCH PROJECT</a>
     </nav>
 
     <section id="hero">
-        <p class="section-tag">Digital Marketing</p>
-        <h1 class="hero-title">Stop Guessing. <br> <span>Start Dominating.</span></h1>
-        <p class="hero-sub">Data-driven SEO, precision-targeted PPC, and full-funnel growth strategies that turn your marketing spend into measurable, compounding revenue.</p>
+        <h1 class="hero-title">We Don't Just Build Websites. <br> <span class="grad-text">We Engineer Experiences.</span></h1>
+        <p class="hero-sub">From pixel-perfect marketing sites to complex full-stack web applications — we architect, design, and deploy digital products that scale.</p>
         <div class="hero-btns">
-            <a href="#audit" class="btn btn-grad">GET A FREE AUDIT</a>
-            <a href="#performance" class="btn btn-outline">VIEW RESULTS</a>
+            <a href="#estimate" class="btn btn-grad">START YOUR PROJECT</a>
+            <a href="#work" class="btn btn-outline">VIEW OUR PORTFOLIO</a>
         </div>
 
         <div class="hero-stats">
             <div class="stat-badge">
-                <span class="stat-num" data-val="50">0</span>
-                <span class="stat-lab">₹50+ Managed</span>
+                <span class="stat-num">30+</span>
+                <span class="stat-lab">Websites Launched</span>
             </div>
             <div class="stat-badge">
-                <span class="stat-num" data-val="800">0</span>
-                <span class="stat-lab">800% Avg ROI</span>
+                <span class="stat-num">50ms</span>
+                <span class="stat-lab">Avg. Load Time</span>
             </div>
             <div class="stat-badge">
-                <span class="stat-num" data-val="1200">0</span>
-                <span class="stat-lab">120+ Campaigns</span>
+                <span class="stat-num">99.9%</span>
+                <span class="stat-lab">Uptime Delivered</span>
             </div>
         </div>
     </section>
 
     <section id="services">
         <div class="section-header">
-            <p class="section-tag">What We Do</p>
-            <h2 class="grad-text" style="font-size: 2.5rem;">Our Growth Services</h2>
+            <p class="section-tag">What We Build</p>
+            <h2 class="grad-text">Our Web Services</h2>
         </div>
         <div class="services-grid">
             <div class="service-card">
-                <i class="fas fa-search-location"></i>
-                <h3>SEO Dominance</h3>
-                <p>Rank #1 on Google. Own your niche organically with technical and on-page precision.</p>
+                <i class="fas fa-laptop-code"></i>
+                <h3>Web Applications</h3>
+                <p>Custom SaaS platforms and complex tools built with React, Next.js, and Node.</p>
             </div>
             <div class="service-card">
-                <i class="fas fa-mouse-pointer"></i>
-                <h3>PPC & Paid Search</h3>
-                <p>Precision-targeted ads that convert clicks into customers with zero wasted spend.</p>
+                <i class="fas fa-shopping-cart"></i>
+                <h3>E-Commerce</h3>
+                <p>Blazing-fast storefronts built to convert browsers into buyers using Shopify or Headless.</p>
             </div>
             <div class="service-card">
-                <i class="fas fa-filter"></i>
-                <h3>Affilitate Marketing</h3>
-                <p>Optimizing every touchpoint of your site to maximize your existing traffic value.</p>
+                <i class="fas fa-plug"></i>
+                <h3>API Development</h3>
+                <p>Robust, scalable backends and custom integrations for seamless data flow.</p>
             </div>
             <div class="service-card">
-                <i class="fas fa-rocket"></i>
-                <h3>Growth Hacking</h3>
-                <p>Innovative, rapid-experimentation strategies to scale your user base exponentially.</p>
+                <i class="fas fa-bolt"></i>
+                <h3>PWA / Mobile Web</h3>
+                <p>Mobile-first experiences that work offline and feel like native applications.</p>
             </div>
         </div>
     </section>
 
-    <section id="performance">
-        <div class="section-header">
-            <p class="section-tag">The Numbers Don't Lie</p>
-            <h2>Performance <span class="grad-text">Live Dashboard</span></h2>
+    <section id="browser">
+        <div class="browser-mockup">
+            <div class="browser-header">
+                <div class="browser-dots">
+                    <div class="dot" style="background: #ff5f56;"></div>
+                    <div class="dot" style="background: #ffbd2e;"></div>
+                    <div class="dot" style="background: #27c93f;"></div>
+                </div>
+                <div class="browser-tabs">
+                    <div class="b-tab active" data-target="0">E-Commerce</div>
+                    <div class="b-tab" data-target="1">SaaS Dash</div>
+                    <div class="b-tab" data-target="2">Portfolio</div>
+                    <div class="b-tab" data-target="3">Corporate</div>
+                </div>
+            </div>
+            <div class="browser-content">
+                <div class="preview-pane active" id="pane-0">
+                    <div class="mock-ui">
+                        <div style="width: 100%; height: 40px; border-bottom: 1px solid var(--muted); margin-bottom: 20px;"></div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+                            <div style="height: 150px; background: rgba(0,245,212,0.05); border-radius: 4px;"></div>
+                            <div style="height: 150px; background: rgba(0,245,212,0.05); border-radius: 4px;"></div>
+                            <div style="height: 150px; background: rgba(0,245,212,0.05); border-radius: 4px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="preview-pane" id="pane-1">
+                    <div class="mock-ui">
+                        <div style="display: flex; gap: 20px; height: 100%;">
+                            <div style="width: 60px; height: 100%; border-right: 1px solid var(--muted);"></div>
+                            <div style="flex: 1; padding: 20px; background: rgba(155,93,229,0.05);"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Panes 2 and 3 omitted for brevity but follow same pattern -->
+            </div>
         </div>
-        <div class="dashboard-wrap">
-            <div class="dash-top">
-                <div class="kpi-card">
-                    <span class="section-tag" style="font-size: 0.6rem;">Impressions</span>
-                    <span class="kpi-val mono">1.2</span>
-                    <span class="trend-up"><i class="fas fa-caret-up"></i> 12.4%</span>
+    </section>
+
+    <section id="stack">
+        <div class="section-header">
+            <p class="section-tag">How We Build</p>
+            <h2 class="grad-text">Our Tech Stack</h2>
+        </div>
+        <div class="tech-layers">
+            <div class="layer">
+                <h4>Frontend Layer</h4>
+                <div class="pills">
+                    <span class="tpill">React</span><span class="tpill">Next.js</span><span class="tpill">Tailwind</span><span class="tpill">Three.js</span>
                 </div>
-                <div class="kpi-card">
-                    <span class="section-tag" style="font-size: 0.6rem;">CTR</span>
-                    <span class="kpi-val mono">4.82%</span>
-                    <span class="trend-up"><i class="fas fa-caret-up"></i> 0.5%</span>
-                </div>
-                <div class="kpi-card">
-                    <span class="section-tag" style="font-size: 0.6rem;">CPA</span>
-                    <span class="kpi-val mono">₹14.20</span>
-                    <span class="trend-up" style="color: var(--amber);"><i class="fas fa-caret-down"></i> 8.1%</span>
-                </div>
-                <div class="kpi-card">
-                    <span class="section-tag" style="font-size: 0.6rem;">Revenue</span>
-                    <span class="kpi-val mono">₹42K</span>
-                    <span class="trend-up"><i class="fas fa-caret-up"></i> 24.0%</span>
-                </div>
+                <div class="layer-connector c1"></div>
             </div>
-            <div class="chart-area" id="chart-trigger">
-                <p class="mono" style="font-size: 0.7rem; color: var(--cyan); margin-bottom: 10px;">&gt; ANALYZING ORGANIC TRAFFIC TREND...</p>
-                <svg class="svg-chart" viewBox="0 0 1000 200">
-                    <path class="chart-path" d="M0,180 Q100,160 200,170 T400,120 T600,140 T800,40 T1000,20" />
-                </svg>
+            <div class="layer">
+                <h4>Backend & API</h4>
+                <div class="pills">
+                    <span class="tpill">Node.js</span><span class="tpill">GraphQL</span><span class="tpill">Python</span><span class="tpill">PostgreSQL</span>
+                </div>
+                <div class="layer-connector c2"></div>
             </div>
-            <div class="dash-table mono" style="font-size: 0.8rem;">
-                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; border-bottom: 1px solid #30363d; padding: 10px; color: var(--muted);">
-                    <span>KEYWORD</span><span>POS</span><span>VOL</span><span>GROWTH</span>
-                </div>
-                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 10px; border-bottom: 1px solid #30363d;">
-                    <span>Growth Marketing Agency</span><span style="color: var(--green);">#1</span><span>12K</span><span style="color: var(--green);">▲ 4</span>
-                </div>
-                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 10px;">
-                    <span>SaaS SEO Services</span><span style="color: var(--green);">#3</span><span>8.4K</span><span style="color: var(--green);">▲ 12</span>
+            <div class="layer">
+                <h4>Infrastructure</h4>
+                <div class="pills">
+                    <span class="tpill">AWS</span><span class="tpill">Docker</span><span class="tpill">Vercel</span><span class="tpill">Redis</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="funnel">
-        <div class="section-header">
-            <p class="section-tag">Framework</p>
-            <h2 class="grad-text">The Growth Funnel</h2>
+    <section id="work">
+        <div class="bento-grid">
+            <div class="bento-item bento-wide bento-tall">
+                <div class="scroll-preview">
+                    <div class="scroll-content">
+                        <div style="height: 1000px; background: linear-gradient(var(--cyan), var(--purple)); opacity: 0.2; margin: 20px;"></div>
+                    </div>
+                </div>
+                <div class="bento-overlay">
+                    <span class="section-tag" style="color: var(--cyan);">Next.js + Stripe</span>
+                    <h3>Global Commerce</h3>
+                    <p>340% increase in conversions post-launch.</p>
+                </div>
+            </div>
+            <div class="bento-item bento-tall">
+                <div class="bento-overlay">
+                    <span class="section-tag">Web App</span>
+                    <h3>Fintech Dashboard</h3>
+                    <p>Real-time data visualization platform.</p>
+                </div>
+            </div>
+            <div class="bento-item">
+                <div class="bento-overlay" style="text-align: center; justify-content: center;">
+                    <i class="fas fa-rocket" style="font-size: 3rem; color: var(--cyan); margin-bottom: 1rem;"></i>
+                    <p>50ms Average Load</p>
+                </div>
+            </div>
         </div>
-        <div class="funnel-container">
-            <div class="funnel-layer l1">AWARENESS (SEO/CONTENT)</div>
-            <div class="funnel-layer l2">INTEREST (PPC/ADS)</div>
-            <div class="funnel-layer l3">CONSIDERATION (EMAIL)</div>
-            <div class="funnel-layer l4">CONVERSION (CRO)</div>
-            <div class="funnel-layer l5">RETENTION</div>
+    </section>
+
+    <section id="estimate">
+        <div class="section-header">
+            <p class="section-tag">Project Estimator</p>
+            <h2 class="grad-text">Complexity Builder</h2>
+        </div>
+        <div class="estimator-wrap">
+            <div class="est-controls">
+                <div class="slider-group">
+                    <label>NUMBER OF SCREENS / PAGES: <span id="pages-val">10</span></label>
+                    <input type="range" id="pages-slider" min="1" max="50" value="10">
+                </div>
+                <div class="slider-group">
+                    <label>COMPLEXITY LEVEL: <span id="comp-val">Business App</span></label>
+                    <input type="range" id="comp-slider" min="1" max="3" value="2">
+                </div>
+            </div>
+            <div class="est-display">
+                <p class="section-tag">Estimated Budget</p>
+                <span class="est-val" id="total-est">1000000</span>
+                <p style="margin-top: 1rem; color: var(--muted); font-size: 0.8rem;">Timeline: <span id="time-est">4-6 Weeks</span></p>
+                <br>
+                <a href="#contact" class="btn btn-grad">REQUEST DETAILED BRIEF</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="code">
+        <div class="code-widget">
+            <div class="code-tabs">
+                <div class="c-tab active">Component.jsx</div>
+                <div class="c-tab">styles.css</div>
+                <div class="c-tab">api.js</div>
+            </div>
+            <div class="code-display mono">
+<span class="tag">const</span> <span class="func">XerovaProduct</span> = ({ config }) => {
+  <span class="tag">return</span> (
+    &lt;<span class="tag">section</span> <span class="prop">className</span>=<span class="str">"high-performance"</span>&gt;
+      &lt;<span class="tag">h1</span>&gt;{config.title}&lt;/<span class="tag">h1</span>&gt;
+      &lt;<span class="tag">Engine</span> <span class="prop">optimized</span>={<span class="tag">true</span>} /&gt;
+    &lt;/<span class="tag">section</span>&gt;
+  );
+};
+<span class="tag">export default</span> XerovaProduct;</div>
         </div>
     </section>
 
     <div class="marquee-wrap">
         <div class="marquee-content">
-            <span class="pill">GOOGLE ADS</span><span class="pill">SEMRUSH</span><span class="pill">AHREFS</span>
-            <span class="pill">META BUSINESS</span><span class="pill">GA4</span><span class="pill">HUBSPOT</span>
-            <span class="pill">KLAVIYO</span><span class="pill">LOOKER STUDIO</span>
-            <!-- Duplicated for loop -->
-            <span class="pill">GOOGLE ADS</span><span class="pill">SEMRUSH</span><span class="pill">AHREFS</span>
-            <span class="pill">META BUSINESS</span><span class="pill">GA4</span><span class="pill">HUBSPOT</span>
-            <span class="pill">KLAVIYO</span><span class="pill">LOOKER STUDIO</span>
+            <span class="mpill">NEXT.JS</span><span class="mpill">REACT</span><span class="mpill">SHOPIFY</span>
+            <span class="mpill">STRIPE</span><span class="mpill">NODE.JS</span><span class="mpill">AWS</span>
+            <span class="mpill">DOCKER</span><span class="mpill">OPENAI API</span>
+            <!-- Duplicate for loop -->
+            <span class="mpill">NEXT.JS</span><span class="mpill">REACT</span><span class="mpill">SHOPIFY</span>
+            <span class="mpill">STRIPE</span><span class="mpill">NODE.JS</span><span class="mpill">AWS</span>
+            <span class="mpill">DOCKER</span><span class="mpill">OPENAI API</span>
         </div>
     </div>
 
-    <section id="audit">
-        <div class="audit-container">
-            <div>
-                <h2 class="grad-text" style="font-size: 2rem; margin-bottom: 1.5rem;">Your Competitors Are Already Ahead.</h2>
-                <p style="color: var(--muted); margin-bottom: 2rem;">Every day without a strategy is revenue left on the table. Get your free performance audit — no commitment, no fluff.</p>
-                <div class="meter-box">
-                    <svg class="circular-meter" width="160" height="160">
-                        <circle class="meter-bg" cx="80" cy="80" r="70"></circle>
-                        <circle class="meter-progress" id="audit-meter" cx="80" cy="80" r="70"></circle>
-                    </svg>
-                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-                        <span class="mono" style="font-size: 2rem; font-weight: 900; color: var(--amber);">44</span>
-                        <p style="font-size: 0.6rem;">AVG SITE SCORE</p>
-                    </div>
-                </div>
-            </div>
-            <div class="audit-form">
-                <form>
-                    <input type="url" placeholder="Your Website URL" required>
-                    <input type="text" placeholder="Full Name" required>
-                    <input type="email" placeholder="Work Email" required>
-                    <select>
-                        <option>Monthly Budget: ₹2k - ₹5k</option>
-                        <option>Monthly Budget: ₹5k - ₹15k</option>
-                        <option>Monthly Budget: ₹15k+</option>
-                    </select>
-                    <button type="submit" class="btn btn-grad" style="width: 100%;">AUDIT MY WEBSITE FREE</button>
-                </form>
-            </div>
-        </div>
+    <section class="final-cta">
+        <div class="seq-line" id="l-1"><h2 class="hero-title">Your Vision.</h2></div>
+        <div class="seq-line" id="l-2"><h2 class="hero-title">Our Code.</h2></div>
+        <div class="seq-line" id="l-3"><h2 class="hero-title" style="color: var(--cyan);">One Extraordinary Product.</h2></div>
+        <br>
+        <a href="feedback.html" class="btn btn-grad" style="padding: 1.5rem 3.5rem;">START BUILDING TODAY</a>
+        <p class="mono" style="color: var(--green); margin-top: 2rem; font-size: 0.8rem;">🟢 All Copyrights reserved</p>
     </section>
 
-    <footer class="final-cta">
-        <h2 class="hero-title" style="font-size: 2.5rem;">Your Growth Starts <br> <span class="grad-text">With One Decision.</span></h2>
-        <p style="margin-bottom: 2rem;">Let's make it the right one.</p>
-        <a href="#audit" class="btn btn-grad" style="padding: 1.5rem 3rem;">CLAIM YOUR STRATEGY SESSION</a>
-    </footer>
-
     <script>
-        // --- Data Particles Animation ---
-        const canvas = document.getElementById('data-canvas');
+        // --- Matrix Rain Logic ---
+        const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
-        let particles = [];
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+        const chars = "<html>{const}<body>[api]<div><js>1010";
+        const drops = [];
+        const fontSize = 16;
+        const columns = width / fontSize;
+        for (let i = 0; i < columns; i++) drops[i] = 1;
 
-        function initParticles() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            particles = [];
-            for (let i = 0; i < 50; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: canvas.height + Math.random() * 100,
-                    size: Math.random() * 3 + 1,
-                    speed: Math.random() * 2 + 0.5,
-                    opacity: Math.random()
-                });
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(10, 13, 26, 0.1)";
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = "#00f5d4";
+            ctx.font = fontSize + "px monospace";
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
             }
         }
+        setInterval(drawMatrix, 50);
 
-        function drawParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                ctx.fillStyle = `rgba(0, 245, 212, ${p.opacity})`;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fill();
-                p.y -= p.speed;
-                if (p.y < -10) p.y = canvas.height + 10;
+        // --- Browser Mockup Logic ---
+        const tabs = document.querySelectorAll('.b-tab');
+        const panes = document.querySelectorAll('.preview-pane');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.dataset.target;
+                tabs.forEach(t => t.classList.remove('active'));
+                panes.forEach(p => p.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(`pane-${target}`).classList.add('active');
             });
-            requestAnimationFrame(drawParticles);
+        });
+
+        // --- Estimator Logic ---
+        const pSlider = document.getElementById('pages-slider');
+        const cSlider = document.getElementById('comp-slider');
+        const totalDisp = document.getElementById('total-est');
+        const timeDisp = document.getElementById('time-est');
+
+        function updateEst() {
+            const pages = pSlider.value;
+            const comp = cSlider.value;
+            document.getElementById('pages-val').innerText = pages;
+            
+            const complexities = ["Marketing Site", "Business App", "Enterprise Platform"];
+            document.getElementById('comp-val').innerText = complexities[comp-1];
+
+            const base = comp * 2000;
+            const pageAdd = pages * 150;
+            totalDisp.innerText = `$${(base + pageAdd).toLocaleString()}+`;
+            
+            const times = ["2-3 Weeks", "4-6 Weeks", "8-12 Weeks"];
+            timeDisp.innerText = times[comp-1];
         }
+        pSlider.oninput = updateEst;
+        cSlider.oninput = updateEst;
 
-        window.addEventListener('resize', initParticles);
-        initParticles();
-        drawParticles();
-
-        // --- Counter Animation ---
+        // --- Sequential Reveal ---
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    const counters = entry.target.querySelectorAll('.stat-num');
-                    counters.forEach(counter => {
-                        const target = +counter.getAttribute('data-val');
-                        let count = 0;
-                        const update = () => {
-                            const speed = target / 50;
-                            if (count < target) {
-                                count += speed;
-                                counter.innerText = Math.ceil(count) + (target > 500 ? "+" : "");
-                                setTimeout(update, 30);
-                            } else {
-                                counter.innerText = target + (target > 500 ? "+" : "");
-                            }
-                        };
-                        update();
-                    });
-                    
-                    // Trigger Chart Animation
-                    if(entry.target.id === 'performance') {
-                        document.getElementById('chart-trigger').classList.add('animate-chart');
-                    }
-                    
-                    // Trigger Meter Animation
-                    if(entry.target.id === 'audit') {
-                        document.getElementById('audit-meter').style.strokeDashoffset = '246'; // Score 44/100
-                    }
+                    setTimeout(() => document.getElementById('l-1').classList.add('visible'), 500);
+                    setTimeout(() => document.getElementById('l-2').classList.add('visible'), 1200);
+                    setTimeout(() => document.getElementById('l-3').classList.add('visible'), 1900);
                 }
             });
-        }, { threshold: 0.3 });
-
-        observer.observe(document.getElementById('hero'));
-        observer.observe(document.getElementById('performance'));
-        observer.observe(document.getElementById('audit'));
+        });
+        observer.observe(document.querySelector('.final-cta'));
     </script>
 </body>
 </html>
