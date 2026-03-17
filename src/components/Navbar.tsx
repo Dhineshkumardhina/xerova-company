@@ -107,7 +107,7 @@ export default function Navbar() {
                 {item.label}
               </motion.button>
             ))}
-            <Button variant="neon-filled" onClick={() => scrollTo("#contact")}>
+            <Button variant="neon-filled" onClick={() => scrollTo("feedback.html")}>
               Get a Quote
             </Button>
           </motion.div>
