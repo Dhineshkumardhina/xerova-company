@@ -76,7 +76,7 @@ export default function TestimonialsSection() {
           className="flex justify-center mt-12"
         >
           <button
-            onClick={() => window.location.href = 'feedback.html'}
+            onClick={() => window.location.href = "src/components/feedback.html"}
             className="flex items-center gap-2 px-8 py-3 rounded-full bg-primary text-primary-foreground font-display font-semibold text-sm hover:opacity-90 transition-all hover:scale-105 active:scale-95 shadow-lg"
           >
             <MessageSquarePlus size={18} />
