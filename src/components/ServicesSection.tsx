@@ -7,7 +7,7 @@ const services = [
  { icon: Megaphone, title: "Digital Marketing", short: "SEO, PPC & growth strategies", link: "/digital-marketing.html" },
  { icon: Palette, title: "Creative Design", short: "Branding & UI/UX design", link: "/creative-design.html" },
  { icon: Video, title: "Media Production", short: "Video, photo & content", link: "/social-media.html" },
- { icon: Users, title: "Social Media", short: "Management & strategy", link: "public/social-media.html" },
+ { icon: Users, title: "Social Media", short: "Management & strategy", link: "media-production.html" },
  { icon: Wrench, title: "Technical Services", short: "IT solutions & support", link: "/technical-services.html" },
  { icon: FlaskConical, title: "R&D Lab", short: "Innovation & prototyping", link: "/rnd.html" },
  { icon: Printer, title: "3D Printing", short: "Rapid prototyping & manufacturing", link: "/3d-printing.html" },
