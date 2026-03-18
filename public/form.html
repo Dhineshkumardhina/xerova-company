@@ -1293,7 +1293,7 @@ footer p{font-size:.73rem;color:var(--muted);font-style:italic;margin-bottom:.65
           <div class="chat-icon">💬</div>
           <div class="chat-text">
             <p>Chat with us</p>
-            <small>Typically replies in minutes</small>
+            <small>Typically replies in minutes </small>
           </div>
         </div>
       </div>
@@ -1660,12 +1660,12 @@ async function submitForm() {
   setSubmitState('Saving your project brief...', '');
 
   try {
-    const response = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/${SUPABASE_CONFIG.table}`, {
+    const response = await fetch(`₹{SUPABASE_CONFIG.url}/rest/v1/${SUPABASE_CONFIG.table}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'apikey': SUPABASE_CONFIG.anonKey,
-        'Authorization': `Bearer ${SUPABASE_CONFIG.anonKey}`,
+        'Authorization': `Bearer ₹{SUPABASE_CONFIG.anonKey}`,
         'Prefer': 'return=representation'
       },
       body: JSON.stringify(payload)
@@ -1693,7 +1693,7 @@ async function submitForm() {
     window.scrollTo({top:0,behavior:'smooth'});
   } catch (error) {
     console.error('Supabase form submission failed:', error);
-    setSubmitState(`Could not save this brief to Supabase: ${error.message}`, 'error');
+    setSubmitState(`Could not save this brief to Supabase: ₹{error.message}`, 'error');
   } finally {
     isSubmitting = false;
     submitBtn.disabled = false;
@@ -1709,12 +1709,12 @@ function fireConfetti() {
     const p = document.createElement('div'); p.className='cp';
     const size = Math.random()*8+4;
     p.style.cssText = `
-      left:${Math.random()*100}%;top:-10px;
-      background:${cols[Math.floor(Math.random()*cols.length)]};
-      width:${size}px;height:${size}px;
-      border-radius:${Math.random()>.5?'50%':'3px'};
-      animation-delay:${Math.random()*.8}s;
-      animation-duration:${Math.random()*2+2.5}s;
+      left:₹{Math.random()*100}%;top:-10px;
+      background:₹{cols[Math.floor(Math.random()*cols.length)]};
+      width:₹{size}px;height:₹{size}px;
+      border-radius:₹{Math.random()>.5?'50%':'3px'};
+      animation-delay:₹{Math.random()*.8}s;
+      animation-duration:₹{Math.random()*2+2.5}s;
     `;
     wrap.appendChild(p);
     setTimeout(()=>p.remove(),4000);
